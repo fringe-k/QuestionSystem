@@ -15,3 +15,14 @@ selenium-debug.log
 *.ntvs*
 *.njsproj
 *.sln
+# Created by .ignore support plugin (hsz.mobi)
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+#忽略.gitignore文件本身
+.gitignore
+out
+gen
