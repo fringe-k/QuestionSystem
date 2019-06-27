@@ -92,6 +92,19 @@
     {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
     {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
     {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
+    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
   ];
 
   export default {
@@ -133,7 +146,7 @@
 
   }
   .listContainer{
-    margin-top:10px;
+    margin-top:70px;
     margin-left:20px;
     width:200px;
     height:500px;
@@ -143,6 +156,7 @@
     line-height: 60px;
     font-weight:500;
     border:1px solid red;
+    position:fixed;
   }
   #chosen{
     margin: 0 auto;
@@ -176,8 +190,8 @@
   .questionBox{
     width:80%;
     height:auto;
-    margin-top:20px;
-    margin-left:50px;
+    margin-top:80px;
+    margin-left:250px;
     background-color:white;
     display:inline-block;
     line-height: 50px;
