@@ -7,10 +7,6 @@
         <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
         <li class="link02">
           <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
-          <!-- <ul>
-              <li><a href="#">二级菜单</a></li>
-              <li><a href="#">二级菜单</a></li>
-          </ul> -->
         </li>
 
         <div class="search bar">
@@ -26,10 +22,11 @@
         </div>
       </ul>
     </div>
-    <!--导航栏 end-->
+    <!--导航栏end-->
+
     <div id="classList" class="listContainer" >
       <a id="chosen" class="" href="">
-        <i class="iconfont " style=" color:red;font-size:30px;">&#xe9b0;</i>
+        <i class="iconfont " style=" color:#bd5151;font-size:30px;">&#xe9b0;</i>
         &ensp;科学
         <span class="arrow-right"></span>
       </a>
@@ -108,13 +105,43 @@
   ];
 
   export default {
-    name: 'QuestionScience',
+    name: 'QuestionShow',
     data()
     {
       return{
         message: '',
         questions:data,
       }
+    },
+    created(){
+      /*this.$axios.get(global.host+'/test/getQuestionByType',
+                     { headers:{
+                         'Content-Type': 'application/x-www-form-urlencoded'
+                       },
+                      params:{
+                       questionType:encodeURI("科学"),
+                        index:"0"
+                     }
+                     })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });*/
+      this.$axios(
+        {
+          method:'get',
+          url:global.host+'/test/getQuestionByType',
+          params:{
+            questionType:encodeURI("科学"),
+            index:"0"
+          }
+        }).then(res =>{
+        console.info(res)
+      }).catch(e =>{
+        console.info(e)
+      })
     },
     methods:{
       enter(index){
@@ -146,7 +173,7 @@
 
   }
   .listContainer{
-    margin-top:70px;
+    margin-top:100px;
     margin-left:20px;
     width:200px;
     height:500px;
@@ -155,7 +182,7 @@
     display:inline-block;
     line-height: 60px;
     font-weight:500;
-    border:1px solid red;
+    border:1px solid #bd5151;
     position:fixed;
   }
   #chosen{
@@ -163,7 +190,7 @@
     width:80%;
     display:block;
     font-family:Roboto;
-    color:red;
+    color:#bd5151;
     font-size:30px;
     text-decoration: none;
     border-bottom: 2px solid rgba(187,187,187,1);
@@ -185,7 +212,7 @@
     background-color: #f1f1f1;
     z-index:100;
     color:white;
-    box-shadow:red 0px 0px 10px;
+    box-shadow:#bd5151 0px 0px 10px;
   }
   .questionBox{
     width:80%;
@@ -218,7 +245,7 @@
     -webkit-margin-before: 1em;
     -webkit-margin-after: 1em;
     -webkit-margin-start: 0px;
-    -webkit-margin-end: 0px;
+    -webkit-margin-end: 00px;
   }
   .t1 {
     width:60%;
@@ -282,8 +309,8 @@
     background-color: #005eac;
     color:white;
     z-index:100;
-    color:red;
-    box-shadow:red 0px 0px 10px;
+    color:#bd5151;
+    box-shadow:#bd5151 0px 0px 10px;
   }
 
   .toQuestion{
