@@ -1,21 +1,28 @@
 <template>
   <div>
 
-
       <div class="outer_label">
         <img class="inner_label login_logo" src="../assets/logo.png">
       </div>
     <div class="bg">
+
       <div class="login_form">
-        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="账号" v-model="userName">
+        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="邮箱" v-model="userName">
         <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
         <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password">
         <span v-if="error.password" class="err-msg">{{error.password}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
+        <br>
+        <span v-if="error.null" class="err-msg" style="margin-left: 42%">{{error.null}}</span>
+        <br>
         <button class="login_btn" @click="login" >登录</button>
-        <div style="margin-top: 30px">
-          <span style="color: #000099;margin-left: 25%" @click="login">邮箱登陆</span><span style="margin-left: 40%;color: #A9A9AB">忘记密码？</span>
+        <div style="margin-top: 30px;padding-bottom: 10%">
+          <span style="color: #000099;margin-left: 25%" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB" @click="to_reset">忘记密码？</span>
         </div>
+      </div>
+
+      <div class="outer_label">
+
       </div>
 
     </div>
@@ -34,7 +41,8 @@
         password: '',
         error:{
           userName:'',
-          password:''
+          password:'',
+          null:''
         }
       }
     },
@@ -46,28 +54,18 @@
     },*/
 
     methods: {
-      check(userName,password){
-        if(!userName){
-          this.error.userName='请输入账号'
-          return false
-        }
-        else{
-          this.error.userName=''
-        }
+      to_reset(){
+        this.error.null='好好想一下，加油！'
+      },
 
-        if(!password){
-          this.error.password='请输入密码'
-            return false
-        }
-        else{
-          this.error.password=''
-        }
-
+      to_reg(){
+        this.$router.push({path:'/register'})
       },
 
       login() {
+        this.error.null=''
         if(!this.userName){
-          this.error.userName='请输入账号'
+          this.error.userName='请输入邮箱'
           return false
         }
         else{
@@ -85,26 +83,35 @@
           this.$axios(
             {
               method:'post',
-              url:"http://localhost:8082/test/loginId",
+              url:"http://localhost:8082/test/loginMail",
               params:{
-                  id:this.userName,
+                  mail:this.userName,
                   password:this.password
               }
             }).then(res =>{
+            if(res.data.trim()== "success")
+            {
+              this.$router.push({path:'/home'})
+
+            }
+            else if(res.data.trim()== "forbidden")
+            {
               console.info(res)
+              this.error.null='你已经被禁止登录！'
+              return false
+            }
+            else
+            {
+              console.info(res)
+              this.error.null='邮箱或密码错误'
+              return false
+            }
           }).catch(e =>{
             console.info(e)
+            console.log('连接失败')
           })
-
-      /*this.axios.get('http://localhost:8082/test/hello')
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });*/
-
       }
+
     }
   }
 
@@ -113,9 +120,11 @@
 <style>
   .login_form {
     padding-top: 10%;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 5%;
+    padding-right: 5%;
     background-color:white;
+    margin-left: 20%;
+    margin-right: 20%;
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
@@ -131,8 +140,8 @@
   }
 
   .bg{
-    background:url("../assets/login_bg.png") no-repeat;
-    backgroundSize:"100% auto";
+    background:url("../assets/login_bg.png") center center;
+    backgroundSize:"100% 100%";
   }
 
   .login_logo {
@@ -187,7 +196,7 @@
   }
   .err-msg{
     width: 20%;
-    background-color: rgba(0,0,0,0.4);
+    background-color: wheat;
     font-size: 20px;
   }
 
