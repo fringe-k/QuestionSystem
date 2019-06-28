@@ -4,6 +4,10 @@ import java.sql.*;
 import java.util.ArrayList;
 public class AnswerDao extends DAO{
 
+    public AnswerDao(){
+        super();
+    }
+
     public synchronized Long nextId() throws SQLException{
         String sql = "select max(id) from Answer";
         PreparedStatement ptmt = conn.prepareStatement(sql);
@@ -44,6 +48,7 @@ public class AnswerDao extends DAO{
             ans.setQuestionId(rs.getLong("questionId"));
             ans.setContent(rs.getString("content"));
             ans.setTime(rs.getTimestamp("time"));
+            ans.setNumOfAgree(rs.getLong("numOfAgree"));
         }
         return ans;
     }
@@ -62,6 +67,7 @@ public class AnswerDao extends DAO{
             ans.setQuestionId(rs.getLong("questionId"));
             ans.setContent(rs.getString("content"));
             ans.setTime(rs.getTimestamp("time"));
+            ans.setNumOfAgree(rs.getLong("numOfAgree"));
             answers.add(ans);
         }
         return answers;
@@ -81,6 +87,7 @@ public class AnswerDao extends DAO{
             ans.setQuestionId(rs.getLong("questionId"));
             ans.setContent(rs.getString("content"));
             ans.setTime(rs.getTimestamp("time"));
+            ans.setNumOfAgree(rs.getLong("numOfAgree"));
             answers.add(ans);
         }
         return answers;
@@ -92,6 +99,15 @@ public class AnswerDao extends DAO{
         ptmt.setObject(1,value, getSqlType(value));
         ptmt.setLong(2,id);
         return ptmt.executeUpdate() > 0;
+    }
+
+    public int countByQuestionId(Long questionId) throws SQLException{
+        String sql = "select count(*) from Answer where questionId = ?";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ptmt.setLong(1,questionId);
+        ResultSet rs = ptmt.executeQuery();
+        if(rs.next()) return rs.getInt(1);
+        else throw new SQLException();
     }
 
 

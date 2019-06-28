@@ -3,6 +3,10 @@ import java.sql.*;
 import java.util.ArrayList;
 public class QuestionDao extends DAO{
 
+    public QuestionDao(){
+        super();
+    }
+
     public synchronized Long nextId() throws SQLException{
         String sql = "select max(id) from Question";
         PreparedStatement ptmt = conn.prepareStatement(sql);
@@ -48,7 +52,7 @@ public class QuestionDao extends DAO{
             question = new Question();
             question.setId(rs.getLong("id"));
             question.setUserId(rs.getLong("userId"));
-            question.setType(rs.getString("type"));
+            question.setType(rs.getLong("type"));
             question.setContent(rs.getString("content"));
             question.setTime(rs.getTimestamp("time"));
             question.setLabel(rs.getString("label"));
@@ -60,7 +64,7 @@ public class QuestionDao extends DAO{
 
     public ArrayList<Question> selectByUserId(Long userId) throws SQLException{
         ArrayList<Question> questions = new ArrayList<Question>();
-        String sql = "select * from Question where  userId = ?";
+        String sql = "select * from Question where  userId = ? order by frequency desc";
         PreparedStatement ptmt = conn.prepareStatement(sql);
         ptmt.setLong(1,userId);
         ResultSet rs = ptmt.executeQuery();
@@ -69,10 +73,33 @@ public class QuestionDao extends DAO{
             question = new Question();
             question.setId(rs.getLong("id"));
             question.setUserId(rs.getLong("userId"));
-            question.setType(rs.getString("type"));
+            question.setType(rs.getLong("type"));
             question.setContent(rs.getString("content"));
             question.setTime(rs.getTimestamp("time"));
             question.setLabel(rs.getString("label"));
+            questions.add(question);
+        }
+        return questions;
+    }
+
+    public ArrayList<Question> selectByTypeId(Long typeId) throws SQLException{
+        ArrayList<Question> questions = new ArrayList<Question>();
+        String sql = "select * from Question where  type = ? order by frequency desc";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ptmt.setLong(1,typeId);
+        ResultSet rs = ptmt.executeQuery();
+        Question question = null;
+        while(rs.next()){
+            question = new Question();
+            question.setId(rs.getLong("id"));
+            question.setUserId(rs.getLong("userId"));
+            question.setType(rs.getLong("type"));
+            question.setContent(rs.getString("content"));
+            question.setTime(rs.getTimestamp("time"));
+            question.setLabel(rs.getString("label"));
+            question.setFrequency(rs.getLong("frequency"));
+            question.setTitle(rs.getString("title"));
+
             questions.add(question);
         }
         return questions;

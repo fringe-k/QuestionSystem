@@ -1,8 +1,6 @@
 package qs.common;
 
 
-import sun.jvm.hotspot.runtime.Bytes;
-
 public class User{
 
     private Long id;
@@ -17,7 +15,7 @@ public class User{
     private String phone;
     private String mail;
     private String password;
-    private byte[] photo;
+    private String photo;
 
     public Long getId() { return id; }
     public Long getRole() { return role; }
@@ -31,7 +29,7 @@ public class User{
     public String getPhone() { return phone; }
     public String getmail() { return mail; }
     public String getPassword() { return password; }
-    public byte []getPhoto() { return photo; }
+    public String getPhoto() { return photo; }
 
     public void setId(Long id) { this.id = id; }
     public void setRole(Long role) { this.role = role; }
@@ -45,8 +43,6 @@ public class User{
     public void setPhone(String phone) { this.phone = phone; }
     public void setMail(String mail) { this.mail = mail; }
     public void setPassword(String password) { this.password = password; }
-    public void setPhoto(byte []photo) { this.photo = photo; }
-
-
+    public void setPhoto(String photoURL) { this.photo = photo; }
 
 };

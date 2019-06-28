@@ -4,6 +4,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class QuestionTypeDao extends DAO{
+
+    public QuestionTypeDao(){
+        super();
+    }
     public synchronized Long nextId() throws SQLException {
         String sql = "select max(id) from QuestionType";
         PreparedStatement ptmt = conn.prepareStatement(sql);
@@ -43,5 +47,27 @@ public class QuestionTypeDao extends DAO{
             questionType.setName(rs.getString("name"));
         }
         return questionType;
+    }
+
+    public QuestionType selectByName(String name) throws SQLException{
+        String sql = "select * from QuestionType where name = ?";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ptmt.setString(1, name);
+        ResultSet rs = ptmt.executeQuery();
+        QuestionType questionType = null;
+        while(rs.next()){
+            questionType = new QuestionType();
+            questionType.setId(rs.getLong("id"));
+            questionType.setName(rs.getString("name"));
+        }
+        return questionType;
+    }
+
+    public <T> Boolean update(Long id,String attribute,T value) throws SQLException{
+        String sql = "update QuestionType set " + attribute + " = ? where id = ?";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ptmt.setObject(1,value, getSqlType(value));
+        ptmt.setLong(2,id);
+        return ptmt.executeUpdate() > 0;
     }
 }

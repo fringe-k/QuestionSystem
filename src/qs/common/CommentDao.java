@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 public class CommentDao extends DAO{
 
+    public CommentDao(){
+        super();
+    }
+
     public synchronized Long nextId() throws SQLException{
         String sql = "select max(id) from Comment";
         PreparedStatement ptmt = conn.prepareStatement(sql);

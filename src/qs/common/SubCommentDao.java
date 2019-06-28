@@ -4,6 +4,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class SubCommentDao extends DAO{
+
+    public SubCommentDao(){
+        super();
+    }
     public synchronized Long nextId() throws SQLException{
         String sql = "select max(id) from SubComment";
         PreparedStatement ptmt = conn.prepareStatement(sql);

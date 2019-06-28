@@ -5,6 +5,10 @@ import java.sql.*;
 import java.util.ArrayList;
 public class UserDao extends DAO{
 
+    public UserDao(){
+        super();
+    }
+
 
     public synchronized Long nextId() throws SQLException{
         String sql = "select max(id) from User";
@@ -48,7 +52,7 @@ public class UserDao extends DAO{
             user.setPassword(rs.getString("password"));
             user.setRole(rs.getLong("role"));
             user.setScore(rs.getLong("score"));
-            user.setPhoto(rs.getBytes("photo"));
+            user.setPhoto(rs.getString("photo"));
             user.setNumOfQuery(rs.getLong("numOfQuery"));
             user.setNumOfAnswer(rs.getLong("numOfAnswer"));
             user.setCannotSpeak(rs.getLong("cannotSpeak"));
@@ -73,7 +77,7 @@ public class UserDao extends DAO{
             user.setPassword(rs.getString("password"));
             user.setRole(rs.getLong("role"));
             user.setScore(rs.getLong("score"));
-            user.setPhoto(rs.getBytes("photo"));
+            user.setPhoto(rs.getString("photo"));
             user.setNumOfQuery(rs.getLong("numOfQuery"));
             user.setNumOfAnswer(rs.getLong("numOfAnswer"));
             user.setCannotSpeak(rs.getLong("cannotSpeak"));

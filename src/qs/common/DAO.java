@@ -1,24 +1,73 @@
 package qs.common;
 
-import sun.jvm.hotspot.runtime.Bytes;
 
 import java.sql.*;
+import java.util.*;
+import com.alibaba.fastjson.*;
+import com.mysql.cj.xdevapi.SqlDataResult;
 
 
 public class DAO {
 
     protected Connection conn;
-    private String url = "jdbc:mysql://liublack.cn:3306/questionsystem"+"?useUnicode=true&characterEncoding=utf8";
+    private String url = "jdbc:mysql://47.101.210.170:3306/questionsystem"+"?useUnicode=true&characterEncoding=utf8";
     private String user = "qs";
     private String password = "123456";
+    private ResultSet resultSet = null;
 
     public String getUrl() { return url;}
-    public String getUser() { return url;}
+    public String getUser() { return user;}
     public String getPassword() { return password;}
+    public ResultSet getResultSet() { return resultSet;}
 
     public void setUrl(String url) { this.url = url; }
     public void setUser(String user) { this.user = user; }
     public void setPassword(String password) {this.password = password; }
+
+    public JSONArray toJsonArray(int size) throws NullPointerException, SQLException {
+        int count = 0;
+        JSONArray jsonArray = new JSONArray();
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        while (resultSet.next() && count < size) {
+            JSONObject json = new JSONObject();
+
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                if(resultSet.getObject(i) == null)
+                    json.put(metaData.getColumnLabel(i),"null");
+                else
+                    json.put(metaData.getColumnLabel(i), resultSet.getObject(i));
+            }
+            jsonArray.add(json);
+            count++;
+        }
+        return jsonArray;
+    }
+
+    public JSONArray toJsonArray() throws NullPointerException, SQLException {
+        // 默认最多一次给出500行
+        return toJsonArray(500);
+    }
+
+    public DAO(){
+        connect();
+    }
+
+    public boolean excuteUpdate(String sql) throws SQLException{
+        if(conn == null || conn.isClosed())
+            connect();
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+
+        return ptmt.executeUpdate() > 0;
+    }
+
+    public boolean excuteQuery(String sql) throws SQLException{
+        if(conn == null || conn.isClosed())
+            connect();
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        resultSet = ptmt.executeQuery();
+        return resultSet != null;
+    }
+
 
 
     public  void connect(){
@@ -47,14 +96,16 @@ public class DAO {
             ptmt.setLong(1, user.getId());
             ptmt.setString(2, user.getName());
             ptmt.setLong(3, user.getAge());
-            ptmt.setString(4, user.getmail());
-            ptmt.setString(5, user.getPassword());
-            ptmt.setLong(6, user.getRole());
-            ptmt.setBytes(7, user.getPhoto());
-            ptmt.setLong(8, user.getNumOfQuery());
-            ptmt.setLong(9, user.getNumOfAnswer());
-            ptmt.setLong(10, user.getCannotSpeak());
-            ptmt.setLong(11, user.getCannotLogin());
+            ptmt.setString(4,user.getPhone());
+            ptmt.setString(5, user.getmail());
+            ptmt.setString(6, user.getPassword());
+            ptmt.setLong(7, user.getRole());
+            ptmt.setLong(8,user.getScore());
+            ptmt.setString(8, user.getPhoto());
+            ptmt.setLong(9, user.getNumOfQuery());
+            ptmt.setLong(10, user.getNumOfAnswer());
+            ptmt.setLong(11, user.getCannotSpeak());
+            ptmt.setLong(12, user.getCannotLogin());
         }catch (Exception e){
             System.err.println(e.getStackTrace());
             System.err.println("Failed to create a PreparedStatement for User!");
@@ -76,7 +127,7 @@ public class DAO {
             ptmt.setString(3, user.getmail());
             ptmt.setString(4, user.getPassword());
             ptmt.setLong(5, user.getRole());
-            ptmt.setBytes(6, user.getPhoto());
+            ptmt.setString(6, user.getPhoto());
             ptmt.setLong(7, user.getNumOfQuery());
             ptmt.setLong(8, user.getNumOfAnswer());
             ptmt.setLong(9, user.getCannotSpeak());
@@ -108,7 +159,7 @@ public class DAO {
             //传参
             ptmt.setLong(1, question.getId());
             ptmt.setLong(2, question.getUserID());
-            ptmt.setString(3, question.getType());
+            ptmt.setLong(3, question.getType());
             ptmt.setString(4, question.getContent());
             ptmt.setTimestamp(5, question.getTime());
             ptmt.setString(6, question.getLabel());
@@ -134,7 +185,7 @@ public class DAO {
         try {
             //传参
             ptmt.setLong(1, question.getUserID());
-            ptmt.setString(2, question.getType());
+            ptmt.setLong(2, question.getType());
             ptmt.setString(3, question.getContent());
             ptmt.setTimestamp(4, question.getTime());
             ptmt.setString(5, question.getLabel());
@@ -209,7 +260,7 @@ public class DAO {
 
         //拼接sql语句
         String  sql = "insert into " + "Answer(id,userId,questionId,content,time)" +
-                "values (?,?,?,?,?)";
+                "values (?,?,?,?,?,?)";
         PreparedStatement ptmt = conn.prepareStatement(sql); // 预编译SQL，减少sql执行
         // 向sql语句传参
         try {
@@ -219,6 +270,7 @@ public class DAO {
             ptmt.setLong(3, answer.getQuestionId());
             ptmt.setString(4, answer.getContent());
             ptmt.setTimestamp(5, answer.getTime());
+            ptmt.setLong(6, answer.getNumOfAgree());
 
         }catch (Exception e){
             e.printStackTrace();
