@@ -25,7 +25,7 @@
     <!--导航栏end-->
 
     <div id="classList" class="listContainer" >
-      <a id="chosen" class="" href="">
+      <a   id="chosen" class="" >
         <i class="iconfont " style=" color:#bd5151;font-size:30px;">&#xe9b0;</i>
         &ensp;科学
         <span class="arrow-right"></span>
@@ -66,13 +66,15 @@
       </p>
       <!--标题栏end-->
         <li v-for="question,index in questions" class="question">
-          <div class="titleBox"><a class="toQuestion" href="">{{question.theme}}</a></div>
-          <div class="authorBox">
-               <a class="alink" v-on:mouseenter="enter(index)"  href="">{{question.Questioner}}</a>
-               <br>
-               <a style="color:#808080;cursor: initial;height: 20px;font-size:18px;">{{question.date}}</a>
+          <div class="titleBox">
+            <span @click="test" class="toQuestion" >{{question.theme}}</span>
           </div>
-          <span class="ansourBox" style="font-size: 20px;">{{question.answer}}&nbsp;/&nbsp;{{question.view}}</span>
+          <div class="authorBox">
+               <span class="alink"  >{{question.Questioner}}</span>
+               <br>
+               <span style="color:#808080;cursor: initial;height: 20px;font-size:18px;">{{question.date}}</span>
+          </div>
+          <span  class="ansourBox" style="font-size: 20px;">{{question.answer}}&nbsp;/&nbsp;{{question.view}}</span>
         </li>
       </div>
     </div>
@@ -82,7 +84,7 @@
 
 <script>
   import global from './global.vue'
-
+  var that=this
   var message="";
   var data = [
     {theme:"这该怎么办",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
@@ -103,6 +105,7 @@
     {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
     {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
   ];
+  var classes=["科学","数码","体育","影视","时尚","餐饮","娱乐"];
 
   export default {
     name: 'QuestionShow',
@@ -111,6 +114,7 @@
       return{
         message: '',
         questions:data,
+        classes:classes
       }
     },
     created(){
@@ -143,17 +147,10 @@
         console.info(e)
       })
     },
-    methods:{
-      enter(index){
-        console.log(global)
-        console.log(index);
-        this.$axios.get(global.host+'/test/hello')
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+    methods: {
+
+      test:function(event){
+        console.log(that.router)
       }
     }
   }
@@ -316,6 +313,7 @@
   .toQuestion{
     text-decoration: none;
     color: #555;
+    cursor:pointer;
   }
   .toQuestion:hover{
     text-decoration:underline;
