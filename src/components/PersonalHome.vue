@@ -1,7 +1,39 @@
 <template>
-  <div id="body">
-    <div style="background-color: red;height:10%;">导航栏</div>
+  <div :style="bg">
+
+    <div class="top" style="border: 1px dashed #000">
+    <ul>
+      <li class="link01">Q/A SYSTEM</li>
+      <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
+      <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
+      <li class="link02">
+        <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        <!-- <ul>
+            <li><a href="#">二级菜单</a></li>
+            <li><a href="#">二级菜单</a></li>
+        </ul> -->
+      </li>
+
+      <div class="search bar">
+        <form>
+          <input type="text" placeholder="请输入您要搜索的内容...">
+          <button type="submit"></button>
+        </form>
+      </div>
+      <div class="buBox">
+        <!-- 触发按钮 -->
+        <button id="triggerBtn">
+          <li>
+            <a href="#">
+              <i class="iconfont">&#xe601;</i>
+            </a>
+          </li>
+        </button>
+
+      </div>
+    </ul>
     <!--导航栏 end-->
+    </div>
 
     <div class="person">
 
@@ -51,7 +83,8 @@
     <!--上面信息栏 end-->
 
     <!--动态-->
-    <div v-for="content in contents">
+    <div style="margin-top: 220px">
+    <div v-for="content in contents" >
       <div class="contain" >
         <div>
           <img class="cycle" src="../assets/1.jpg" style="float:left;height:100px;width: 100px;padding-top: 12px"/>
@@ -74,7 +107,7 @@
           <img src="../assets/2.png" style="width: 50%;height: 30%;margin-left: 180px"/>
         </div>
 
-        <div>
+        <div style="padding-bottom: 10px">
           <br>
           <span style="margin-left:25%">评论</span>
           <span>{{content.p}}</span>
@@ -87,6 +120,7 @@
       </div>
     </div>
     <!--动态 end-->
+    </div>
 
     <div id="classList" class="listContainer" >
       <br>
@@ -97,10 +131,11 @@
       <br>
       <br>
       <a class="ui-link" href="">我的收藏</a>
+      <br>
+      <br>
+      <a class="ui-link" @click="to_changeInfo">我的信息</a>
     </div>
     <!--左边导航栏 end-->
-
-
   </div>
 
 </template>
@@ -123,58 +158,73 @@
         return{
           message: '',
           number:data,
-          contents:content
+          contents:content,
+          bg: {
+            backgroundImage: "url(" + require("../assets/login_bg.png") + ")",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          },
         }
+      },
+
+      methods:{
+        to_changeInfo(){
+          this.$router.push({path:'/changeInfo'})
+        }
+
       }
     }
 </script>
 
 <style scoped>
-  #body{
-    width: 100%;
-    height: 100%;
-    background-color: rgba(221, 221, 221, 0.5);
-  }
+  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
+  @import "../components/css/buttonBox.css";
+  @import "../components/css/iconfont.css";
+  @import "../components/css/searchBar.css";
+  @import "../components/css/top.css";
 
   .person{
-    height: 150px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 20px;
+    position: fixed;
+    left: 20px;
+    right: 20px;
+    top:76px;
     background-color: white;
+    height: 150px;
   }
 
   .cycle{
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     margin-left: 8%;
+    padding-top: 10px;
   }
 
   .name{
-    font-size: 25px;
+    font-size: 20px;
     text-align:left;
-    padding-top: 1px;
+    padding-top: 10px;
   }
 
   .study_info{
-    position: absolute;
-    top:150px;
-    right: 10%;
+    position: fixed;
+    top:120px;
+    right: 5%;
     min-width: 200px;
     text-align: right;
   }
 
   .listContainer{
     position: fixed;
-    top:300px;
+    top:280px;
     left:12%;
     width:180px;
-    height:450px;
+    height:580px;
     background-color:white;
     text-align: center;
     display:inline-block;
     line-height: 50px;
+    border:1px solid #000
   }
   .ui-link{
     margin: 0 auto;
@@ -189,9 +239,8 @@
   }
 
   .contain{
-    padding-top: 50px;
+    padding-top: 80px;
     margin-left: 30%;
-    background-color:white;
     width: 60%;
     height: auto;
   }

@@ -1,29 +1,25 @@
 <template>
-  <div>
-    <div class="outer_label">
-      <img class="inner_label res_logo" src="../assets/logo.png">
-    </div>
-
-    <div class="bg">
-    <div class="reg_form">
-      <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName">
+  <div :style="bg" style="height: 100%">
+    <div style="width: 100%"></div>
+    <div class="reg_form" >
+      <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px">
       <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password">
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password" style="font-size: 20px">
       <span v-if="error.password" class="err-msg">{{error.password}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码" v-model="confirmPassword">
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码" v-model="confirmPassword" style="font-size: 20px">
       <span v-if="error.confirmPassword" class="err-msg">{{error.confirmPassword}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="邮箱" v-model="email">
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="邮箱" v-model="email" style="font-size: 20px">
       <span v-if="error.email" class="err-msg">{{error.email}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="年龄" v-model="age">
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="年龄" v-model="age" style="font-size: 20px">
       <span v-if="error.age" class="err-msg">{{error.age}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="电话" v-model="phone">
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="电话" v-model="phone" style="font-size: 20px">
       <span v-if="error.phone" class="err-msg">{{error.phone}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
-      <button class="login_btn" @click="login" >注册</button>
+      <br>
+      <button class="login_btn" @click="login" style="font-size: 20px" >注册</button>
       <div style="margin-top: 30px;padding-bottom: 5%">
-        <span style="color: #000099;margin-left: 25%" @click="to_login">登录</span><span style="margin-left: 40%;color: #A9A9AB" @click="to_reset">忘记密码？</span>
+        <span style="color: #000099;margin-left: 18%;font-size: 20px" @click="to_login">登录</span><span style="margin-left: 45%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>
       </div>
-    </div>
     </div>
 
   </div>
@@ -34,11 +30,10 @@
     export default {
      data() {
        return {
-         note: {
-           backgroundImage: "url(" + require("../assets/login_bg.png") + ")",
+         bg: {
+           backgroundImage: "url(" + require("../assets/bg2.jpg") + ")",
            backgroundRepeat: "no-repeat",
-           backgroundSize: "25px auto",
-           marginTop: "5px",
+           backgroundSize: "100% 100%",
          },
 
          userName: '',
@@ -141,6 +136,7 @@
 </script>
 
 <style scoped>
+
   .outer_label {
     position: relative;
     left: 0;
@@ -173,12 +169,13 @@
 
 
   .reg_form {
-    padding-top: 5%;
-    padding-left: 5%;
-    padding-right: 5%;
-    background-color:white;
-    margin-left: 20%;
-    margin-right: 20%;
+    position: absolute;
+    top:20%;
+    width: 500px;
+    margin-left: 37%;
+    background-color: white;
+    padding-top: 25px;
+    box-shadow:5px 5px 5px grey;
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
@@ -194,9 +191,10 @@
   }
 
   .login_btn {
-    width: 10%;
+    width: 100px;
+    height: 50px;
     margin-top: 30px;
-    margin-left: 45%;
+    margin-left: 35%;
     font-size: 16px;
     background-color: white;
     filter: brightness(1.4);
@@ -207,14 +205,14 @@
     height: 40px;
     width: 40%;
     margin-left: 25%;
-    margin-bottom: 5px;
+    padding-bottom: 10px;
     padding-left: 10%;
     border: 0;
-    border-bottom: solid 1px lavender;
+    border-bottom: solid 2px lavender;
   }
 
   .err-msg{
-    width: 20%;
+    width: 50px;
     background-color:wheat;
     font-size: 20px;
   }

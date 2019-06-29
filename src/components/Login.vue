@@ -1,29 +1,18 @@
 <template>
-  <div>
-
-      <div class="outer_label">
-        <img class="inner_label login_logo" src="../assets/logo.png">
-      </div>
-    <div class="bg">
+  <div  :style="bg" style="height: 100%">
 
       <div class="login_form">
-        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="邮箱" v-model="userName">
+        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px">
         <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password">
+        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password" style="font-size: 20px">
         <span v-if="error.password" class="err-msg">{{error.password}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
-        <span v-if="error.null" class="err-msg" style="margin-left: 42%">{{error.null}}</span>
-        <br>
-        <button class="login_btn" @click="login" >登录</button>
+        <span v-if="error.null" class="err-msg" style="margin-left: 30%">{{error.null}}</span>
+        <button class="login_btn" @click="login" style="font-size: 20px">登录</button>
         <div style="margin-top: 30px;padding-bottom: 10%">
-          <span style="color: #000099;margin-left: 25%" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB" @click="to_reset">忘记密码？</span>
+          <span style="color: #000099;margin-left: 20%;font-size: 20px" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>
         </div>
-      </div>
-
-      <div class="outer_label">
-
-      </div>
 
     </div>
   </div>
@@ -37,6 +26,11 @@
   export default {
     data() {
       return {
+        bg: {
+          backgroundImage: "url(" + require("../assets/bg1.jpg") + ")",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% 100%",
+        },
         userName: '',
         password: '',
         error:{
@@ -119,12 +113,13 @@
 
 <style>
   .login_form {
-    padding-top: 10%;
-    padding-left: 5%;
-    padding-right: 5%;
-    background-color:white;
-    margin-left: 20%;
-    margin-right: 20%;
+    position: absolute;
+    top:30%;
+    width: 500px;
+    margin-left: 37%;
+    background-color: white;
+    padding-top: 30px;
+    box-shadow:5px 5px 5px grey;
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
@@ -149,9 +144,10 @@
   }
 
   .login_btn {
-    width: 10%;
+    width: 100px;
+    height: 50px;
     margin-top: 30px;
-    margin-left: 45%;
+    margin-left: 35%;
     font-size: 16px;
     background-color: white;
     filter: brightness(1.4);
@@ -189,14 +185,14 @@
     height: 40px;
     width: 40%;
     margin-left: 25%;
-    margin-bottom: 5px;
+    padding-bottom: 10px;
     padding-left: 10%;
     border: 0;
-    border-bottom: solid 1px lavender;
+    border-bottom: solid 2px lavender;
   }
   .err-msg{
-    width: 20%;
-    background-color: wheat;
+    width: 50px;
+    background-color:wheat;
     font-size: 20px;
   }
 
