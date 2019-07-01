@@ -120,6 +120,7 @@
     height:500px;
     margin-left:50px;
     vertical-align: top;
+    margin-top:20px;
   }
   .bottomLine{
     margin-top:50px;
