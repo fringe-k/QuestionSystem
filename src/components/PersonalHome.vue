@@ -44,6 +44,8 @@
       <div class="name">
           <h3>&nbsp;康立言菜弟</h3>
       </div>
+
+      <button @click="alterpsw" class="button">修改密码</button>
       <!--头像&名字 end-->
 
       <div class="study_info">
@@ -95,7 +97,7 @@
         </div>
 
         <div style="margin-top: 0px">
-          <spanp>{{content.day}}</spanp>
+          <span>{{content.day}}</span>
           <span>{{content.time}}</span>
         </div>
 
@@ -137,7 +139,6 @@
     </div>
     <!--左边导航栏 end-->
   </div>
-
 </template>
 
 <script>
@@ -170,7 +171,11 @@
       methods:{
         to_changeInfo(){
           this.$router.push({path:'/changeInfo'})
-        }
+        },
+
+        alterpsw(){
+          this.$router.push({path:'/psw'})
+        },
 
       }
     }
@@ -216,26 +221,27 @@
 
   .listContainer{
     position: fixed;
-    top:280px;
+    top:270px;
     left:12%;
     width:180px;
-    height:580px;
+    height:550px;
     background-color:white;
     text-align: center;
     display:inline-block;
-    line-height: 50px;
+    line-height: 40px;
     border:1px solid #000
   }
   .ui-link{
     margin: 0 auto;
     width:80%;
     display:block;
-    font-size:30px;
+    font-size:25px;
     font-family:Roboto;
     color: #888;
     text-decoration: none;
     border-bottom: 1px solid rgba(187,187,187,1);
     color:rgba(0,0,0,0.87);
+    cursor: pointer;
   }
 
   .contain{
@@ -250,6 +256,14 @@
     width: 80%;
     height: auto;
     margin-left: 180px;
+  }
+
+  .button{
+    margin-left:10px;
+    width:100px;
+    font-size: 18px;
+    border:1px solid #000;
+    cursor: pointer
   }
 
 
