@@ -16,6 +16,8 @@
       <span v-if="error.phone" class="err-msg">{{error.phone}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
       <br>
+      <span v-if="error.null" class="err-msg" style="margin-left: 35%">{{error.null}}</span>
+      <br>
       <button class="login_btn" @click="login" style="font-size: 20px" >注册</button>
       <div style="margin-top: 30px;padding-bottom: 5%">
         <span style="color: #000099;margin-left: 18%;font-size: 20px" @click="to_login">登录</span><span style="margin-left: 45%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>
@@ -49,6 +51,7 @@
            email:'',
            age:'',
            phone:'',
+           null: ''
          }
        }
      },
@@ -63,6 +66,7 @@
         },
 
         login() {
+          this.error.null=''
           if(!this.userName){
             this.error.userName='请输入用户名'
             return false
@@ -125,6 +129,34 @@
               }
             }).then(res =>{
             console.info(res)
+            if(res.data.trim()== "successfully")
+            {
+              this.error.null='注册成功'
+              this.$router.push({path:'/home'})
+            }
+            else if(res.data.trim()== "unsuccessfully")
+            {
+              this.error.null='邮箱已经注册'
+            }
+            else if(res.data.trim()== "username")
+            {
+              this.error.null='用户名不合法'
+            }
+            else if(res.data.trim()== "password")
+            {
+              this.error.null='密码至少6位'
+            }
+            else if(res.data.trim()== "passwordTwo")
+            {
+              this.error.null='两次密码不一致'
+            }
+            else if(res.data.trim()== "email")
+            {
+              this.error.null='邮箱不合格'
+            }
+            else {
+              this.error.null='对不起，服务器繁忙'
+            }
           }).catch(e =>{
             console.info(e)
           })

@@ -44,6 +44,8 @@
       <div class="name">
           <h3>&nbsp;康立言菜弟</h3>
       </div>
+
+      <button @click="alterpsw" class="button">修改密码</button>
       <!--头像&名字 end-->
 
       <div class="study_info">
@@ -95,7 +97,7 @@
         </div>
 
         <div style="margin-top: 0px">
-          <spanp>{{content.day}}</spanp>
+          <span>{{content.day}}</span>
           <span>{{content.time}}</span>
         </div>
 
@@ -137,7 +139,6 @@
     </div>
     <!--左边导航栏 end-->
   </div>
-
 </template>
 
 <script>
@@ -170,7 +171,11 @@
       methods:{
         to_changeInfo(){
           this.$router.push({path:'/changeInfo'})
-        }
+        },
+
+        alterpsw(){
+          this.$router.push({path:'/psw'})
+        },
 
       }
     }
@@ -236,6 +241,7 @@
     text-decoration: none;
     border-bottom: 1px solid rgba(187,187,187,1);
     color:rgba(0,0,0,0.87);
+    cursor: pointer;
   }
 
   .contain{
@@ -249,6 +255,14 @@
     width: 80%;
     height: auto;
     margin-left: 180px;
+  }
+
+  .button{
+    margin-left:10px;
+    width:100px;
+    font-size: 18px;
+    border:1px solid #000;
+    cursor: pointer
   }
 
 

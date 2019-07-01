@@ -9,6 +9,7 @@
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
         <span v-if="error.null" class="err-msg" style="margin-left: 30%">{{error.null}}</span>
+        <br>
         <button class="login_btn" @click="login" style="font-size: 20px">登录</button>
         <div style="margin-top: 30px;padding-bottom: 10%">
           <span style="color: #000099;margin-left: 20%;font-size: 20px" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>

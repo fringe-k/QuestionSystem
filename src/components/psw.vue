@@ -45,7 +45,7 @@
         <h3>&nbsp;康立言菜弟</h3>
       </div>
       <!--头像&名字 end-->
-      <button @click=" alterpsw" style="margin-left:10px;width: 100px;font-size: 18px;border:1px solid #000;cursor: pointer">修改密码</button>
+      <button @click="alterpsw" style="margin-left:10px;width: 100px;font-size: 18px;border:1px solid #000;cursor: pointer">修改密码</button>
 
       <div class="study_info">
         <div style="font-size: 25px">
@@ -86,18 +86,15 @@
     <!--动态-->
     <div style="margin-top: 220px">
       <div class="reg_form" >
-      <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 30px">
-      <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="邮箱" v-model="email" style="font-size: 20px;padding-top: 30px">
-      <span v-if="error.email" class="err-msg">{{error.email}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="年龄" v-model="age" style="font-size: 20px;padding-top: 30px">
-      <span v-if="error.age" class="err-msg">{{error.age}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="电话" v-model="phone" style="font-size: 20px;padding-top: 30px">
-      <span v-if="error.phone" class="err-msg">{{error.phone}}</span>
-      <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
-      <br>
-      <button class="login_btn" @click="confirm" style="font-size: 20px" >确定修改</button>
-      <!--动态 end-->
+        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="旧密码" v-model="userName" style="font-size: 20px;padding-top: 30px">
+        <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
+        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="新密码" v-model="email" style="font-size: 20px;padding-top: 30px">
+        <span v-if="error.email" class="err-msg">{{error.email}}</span>
+        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码" v-model="age" style="font-size: 20px;padding-top: 30px">
+        <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
+        <br>
+        <button class="login_btn" @click="confirm" style="font-size: 20px" >确定修改</button>
+        <!--动态 end-->
       </div>
     </div>
 
@@ -125,7 +122,7 @@
   ];
 
   export default {
-    name: "changeInfo",
+    name: "psw",
     data()
     {
       return{
@@ -147,24 +144,6 @@
           phone:'',
         }
       }
-    },
-
-    created(){
-      this.$axios(
-        {
-          method:'get',
-          url:"http://localhost:8082/test/changeInfo",
-          params:{
-
-          }
-        }).then(res =>{
-        this.userName=res.data.userName
-        this.email=res.data.email
-        this.age=res.data.age
-        this.phone=res.data.phone
-      }).catch(e =>{
-        console.info(e)
-      })
     },
 
     methods:{
@@ -304,7 +283,7 @@
 
   .reg_form {
     position: fixed;
-    top:32%;
+    top:40%;
     width: 1200px;
     margin-left: 30%;
     padding-top: 25px;
