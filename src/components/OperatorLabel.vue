@@ -75,7 +75,7 @@
       }
     },
     created(){
-
+      console.log("labelcreated在执行")
       this.$axios.get(global.host + '/test/admin',
         {
           headers: {
@@ -96,6 +96,7 @@
     },
     destroyed(){
       labelList=[]
+      console.log("labeldestroyed在执行")
     },
     methods:
       {

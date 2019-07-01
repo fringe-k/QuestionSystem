@@ -131,6 +131,7 @@
     },
     created()
     {
+      console.log("Usercreated在执行")
       this.$axios.get(global.host + '/test/admin',
         {
           headers: {
@@ -162,6 +163,7 @@
         });
     },
     destroyed(){
+      console.log("Userdestroyed在执行")
       userList=[]
     },
     methods: {

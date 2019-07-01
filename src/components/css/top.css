@@ -8,6 +8,8 @@
            position: fixed; /*固定在顶部*/
            top: 0;/*离顶部的距离为0*/
            margin-bottom: 5px;
+          border-bottom:1px solid #bd5151 ;
+          index:500;
            }
        .top ul{
            /* 清除ul标签的默认样式 */

@@ -76,7 +76,7 @@
       }
     },
     created() {
-      console.log("show1created在执行")
+      console.log("show2created在执行")
       console.log("-----------" + this.$route.query.lastClass + "------------")
       this.$axios(
         {
@@ -104,7 +104,7 @@
           }
         }
         console.log(console.log("---" + chosenOne + "---"))
-        console.log("questionList1初始化")
+        console.log("questionList初始化")
         if (chosenOne == 0) {
           this.$axios(
             {
@@ -145,7 +145,7 @@
                 orderBy: "time"
               }
             }).then(res => {
-              console.log(res)
+            console.log(res)
             for (var i = 0; i < res.data.length; i++) {
               var l = {
                 title: res.data[i].title,
@@ -160,11 +160,11 @@
         }
       })
     },
-    /* mounted(){
-       console.log("show2mounted在执行")
-       console.log("555"+chosenOne)
+   /* mounted(){
+      console.log("show2mounted在执行")
+      console.log("555"+chosenOne)
 
-     },*/
+    },*/
 
     methods: {
       toQuestionDetail:function (e) {
@@ -174,7 +174,7 @@
         var i=e.target.getAttribute('data-item')
         console.log(classList[i].name)
         questionList=[]
-        this.$router.push({path:'/QuestionShow2',
+        this.$router.push({path:'/',
           query:{  lastClass:classList[i].name   }
         })
         classList=[{name:"热帖"}],

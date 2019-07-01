@@ -75,7 +75,7 @@
       }
     },
      created(){
-
+       console.log("classcreated在执行")
        this.$axios.get(global.host + '/test/admin',
          {
            headers: {
@@ -94,6 +94,7 @@
 
      },
     destroyed(){
+      console.log("Classdestroyed在执行")
       classList=[]
     },
         methods:

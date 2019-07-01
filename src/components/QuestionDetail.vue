@@ -32,13 +32,34 @@
       </div>
     </div>
     <div class="content">
-      <span>{{QuestionDetail.content}}</span><br>
-      <div class="bottomLine">
-        <span style="color:rgba(145,139,139,1);font-size:20px;">{{QuestionDetail.date}}</span>
-        <span style="color:blue;font-size:20px;margin-left:75%;">我要回答</span>
+      <div class="contentBox">
+         <span>{{QuestionDetail.content}}</span><br>
+         <div class="bottomLine">
+            <span style="color:rgba(145,139,139,1);font-size:20px;">{{QuestionDetail.date}}</span>
+            <span style="color:blue;font-size:20px;margin-left:70%;" @click="toAnswer">我要回答</span>
+         </div>
       </div>
+      <!--问题展示end-->
+      <div class="question-answer">
+        <div class="answer-header">
+          <span>这些人回答了</span>
+        </div>
+        <div v-for="answer,index in answerList" class="answerDiv">
+          <el-avatar style="display:inline-block;width:70px;height:70px;fit:fill;" size="large" :src="circleUrl"></el-avatar>
+          <div style="display:inline-block">
+            <div class="answerInfo">
+
+            </div>
+            <span class="answerContent">
+                  {{answer.content}}
+            </span>
+          </div>
+        </div>
+      </div>
+      <!--回复展示end-->
     </div>
     <div class="peInfo"></div>
+
   </div>
 
 </template>
@@ -53,12 +74,16 @@
       labels:["王者荣耀","游戏"]}
 
   var PeInfo={img:"../assets/image/test.jpg",Questioner:"wlzdd",numOfQuestion:5,numOfAnswer:5,points:5}
+  var answerList=[{img:"../assets/image/test.jpg",answerer:"wlzdd",date:"2019-6-18 7:54",content:"撒的都"},
+                  {img:"../assets/image/test.jpg",answerer:"wlzdd",date:"2019-6-18 7:54",content:"撒的都"}]
     export default {
         name: "QuestionDetail",
       data() {
         return {
           QuestionDetail: data,
           peInfo: PeInfo,
+          answerList:answerList,
+          circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
         }
       },
       methods:{
@@ -99,16 +124,24 @@
     display:inline-block;
     font-size:20px;
     margin-top:20px;
-    color:rgba(11,51,232,1)
+    color:rgba(11,51,232,1);
   }
   .content{
     display:inline-block;
-    background-color: white;
     margin-left: 250px;
-    margin-top:20px;
-    width:800px;
+    width:750px;
     height:auto;
     font-size:25px;
+    line-height:40px;
+    vertical-align: top;
+  }
+  .contentBox{
+    display:block;
+    background-color: white;
+    margin-top:20px;
+    width:700px;
+    height:auto;
+    font-size:20px;
     padding:30px 30px 20px 30px;
     line-height:40px;
     vertical-align: top;
@@ -125,5 +158,33 @@
   .bottomLine{
     margin-top:50px;
   }
+  .question-answer{
+    margin-top:30px;
+    display:block;
+    background-color: white;
+    border:1px solid rgba(51,143,211,1);
+    width:760px;
+    height:auto;
+  }
+  .answer-header{
+    height:50px;
+    border-bottom:1px solid rgba(187,187,187,1) ;
+    margin-left:30px;
+    margin-right: 30px;
+    color:#1C56E3 ;
+    font-size:24px;
+    vertical-align: middle;
+    padding-top:20px;
+  }
+  .answerDiv{
+    margin-top:20px;
+    margin-left:30px;
+    margin-right:30px;
+    border-bottom: 1px solid rgba(187,187,187,1);
+  }
+  .answerInfo answerContent{
+    display:block;
+    margin:20px;
 
+  }
 </style>
