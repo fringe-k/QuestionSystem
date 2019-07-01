@@ -86,14 +86,19 @@
     <!--动态-->
     <div style="margin-top: 220px">
       <div class="reg_form" >
-        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="旧密码" v-model="userName" style="font-size: 20px;padding-top: 30px">
-        <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="新密码" v-model="email" style="font-size: 20px;padding-top: 30px">
-        <span v-if="error.email" class="err-msg">{{error.email}}</span>
-        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码" v-model="age" style="font-size: 20px;padding-top: 30px">
+        <h2 style="margin-left: 35%">请先验证旧密码是否正确</h2>
+        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="旧密码" v-model="oldpsw" style="font-size: 20px;padding-top: 30px">
+        <span v-if="error.oldpsw" class="err-msg">{{error.oldpsw}}</span>
+        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="新密码" v-model="newpsw" style="font-size: 20px;padding-top: 20px">
+        <span v-if="error.newpsw" class="err-msg">{{error.newpsw}}</span>
+        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码" v-model="confirmpsw" style="font-size: 20px;padding-top: 20px">
+        <span v-if="error.confirmpsw" class="err-msg">{{error.confirmpsw}}</span>
         <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
-        <button class="login_btn" @click="confirm" style="font-size: 20px" >确定修改</button>
+        <span v-if="error.null" class="err-msg" style="margin-left: 35%">{{error.null}}</span>
+        <br>
+        <button class="login_btn" :disabled="is_currect =='currect'" @click="con" style="font-size: 20px;margin-left: 20%" >验证密码</button>
+        <button class="login_btn" :disabled="is_currect !='currect'" @click="confirm" style="font-size: 20px;margin-left: 60%;" >确定修改</button>
         <!--动态 end-->
       </div>
     </div>
@@ -117,6 +122,7 @@
 </template>
 
 <script>
+  import global from './global.vue'
   var data = [
     {score:10,question:10,answer:20,follow:10,collect:10,fan:10},
   ];
@@ -133,15 +139,16 @@
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
         },
-        userName: '',
-        email:'',
-        age:'',
+        oldpsw: '',
+        newpsw:'',
+        confirmpsw:'',
         phone:'',
+        is_currect:'',
         error:{
-          userName:'',
-          email:'',
-          age:'',
-          phone:'',
+          oldpsw: '',
+          newpsw:'',
+          confirmpsw:'',
+          null:''
         }
       }
     },
@@ -157,26 +164,60 @@
         this.$router.push({path:'/psw'})
       },
 
-      confirm(){
+      con(){
         this.$axios(
           {
             method:'post',
-            url:"http://localhost:8082/test/changeInfo",
+            url:"http://localhost:8082/test/psw",
             params:{
-              username:this.userName,
-              email:this.email,
-              age:this.age,
-              phone:this.phone
-
+              email:global.email,
+              oldpsw:this.oldpsw,
             }
           }).then(res =>{
-          this.userName=res.data.userName
-          this.email=res.data.email
-          this.age=res.data.age
-          this.phone=res.data.phone
+            console.log(this.oldpsw)
+            console.log(res)
+            if(res.data.trim()=="correct")
+            {
+              this.error.oldpsw="验证成功"
+              this.is_currect='currect'
+            }
+          if(res.data.trim()=="failed")
+          {
+            this.error.oldpsw="验证失败"
+          }
         }).catch(e =>{
           console.info(e)
         })
+      },
+
+      confirm(){
+          this.error.oldpsw=''
+          this.error.null = ''
+          this.error.newpsw = ''
+          this.error.confirmpsw = ''
+          this.$axios(
+            {
+              method: 'post',
+              url: "http://localhost:8082/test/AlterPsw",
+              params: {
+                email: global.email,
+                oldpwd: this.oldpwd,
+                newpwd: this.newpsw,
+                confirm: this.confirmpsw
+              }
+            }).then(res => {
+              console.log(res)
+            if (res.data.trim() == "successfully") {
+              this.error.null = "修改成功"
+            } else if (res.data.trim() == "unqualified") {
+              this.error.newpsw = "密码至少要6位数"
+            } else if (res.data.trim() == "not same") {
+              this.error.confirmpsw = "两次密码不一致"
+            }
+
+          }).catch(e => {
+            console.info(e)
+          })
       }
 
     }
@@ -223,21 +264,21 @@
 
   .listContainer{
     position: fixed;
-    top:280px;
+    top:270px;
     margin-left:12%;
     width:180px;
-    height:580px;
+    height:550px;
     background-color:white;
     text-align: center;
     display:inline-block;
-    line-height: 50px;
+    line-height: 40px;
     border:1px solid #000
   }
   .ui-link{
     margin: 0 auto;
     width:80%;
     display:block;
-    font-size:30px;
+    font-size:25px;
     font-family:Roboto;
     color: #888;
     text-decoration: none;
@@ -264,7 +305,6 @@
     width: 150px;
     height: 60px;
     margin-top: 30px;
-    margin-left: 40%;
     font-size: 20px;
     background-color: white;
     filter: brightness(1.4);
@@ -283,7 +323,7 @@
 
   .reg_form {
     position: fixed;
-    top:40%;
+    top:32%;
     width: 1200px;
     margin-left: 30%;
     padding-top: 25px;
@@ -294,7 +334,7 @@
   .err-msg{
     width: 50px;
     background-color:wheat;
-    font-size: 20px;
+    font-size: 22px;
   }
 
 </style>

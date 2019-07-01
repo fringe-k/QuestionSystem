@@ -2,14 +2,13 @@
   <div  :style="bg" style="height: 100%">
 
       <div class="login_form">
-        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px">
+        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px;padding-top: 20px">
         <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
         <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password" style="font-size: 20px">
         <span v-if="error.password" class="err-msg">{{error.password}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
-        <span v-if="error.null" class="err-msg" style="margin-left: 30%">{{error.null}}</span>
-        <br>
+        <span v-if="error.null" class="err-msg" style="margin-left: 34%">{{error.null}}</span>
         <button class="login_btn" @click="login" style="font-size: 20px">登录</button>
         <div style="margin-top: 30px;padding-bottom: 10%">
           <span style="color: #000099;margin-left: 20%;font-size: 20px" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>
@@ -20,9 +19,7 @@
 </template>
 
 <script>
-
-  //  import { userLogin } from '../../api/api';
-  import PersonalHome from "./PersonalHome";
+  import global from './global.vue'
 
   export default {
     data() {
@@ -86,7 +83,8 @@
             }).then(res =>{
             if(res.data.trim()== "success")
             {
-              this.$router.push({path:'/home'})
+              global.email=this.userName
+              this.$router.push({path:'/psw'})
 
             }
             else if(res.data.trim()== "forbidden")
@@ -148,7 +146,7 @@
     width: 100px;
     height: 50px;
     margin-top: 30px;
-    margin-left: 35%;
+    margin-left: 37%;
     font-size: 16px;
     background-color: white;
     filter: brightness(1.4);

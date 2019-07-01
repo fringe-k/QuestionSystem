@@ -221,21 +221,21 @@
 
   .listContainer{
     position: fixed;
-    top:280px;
+    top:270px;
     left:12%;
     width:180px;
-    height:580px;
+    height:550px;
     background-color:white;
     text-align: center;
     display:inline-block;
-    line-height: 50px;
+    line-height: 40px;
     border:1px solid #000
   }
   .ui-link{
     margin: 0 auto;
     width:80%;
     display:block;
-    font-size:30px;
+    font-size:25px;
     font-family:Roboto;
     color: #888;
     text-decoration: none;
