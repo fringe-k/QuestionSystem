@@ -26,36 +26,14 @@
 
     <div id="classList" class="listContainer" >
       <a   id="chosen" class="" >
-        <i class="iconfont " style=" color:#bd5151;font-size:30px;">&#xe9b0;</i>
-        &ensp;科学
+        &ensp;热点
         <span class="arrow-right"></span>
       </a>
-      <a class="ui-link"  href="">
-        <i class="iconfont ">&#xe630;</i>
-        &ensp;数码
+      <li v-for="item,index in classList" class="ui-link" @click="chose" :data-item="index">
+        <i class="iconfont " style=" color:#bd5151;font-size:30px;">&{{item.icon}};</i>
+        &ensp;{{item.name}}
         <span class="arrow-right"></span>
-      </a>
-      <a class="ui-link" href="">
-        <i class="iconfont ">&#xe617;</i>
-        &ensp;体育
-        <span class="arrow-right"></span>
-      </a>
-      <a class="ui-link" href=""> <i class="iconfont ">&#xe61d;</i>
-        &ensp;影视
-        <span class="arrow-right"></span>
-      </a>
-      <a class="ui-link"  href=""> <i class="iconfont ">&#xe600;</i>
-        &ensp;时尚
-        <span class="arrow-right"></span>
-      </a>
-      <a class="ui-link" href=""> <i class="iconfont ">&#xe645;</i>
-        &ensp;餐饮
-        <span class="arrow-right"></span>
-      </a>
-      <a class="ui-link" href=""> <i class="iconfont ">&#xe60a;</i>
-        &ensp;娱乐
-        <span class="arrow-right"></span>
-      </a>
+      </li>
     </div>
     <!--分类栏 end-->
     <div id ="mainContent" class="questionBox">
@@ -65,9 +43,9 @@
          <span class="t3">回复/浏览</span>
       </p>
       <!--标题栏end-->
-        <li v-for="question,index in questions" class="question">
+        <li v-for="question,index in questionList" class="question">
           <div class="titleBox">
-            <span @click="test" class="toQuestion" >{{question.theme}}</span>
+            <span @click="toQuestionDetail" class="toQuestion" >{{question.theme}}</span>
           </div>
           <div class="authorBox">
                <span class="alink"  >{{question.Questioner}}</span>
@@ -85,54 +63,21 @@
 <script>
   import global from './global.vue'
   var that=this
-  var message="";
-  var data = [
-    {theme:"这该怎么办",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-    {theme:"这把枪厉害吗，比wlz厉害吧",Questioner:"wlzdd",date:"2019-6-18",view:158,answer:20},
-  ];
-  var classes=["科学","数码","体育","影视","时尚","餐饮","娱乐"];
-
+  var message=""
+  var questionList = [
+  ]
+  var classList=[]
   export default {
     name: 'QuestionShow',
     data()
     {
       return{
         message: '',
-        questions:data,
-        classes:classes
+        classList:classList,
+        questionList:questionList,
       }
     },
-    created(){
-      /*this.$axios.get(global.host+'/test/getQuestionByType',
-                     { headers:{
-                         'Content-Type': 'application/x-www-form-urlencoded'
-                       },
-                      params:{
-                       questionType:encodeURI("科学"),
-                        index:"0"
-                     }
-                     })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });*/
+   created(){
       this.$axios(
         {
           method:'get',
@@ -142,16 +87,16 @@
             index:"0"
           }
         }).then(res =>{
-        console.info(res)
+        console.log(res)
       }).catch(e =>{
-        console.info(e)
+        console.log(e)
       })
     },
     methods: {
+      toQuestionDetail:function (e) {
+        this.$router.push({path:'/QuestionDetail'})
+      },
 
-      test:function(event){
-        console.log(that.router)
-      }
     }
   }
 </script>
@@ -317,6 +262,17 @@
   }
   .toQuestion:hover{
     text-decoration:underline;
+  }
+  .ui-link{
+    margin: 0 auto;
+    width:80%;
+    display:block;
+    font-size:20px;
+    font-family:Roboto;
+    color: #888;
+    text-decoration: none;
+    border-bottom: 2px solid rgba(187,187,187,1);
+    color:rgba(0,0,0,0.87);
   }
 
 

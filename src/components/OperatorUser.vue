@@ -25,7 +25,7 @@
     <!--导航栏end-->
 
     <div id="classList" class="listContainer" >
-      <li v-for="item,index in leftList" class="ui-link">
+      <li v-for="item,index in leftList" class="ui-link" @click="chose" :data-item="index">
         {{item}}
       </li>
     </div>
@@ -47,26 +47,44 @@
             {{item.mail}}
           </td>
           <td>
-            <select v-if="item.allowAdmin"   size="2" @change='getAdminValue' :data-itemId="index" v-model="item.allowAdmin2">
-              <option >是</option>
-              <option >否</option>
+            <el-select v-if="item.allowAdmin"  @change='getAdminValue' :data-itemId="index" v-model="item.allowAdmin2"
+                       placeholder="是">
+              <el-option
+                v-for="item2 in options"
+                :key="item2.value"
+                :label="item2.label"
+                :value="item2.value">
+              </el-option>
 
-            </select>
-            <select v-else   size="2" @change='getAdminValue' :data-itemId="index" v-model="item.allowAdmin2">
-              <option >否</option>
-              <option >是</option>
-
-            </select>
+            </el-select>
+            <el-select v-else    @change='getAdminValue' :data-itemId="index" v-model="item.allowAdmin2"
+                       placeholder="否">
+              <el-option
+                v-for="item2 in options"
+                :key="item2.value"
+                :label="item2.label"
+                :value="item2.value">
+              </el-option>
+            </el-select>
           </td>
           <td>
-            <select v-if="item.allowCommit" @change='getCommitValue' :data-itemId="index"  size="2" v-model="item.allowCommit2">
-              <option >是</option>
-              <option>否</option>
-            </select>
-            <select v-else  @change='getCommitValue' :data-itemId="index" size="2" v-model="item.allowCommit2">
-              <option >否</option>
-              <option>是</option>
-            </select>
+            <el-select v-if="item.allowCommit" @change='getCommitValue'   size="2" v-model="item.allowCommit2">
+              <el-option
+                v-for="item2 in options"
+                :key="item2.value"
+                :label="item2.label"
+                :value="item2.value">
+              </el-option>
+
+            </el-select>
+            <el-select v-else  @change='getCommitValue' :data-itemId="index" v-model="item.allowCommit2">
+              <el-option
+                v-for="item2 in options"
+                :key="item2.value"
+                :label="item2.label"
+                :value="item2.value">
+              </el-option>
+            </el-select>
           </td>
           <td>
             <span :data-itemId="index" class="click" @click="deleteUser" style="color:red">删除</span>
@@ -90,8 +108,7 @@
   var data = [
   ];
   var leftList=["用户管理","类别管理","标签管理"];
-  var userList=[
-                ]
+  var userList=[]
 
   export default {
     name: 'Operator',
@@ -102,8 +119,15 @@
         questions:data,
         leftList:leftList,
         userList:userList,
-        isAllowAdmin
-      }
+        isAllowAdmin,
+        options: [{
+          value: '是',
+          label: '是'
+    }, {
+      value: '否',
+      label: '否'
+    }]
+    }
     },
     created()
     {
@@ -118,6 +142,7 @@
           }
         })
         .then(function (response) {
+
           for (var i = 0; i < response.data.length; i++) {
             var l={
               userName:response.data[i].name,
@@ -125,8 +150,8 @@
               mail:response.data[i].mail,
               allowAdmin:!response.data[i].cannotLogin,
               allowCommit:!response.data[i].cannotSpeak,
-              allowAdmin2:!response.data[i].cannotLogin,
-              allowCommit2:!response.data[i].cannotSpeak
+              allowAdmin2:!response.data[i].cannotLogin?"是":"否",
+              allowCommit2:!response.data[i].cannotSpeak?"是":"否",
             }
            userList.push(l)
           }
@@ -136,47 +161,107 @@
           console.log(error);
         });
     },
+    destroyed(){
+      userList=[]
+    },
     methods: {
-
+      chose:function(e){
+        var i=e.target.getAttribute('data-item')
+        console.log(e.target.getAttribute('data-item'))
+        if(i==1){
+          this.$router.push({path:'/OperatorClass'})
+        }
+        if(i==2){
+          this.$router.push({path:'/OperatorLabel'})
+        }
+     },
       test:function(event){
         console.log(that.router)
       },
       getAdminValue:function(e){
-         var i=e.target.getAttribute('data-itemId')
-        console.log(e.target.getAttribute('data-itemId'))
-        console.log(2222)
-        console.log(userList[i].allowAdmin2)
-
+        // var i=e.target.getAttribute('data-itemId')
+        //console.log(e.target.getAttribute('data-itemId'))
+        //console.log(2222)
+        //console.log(userList[i].allowAdmin2)
+        console.log(e)
 
       },
       getCommitValue:function(e){
-        console.log(e.target.getAttribute('data-itemId'))
-        console.log(e.target.dataset)
+        console.log(e)
+
       },
       deleteUser:function(e){
         var i=parseInt(e.target.getAttribute('data-itemId'))
        console.log(typeof (parseInt(i))+"-----"+i)
-        this.$axios.get(global.host + '/test/admin',
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              action: "delete",
-              entity: "User",
-              id:userList[i].userId
-            }
-          })
-          .then(function (response) {
-            console.log(response)
-             location.reload()
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        this.$confirm('此操作将删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.get(global.host + '/test/admin',
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                action: "delete",
+                entity: "User",
+                id:userList[i].userId
+              }
+            })
+            .then(function (response) {
+              console.log(response)
+              location.reload()
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        })
+         .catch(() => {
+            });
+
       },
       confirm:function(e){
+        var i=e.target.getAttribute('data-itemId')
         console.log(e.target.getAttribute('data-itemId'))
+        console.log(userList[i])
+        userList[i].allowAdmin=userList[i].allowAdmin2=="是"?1:0;
+        userList[i].allowCommit=userList[i].allowCommit2=="是"?1:0;
+        console.log(userList[i].userId)
+        console.log(userList[i].allowAdmin?0:1)
+        console.log(userList[i].allowCommit?0:1)
+
+        this.$confirm('此操作将提交更改, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.get(global.host + '/test/admin',
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                action: "update",
+                entity: "User",
+                id:userList[i].userId,
+                cannotLogin:userList[i].allowAdmin?0:1,
+                cannotSpeak:userList[i].allowCommit?0:1
+              }
+            })
+            .then(function (response) {
+              console.log(response)
+              location.reload()
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+        }).catch(() => {
+          this.$message({
+
+          });
+        });
       }
     }
   }
@@ -205,7 +290,6 @@
     display:inline-block;
     line-height: 60px;
     font-weight:500;
-
     position:fixed;
   }
 
@@ -259,7 +343,6 @@
     text-decoration: none;
     border-bottom: 2px solid rgba(187,187,187,1);
     color:rgba(0,0,0,0.87);
-
   }
   #classList li:hover
   {

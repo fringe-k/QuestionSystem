@@ -249,6 +249,7 @@
     margin-left: 30%;
     width: 60%;
     height: auto;
+
   }
 
   .content{
