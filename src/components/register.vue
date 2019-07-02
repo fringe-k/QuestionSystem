@@ -2,26 +2,30 @@
   <div :style="bg" style="height: 100%">
     <div style="width: 100%"></div>
     <div class="reg_form" >
-      <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 20px">
+      <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password" style="font-size: 20px">
+
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-if="this.seen.pswType" v-model="password" style="font-size: 20px;padding-top: 30px">
+      <input type="password" class="qxs-ic_password qxs-icon" style="font-size: 20px;padding-top: 30px" placeholder="密码" v-model="password" v-else>
+      <img :src="see?seeImg:unseeImg" @click="changeType" style="height: 20px;width: 20px;cursor: pointer">
       <span v-if="error.password" class="err-msg">{{error.password}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码" v-model="confirmPassword" style="font-size: 20px">
+
+      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="确定密码"  v-if="this.seen.confirmpswType" v-model="confirmPassword" style="font-size: 20px;padding-top: 30px">
+      <input  type="password" class="qxs-ic_password qxs-icon" style="font-size: 20px;padding-top: 30px" placeholder="确定密码" v-model="confirmPassword" v-else>
+      <img :src="seeTwo?seeImg:unseeImg" @click="confirmType" style="height: 20px;width: 20px;cursor: pointer">
       <span v-if="error.confirmPassword" class="err-msg">{{error.confirmPassword}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="邮箱" v-model="email" style="font-size: 20px">
+
+      <input type="text"  class="qxs-ic_email qxs-icon"  placeholder="邮箱" v-model="email" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.email" class="err-msg">{{error.email}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="年龄" v-model="age" style="font-size: 20px">
+      <input type="text"  class="qxs-ic_age qxs-icon"  placeholder="年龄" v-model="age" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.age" class="err-msg">{{error.age}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="电话" v-model="phone" style="font-size: 20px">
+      <input type="text"  class="qxs-ic_phone qxs-icon"  placeholder="电话" v-model="phone" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.phone" class="err-msg">{{error.phone}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
       <br>
-      <div style="text-align: center">
-      <span v-if="error.null" class="err-msg" style="font-size: 22px">{{error.null}}</span>
-      </div>
       <button class="login_btn" @click="login" style="font-size: 20px" >注册</button>
       <div style="margin-top: 30px;padding-bottom: 5%">
-        <span style="color: #000099;margin-left: 18%;font-size: 20px" @click="to_login">登录</span><span style="margin-left: 45%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>
+        <span style="color: #000099;margin-left: 18%;font-size: 20px;cursor: pointer" @click="to_login">登录</span><span style="margin-left: 45%;color:  #000099;font-size: 20px;cursor: pointer;" @click="to_home">主界面</span>
       </div>
     </div>
 
@@ -34,7 +38,7 @@
      data() {
        return {
          bg: {
-           backgroundImage: "url(" + require("../assets/bg2.jpg") + ")",
+           backgroundImage: "url(" + require("../assets/login_bg.png") + ")",
            backgroundRepeat: "no-repeat",
            backgroundSize: "100% 100%",
          },
@@ -53,13 +57,30 @@
            age:'',
            phone:'',
            null: ''
-         }
+         },
+         seen:{
+           pswType:false,
+           confirmpswType:false,
+         },
+         see:'',
+         seeTwo:'',
+         seeImg:require('../assets/see.png'),
+         unseeImg:require('../assets/unsee.png'),
        }
      },
 
       methods: {
-       to_reset(){
+        changeType(){
+          this.see=!this.see
+          this.seen.pswType=!this.seen.pswType
+        },
+        confirmType(){
+          this.seeTwo=!this.seeTwo
+          this.seen.confirmpswType=!this.seen.confirmpswType
+        },
 
+       to_home(){
+         this.$router.push({path:'/home'})
        },
         to_login()
         {
@@ -132,31 +153,81 @@
             console.info(res)
             if(res.data.trim()== "successfully")
             {
-              this.error.null='注册成功'
-              this.$router.push({path:'/home'})
+              this.$confirm('注册成功！按确定前往登录界面？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'success'
+              }).then(() => {
+                this.$message({
+                  type: 'success',
+                  message: '到达登录界面',
+              });
+                  this.$router.push({path:'/Login'})
+              }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: '已取消',
+                });
+              });
+
             }
             else if(res.data.trim()== "unsuccessfully")
             {
-              this.error.null='邮箱已经注册'
+              this.$alert('邮箱已经注册', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
+              this.error.null=''
             }
             else if(res.data.trim()== "username")
             {
-              this.error.null='用户名不合法'
+              this.$alert('用户名不合法', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                }
+              });
+              this.error.null=''
             }
             else if(res.data.trim()== "password")
             {
-              this.error.null='密码至少6位'
+              this.$alert('密码至少6位', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
+              this.error.null=''
             }
             else if(res.data.trim()== "passwordTwo")
             {
-              this.error.null='两次密码不一致'
+              this.$alert('两次密码不一致', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
+              this.error.null=''
             }
             else if(res.data.trim()== "email")
             {
-              this.error.null='邮箱不合格'
+              this.$alert('邮箱不合格', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
+              this.error.null=''
             }
             else {
-              this.error.null='对不起，服务器繁忙'
+              this.$alert('对不起，服务器繁忙', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
+              this.error.null=''
             }
           }).catch(e =>{
             console.info(e)
@@ -204,7 +275,7 @@
   .reg_form {
     position: absolute;
     top:20%;
-    width: 500px;
+    width: 520px;
     margin-left: 37%;
     background-color: white;
     padding-top: 25px;
@@ -212,15 +283,31 @@
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
-    background-size: 15px 15px;
+    background-size: 30px 30px;
     background-position: 3%;
   }
 
   .qxs-ic_password {
     background: url("../assets/password.png") no-repeat;
-    background-size: 15px 15px;
+    background-size: 30px 30px;
     background-position: 3%;
-    margin-bottom: 20px;
+  }
+  .qxs-ic_phone {
+    background: url("../assets/phone.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
+  }
+
+  .qxs-ic_age {
+    background: url("../assets/age.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
+  }
+
+  .qxs-ic_email{
+    background: url("../assets/email.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
   }
 
   .login_btn {

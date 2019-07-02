@@ -88,15 +88,13 @@
       <div class="reg_form" >
       <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="邮箱" v-model="email" style="font-size: 20px;padding-top: 20px">
+      <input type="text"  class="qxs-ic_email qxs-icon"  placeholder="邮箱" v-model="email" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.email" class="err-msg">{{error.email}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="年龄" v-model="age" style="font-size: 20px;padding-top: 20px">
+      <input type="text"  class="qxs-ic_age qxs-icon"  placeholder="年龄" v-model="age" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.age" class="err-msg">{{error.age}}</span>
-      <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="电话" v-model="phone" style="font-size: 20px;padding-top: 20px">
+      <input type="text"  class="qxs-ic_phone qxs-icon"  placeholder="电话" v-model="phone" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.phone" class="err-msg">{{error.phone}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
-        <br>
-        <span v-if="error.null" class="err-msg" style="font-size: 22px;margin-left: 43%">{{error.null}}</span>
         <br>
       <button class="login_btn" @click="confirm" style="font-size: 20px" >确定修改</button>
       <!--动态 end-->
@@ -187,8 +185,22 @@
       alterpsw(){
         this.$router.push({path:'/psw'})
       },
+      success(){
+        this.$alert('修改成功', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+
+          }
+        });
+
+      },
 
       confirm(){
+        this.error.null = ""
+        this.error.userName=""
+        this.error.email=""
+        this.error.age=''
+        this.error.phone=''
         this.$axios(
           {
             method:'post',
@@ -204,17 +216,22 @@
             console.log(res)
           if((res.data.username.trim()=="true")&&(res.data.email.trim()=="false"))
           {
-            this.error.userName="用户民不合格"
-            this.error.null=""
+            this.error.userName="用户名不合格"
           }
           else if((res.data.username.trim()=="false")&&(res.data.email.trim()=="true"))
           {
             this.error.email="邮箱不合法"
-            this.error.null=""
+          }
+          else if(res.data.age==1519767717)
+          {
+            this.error.age="年龄只能包含数字"
+          }
+          else if(res.data.phone.trim()=="true")
+          {
+            this.error.phone="电话不能修改为空值"
           }
           else
           {
-            this.error.null = "修改成功"
             this.error.userName=""
             this.error.email=""
             this.userName = res.data.username
@@ -222,7 +239,7 @@
             this.email = res.data.mail
             this.age = res.data.age
             this.phone = res.data.phone
-
+            this.success()
           }
         }).catch(e =>{
           console.info(e)
@@ -307,7 +324,24 @@
     background: url("../assets/password.png") no-repeat;
     background-size: 30px 30px;
     background-position: 3%;
-    margin-bottom: 20px;
+  }
+
+  .qxs-ic_phone {
+    background: url("../assets/phone.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
+  }
+
+  .qxs-ic_age {
+    background: url("../assets/age.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
+  }
+
+  .qxs-ic_email{
+    background: url("../assets/email.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
   }
 
   .login_btn {
@@ -333,7 +367,7 @@
 
   .reg_form {
     position: fixed;
-    top:29%;
+    top:32%;
     width: 1200px;
     margin-left: 30%;
     padding-top: 25px;

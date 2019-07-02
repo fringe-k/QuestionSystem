@@ -2,16 +2,18 @@
   <div  :style="bg" style="height: 100%">
 
       <div class="login_form">
-        <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px;padding-top: 20px">
+        <input type="text"  class="qxs-ic_email qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px;padding-top: 30px">
         <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
-        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-model="password" style="font-size: 20px">
+
+        <input type="text"  class="qxs-ic_password qxs-icon"  placeholder="密码" v-if="seen.pswType" v-model="password" style="font-size: 20px;padding-top: 30px">
+        <input  type="password" class="qxs-ic_password qxs-icon" style="font-size: 20px;padding-top: 30px" placeholder="密码" v-model="password" v-else>
+        <img :src="see?seeImg:unseeImg" @click="changeType" style="height: 20px;width: 20px;cursor: pointer">
         <span v-if="error.password" class="err-msg">{{error.password}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
-        <span v-if="error.null" class="err-msg" style="margin-left: 34%">{{error.null}}</span>
         <button class="login_btn" @click="login" style="font-size: 20px">登录</button>
         <div style="margin-top: 30px;padding-bottom: 10%">
-          <span style="color: #000099;margin-left: 20%;font-size: 20px" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB;font-size: 20px" @click="to_reset">忘记密码？</span>
+          <span style="color: #000099;margin-left: 20%;font-size: 20px;cursor: pointer" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB;font-size: 20px;cursor: pointer" @click="to_reset">忘记密码？</span>
         </div>
 
     </div>
@@ -25,7 +27,7 @@
     data() {
       return {
         bg: {
-          backgroundImage: "url(" + require("../assets/bg1.jpg") + ")",
+          backgroundImage: "url(" + require("../assets/login_bg.png") + ")",
           backgroundRepeat: "no-repeat",
           backgroundSize: "100% 100%",
         },
@@ -35,7 +37,13 @@
           userName:'',
           password:'',
           null:''
-        }
+        },
+        seen:{
+          pswType:false,
+        },
+        see:'',
+        seeImg:require('../assets/see.png'),
+        unseeImg:require('../assets/unsee.png'),
       }
     },
     /*created () {
@@ -46,8 +54,18 @@
     },*/
 
     methods: {
+
+      changeType(){
+        this.see=!this.see
+        this.seen.pswType=!this.seen.pswType
+      },
       to_reset(){
-        this.error.null='好好想一下，加油！'
+        this.$alert('好好想一下，加油！', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+
+          }
+        });
       },
 
       to_reg(){
@@ -84,19 +102,32 @@
             if(res.data.trim()== "success")
             {
               global.email=this.userName
-              this.$router.push({path:'/psw'})
+              this.$alert('登录成功！请按确定前往主界面', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                  this.$router.push({path:'/home'})
+                }
+              });
 
             }
             else if(res.data.trim()== "forbidden")
             {
-              console.info(res)
-              this.error.null='你已经被禁止登录！'
+              this.$alert('你已经被禁止登录！', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
               return false
             }
             else
             {
-              console.info(res)
-              this.error.null='邮箱或密码错误'
+              this.$alert('邮箱或密码错误！', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
               return false
             }
           }).catch(e =>{
@@ -114,7 +145,7 @@
   .login_form {
     position: absolute;
     top:30%;
-    width: 500px;
+    width: 520px;
     margin-left: 37%;
     background-color: white;
     padding-top: 30px;
@@ -122,15 +153,32 @@
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
-    background-size: 15px 15px;
+    background-size: 30px 30px;
     background-position: 3%;
   }
 
   .qxs-ic_password {
     background: url("../assets/password.png") no-repeat;
-    background-size: 15px 15px;
+    background-size: 30px 30px;
     background-position: 3%;
-    margin-bottom: 20px;
+  }
+
+  .qxs-ic_phone {
+    background: url("../assets/phone.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
+  }
+
+  .qxs-ic_age {
+    background: url("../assets/age.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
+  }
+
+  .qxs-ic_email{
+    background: url("../assets/email.png") no-repeat;
+    background-size: 30px 30px;
+    background-position: 3%;
   }
 
   .bg{
