@@ -214,7 +214,7 @@
         this.$router.push({path:'/changeInfo'})
       },
       to_PersonalHome(){
-        this.$router.push({path:'/'})
+        this.$router.push({path:'/PersonalHome'})
       },
       alterpsw(){
         this.$router.push({path:'/psw'})

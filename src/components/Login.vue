@@ -99,16 +99,26 @@
                   password:this.password
               }
             }).then(res =>{
-            if(res.data.trim()== "success")
+              console.log(res)
+            if(res.data.trim()== "user")
             {
               global.email=this.userName
               this.$alert('登录成功！请按确定前往主界面', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
-                  this.$router.push({path:'/home'})
+                  this.$router.push({path:'/QuestionShow'})
                 }
               });
-
+            }
+            else if(res.data.trim()== "manager")
+            {
+              global.email=this.userName
+              this.$alert('管理员登录成功！请按确定前往管理界面', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                  this.$router.push({path:'/OperatorUser'})
+                }
+              });
             }
             else if(res.data.trim()== "forbidden")
             {
@@ -125,7 +135,6 @@
               this.$alert('邮箱或密码错误！', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
-
                 }
               });
               return false
