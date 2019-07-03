@@ -273,7 +273,7 @@
 
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
-  @import "../components/css/iconfont.css";
+  @import "../assets/icon/iconfont.css";
   @import "../components/css/searchBar.css";
   @import "../components/css/top.css";
 

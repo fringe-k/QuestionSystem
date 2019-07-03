@@ -22,6 +22,6 @@
   html,body,#app{
     width:100%;
     height: 100%;
-    background-color: #fafafa;
+    background-color: rgba(246,246,246,1);
   }
 </style>

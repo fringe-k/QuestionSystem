@@ -41,7 +41,7 @@
       <!--标题栏end-->
       <li v-for="question,index in questionList" class="question">
         <div class="titleBox">
-          <span @click="toQuestionDetail" class="toQuestion" >{{question.title}}</span>
+          <span @click="toQuestionDetail" :data-item="index" class="toQuestion" >{{question.title}}</span>
         </div>
         <div class="authorBox">
           <span class="alink"  >{{question.Questioner}}</span>
@@ -76,7 +76,7 @@
       }
     },
     created() {
-      console.log("show2created在执行")
+      console.log("show1created在执行")
       console.log("-----------" + this.$route.query.lastClass + "------------")
       this.$axios(
         {
@@ -104,7 +104,7 @@
           }
         }
         console.log(console.log("---" + chosenOne + "---"))
-        console.log("questionList初始化")
+        console.log("questionList1初始化")
         if (chosenOne == 0) {
           this.$axios(
             {
@@ -126,7 +126,9 @@
                 Questioner: res.data[i].name,
                 date: util.formatDate(res.data[i].time),
                 view: res.data[i].frequency,
-                answer: res.data[i].numOfAnswer
+                answer: res.data[i].numOfAnswer,
+                questionId:res.data[i].id,
+                userId:res.data[i].userId
               }
               questionList.push(l)
             }
@@ -152,7 +154,9 @@
                 Questioner: res.data[i].name,
                 date: util.formatDate(res.data[i].time),
                 view: res.data[i].frequency,
-                answer: res.data[i].numOfAnswer
+                answer: res.data[i].numOfAnswer,
+                questionId:res.data[i].id,
+                userId:res.data[i].userId
               }
               questionList.push(l)
             }
@@ -160,21 +164,26 @@
         }
       })
     },
-   /* mounted(){
-      console.log("show2mounted在执行")
-      console.log("555"+chosenOne)
+    /* mounted(){
+       console.log("show2mounted在执行")
+       console.log("555"+chosenOne)
 
-    },*/
+     },*/
 
     methods: {
-      toQuestionDetail:function (e) {
-        this.$router.push({path:'/QuestionDetail'})
+      toQuestionDetail:function (e){
+        var i=e.target.getAttribute('data-item')
+        console.log(e.target.getAttribute('data-item'))
+        this.$router.push({path:'/QuestionDetail',
+          query:{questionId:questionList[i].questionId,
+            userId:questionList[i].userId}
+        })
       },
       choseClass:function(e){
         var i=e.target.getAttribute('data-item')
         console.log(classList[i].name)
         questionList=[]
-        this.$router.push({path:'/',
+        this.$router.push({path:'/QuestionShow',
           query:{  lastClass:classList[i].name   }
         })
         classList=[{name:"热帖"}],
@@ -189,7 +198,7 @@
 
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
-  @import "../components/css/iconfont.css";
+  @import "../assets/icon/iconfont.css";
   @import "../components/css/searchBar.css";
   @import "../components/css/top.css";
 

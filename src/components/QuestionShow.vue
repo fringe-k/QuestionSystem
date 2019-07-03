@@ -4,7 +4,7 @@
       <ul>
         <li class="link01">Q/A SYSTEM</li>
         <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-        <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
+        <li class="link02"><a  @click="toWrite"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
         <li class="link02">
           <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
         </li>
@@ -17,7 +17,7 @@
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button id="triggerBtn"><li><a href="#"><i class="iconfont">&#xe601;</i></a></li></button>
+          <button id="triggerBtn"><li><a @click="toPersonalHome"><i class="iconfont">&#xe601;</i></a></li></button>
 
         </div>
       </ul>
@@ -41,7 +41,7 @@
       <!--标题栏end-->
       <li v-for="question,index in questionList" class="question">
         <div class="titleBox">
-          <span @click="toQuestionDetail" class="toQuestion" >{{question.title}}</span>
+          <span @click="toQuestionDetail" :data-item="index" class="toQuestion" >{{question.title}}</span>
         </div>
         <div class="authorBox">
           <span class="alink"  >{{question.Questioner}}</span>
@@ -126,7 +126,9 @@
                 Questioner: res.data[i].name,
                 date: util.formatDate(res.data[i].time),
                 view: res.data[i].frequency,
-                answer: res.data[i].numOfAnswer
+                answer: res.data[i].numOfAnswer,
+                questionId:res.data[i].id,
+                userId:res.data[i].userId
               }
               questionList.push(l)
             }
@@ -152,7 +154,9 @@
                 Questioner: res.data[i].name,
                 date: util.formatDate(res.data[i].time),
                 view: res.data[i].frequency,
-                answer: res.data[i].numOfAnswer
+                answer: res.data[i].numOfAnswer,
+                questionId:res.data[i].id,
+                userId:res.data[i].userId
               }
               questionList.push(l)
             }
@@ -167,8 +171,13 @@
      },*/
 
     methods: {
-      toQuestionDetail:function (e) {
-        this.$router.push({path:'/QuestionDetail'})
+      toQuestionDetail:function (e){
+        var i=e.target.getAttribute('data-item')
+        console.log(e.target.getAttribute('data-item'))
+        this.$router.push({path:'/QuestionDetail',
+                            query:{questionId:questionList[i].questionId,
+                                   userId:questionList[i].userId}
+        })
       },
       choseClass:function(e){
         var i=e.target.getAttribute('data-item')
@@ -179,7 +188,15 @@
         })
         classList=[{name:"热帖"}],
           questionList=[]
+      },
+      toWrite:function(e){
+       this.$router.push({path:"./QuestionSubmit.html"})
+      },
+      toPersonalHome()
+      {
+        this.$router.push({path:"/changeInfo"})
       }
+
 
     }
   }
@@ -189,7 +206,7 @@
 
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
-  @import "../components/css/iconfont.css";
+  @import "../assets/icon/iconfont.css";
   @import "../components/css/searchBar.css";
   @import "../components/css/top.css";
 
