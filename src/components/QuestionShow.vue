@@ -4,7 +4,7 @@
       <ul>
         <li class="link01">Q/A SYSTEM</li>
         <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-        <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
+        <li class="link02"><a  @click="toWrite"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
         <li class="link02">
           <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
         </li>
@@ -17,7 +17,7 @@
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button id="triggerBtn"><li><a href="#"><i class="iconfont">&#xe601;</i></a></li></button>
+          <button id="triggerBtn"><li><a @click="toPersonalHome"><i class="iconfont">&#xe601;</i></a></li></button>
 
         </div>
       </ul>
@@ -188,7 +188,15 @@
         })
         classList=[{name:"热帖"}],
           questionList=[]
+      },
+      toWrite:function(e){
+       this.$router.push({path:"./QuestionSubmit.html"})
+      },
+      toPersonalHome()
+      {
+        this.$router.push({path:"/changeInfo"})
       }
+
 
     }
   }
@@ -198,7 +206,7 @@
 
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
-  @import "../components/css/iconfont.css";
+  @import "../assets/icon/iconfont.css";
   @import "../components/css/searchBar.css";
   @import "../components/css/top.css";
 
