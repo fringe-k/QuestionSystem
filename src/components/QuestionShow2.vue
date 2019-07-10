@@ -183,7 +183,7 @@
         var i=e.target.getAttribute('data-item')
         console.log(classList[i].name)
         questionList=[]
-        this.$router.push({path:'/QuestionShow',
+        this.$router.push({path:'/',
           query:{  lastClass:classList[i].name   }
         })
         classList=[{name:"热帖"}],
@@ -253,7 +253,7 @@
   .questionBox{
     width:80%;
     height:auto;
-    margin-top:80px;
+    margin-top:100px;
     margin-left:250px;
     background-color:white;
     display:inline-block;

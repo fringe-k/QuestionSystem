@@ -25,11 +25,28 @@
     <!--导航栏end-->
 
     <div id="classList" class="listContainer" >
-      <li v-for="item,index in classList" class="ui-link" @click="choseClass" :data-item="index">
-        <!--<i class="iconfont " style=" color:#bd5151;font-size:30px;">&#{{item.icon}};</i>-->
-        &ensp;{{item.name}}
-        <span class="arrow-right"></span>
-      </li>
+      <div style="font-size:30px;text-align: center;width:100%">问题索引</div>
+      <div class="indexSearch">
+       <input
+        placeholder="请输入关键字(可以不输入直接筛选)"
+        v-model="inputSearch"
+        style="width:60%;margin-left:50px;border:2px solid #c5464a;position:absolute" @keyup.enter="indexSearch">
+        <button @click="indexSearch">搜索</button>
+      </div>
+      <div class="classBlock">
+        <div class="block-name">类别</div>
+        <ul class="block-item-wrapper">
+          <li v-for="item,index in classList" :class="{'block-item' :1,'on':clickClass[index]==1}" :data-itemId="index" @click="choseClass">{{item.name}}</li>
+        </ul>
+      </div>
+      <div id="labelBlock" class="labelBlock">
+        <div class="block-name">标签</div>
+        <ul class="block-item-wrapper">
+          <li v-for="item,index in labelList" :class="{'block-item' :1,'on':clickLabel[index]==1}" :data-itemId="index" @click="choseLabel" >#{{item}}</li>
+        </ul>
+      </div>
+
+
     </div>
     <!--分类栏 end-->
     <div id ="mainContent" class="questionBox">
@@ -62,8 +79,12 @@
   var that=this
   var message=""
   var questionList = []
-  var classList=[{name:"热帖"}]
+  var classList=[{name:"全部"}]
+  var clickClass=[1]
+  var clickLabel=[1]
+  var labelList=["全部"]
   var chosenOne=0;
+  var inputSearch=""
 
   export default {
     name: 'QuestionShow',
@@ -73,11 +94,38 @@
         message: '',
         classList:classList,
         questionList:questionList,
+        inputSearch:inputSearch,
+        labelList:labelList,
+        clickClass:clickClass,
+        clickLabel:clickLabel
       }
+    },
+    watch:{
+       inputSearch(newName, oldName){
+         console.log("inputSearch: "+newName);
+         inputSearch=newName
+       }
     },
     created() {
       console.log("show1created在执行")
       console.log("-----------" + this.$route.query.lastClass + "------------")
+      this.$axios.get(global.host + '/test/admin',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            action: "select",
+            entity: "Label",
+          }
+        })
+        .then(function (response) {
+          for (var i = 0; i < response.data.length; i++) {
+            labelList.push(response.data[i].name)
+            clickLabel.push(0)
+          }
+          console.log(labelList)
+        });
       this.$axios(
         {
           method: 'get',
@@ -87,14 +135,16 @@
             entity: "QuestionType"
           }
         }).then(res => {
+          console.log(res)
         for (var i = 0; i < res.data.length; i++) {
           var l = {
             icon: res.data[i].icon,
             name: res.data[i].name
           }
           classList.push(l)
+          clickClass.push(0)
         }
-        if (this.$route.query.lastClass) {
+        /*if (this.$route.query.lastClass) {
           for (var i = 0; i < classList.length; i++) {
             console.log(this.$route.query.lastClass.trim() + "   " + classList[i].name)
             if (this.$route.query.lastClass.trim() == classList[i].name.trim()) {
@@ -161,7 +211,36 @@
               questionList.push(l)
             }
           })
-        }
+        }*/
+        this.$axios(
+          {
+            method: 'get',
+            url: global.host + '/test/main',
+            params: {
+              action: "select",
+              entity: "Question",
+              QuestionType: encodeURI("全部"),
+              labels:encodeURI("全部"),
+              index: 0,
+              num: 20,
+              orderBy: "time"
+            }
+          }).then(res => {
+          console.log(res)
+          for (var i = 0; i < res.data.length; i++) {
+            var l = {
+              title: res.data[i].title,
+              Questioner: res.data[i].name,
+              date: util.formatDate(res.data[i].time),
+              view: res.data[i].frequency,
+              answer: res.data[i].numOfAnswer,
+              questionId:res.data[i].id,
+              userId:res.data[i].userId
+            }
+            questionList.push(l)
+          }
+
+        })
       })
     },
     /* mounted(){
@@ -169,7 +248,14 @@
        console.log("555"+chosenOne)
 
      },*/
+  destroyed(){
+    var questionList = []
+    var classList=[{name:"全部"}]
+    var clickClass=[1]
+    var clickLabel=[1]
+    var labelList=["全部"]
 
+  },
     methods: {
       toQuestionDetail:function (e){
         var i=e.target.getAttribute('data-item')
@@ -180,21 +266,63 @@
         })
       },
       choseClass:function(e){
-        var i=e.target.getAttribute('data-item')
-        console.log(classList[i].name)
-        questionList=[]
-        this.$router.push({path:'/QuestionShow2',
-          query:{  lastClass:classList[i].name   }
-        })
-        classList=[{name:"热帖"}],
-          questionList=[]
+        var u=e.target.getAttribute('data-itemId')
+        if(u==0&&clickClass[u]==1){}
+        else if(u==0&&clickClass[u]==0){
+          for(var i=0;i<clickClass.length;i++){
+            clickClass[i]=0
+          }
+          clickClass.splice(u,1,1)
+        }
+        else if(clickClass[u]==1){
+          clickClass.splice(u,1,0)
+        }
+        else{
+          clickClass.splice(u,1,1)
+          clickClass.splice(0,1,0)
+        }
+
+      },
+      choseLabel:function(e){
+        var u=e.target.getAttribute('data-itemId')
+        if(u==0&&clickLabel[u]==1){}
+        else if(u==0&&clickLabel[u]==0){
+          for(var i=0;i<clickLabel.length;i++){
+            clickLabel[i]=0
+          }
+          clickLabel.splice(u,1,1)
+        }
+        else if(clickLabel[u]==1){
+          clickLabel.splice(u,1,0)
+        }
+        else{
+          clickLabel.splice(u,1,1)
+          clickLabel.splice(0,1,0)
+        }
+
       },
       toWrite:function(e){
        this.$router.push({path:"./QuestionSubmit.html"})
       },
-      toPersonalHome()
-      {
+      toPersonalHome(){
         this.$router.push({path:"/changeInfo"})
+      },
+      indexSearch:function(e){
+        console.log(inputSearch)
+        var classLimit=""
+        var labelLimit=""
+        for(var i=0;i<clickClass.length;i++){
+          if(clickClass[i]==1){
+            classLimit+=classList[i].name
+          }
+        }
+        for(var i=0;i<clickLabel.length;i++){
+          if(clickLabel[i]==1){
+            labelLimit+=labelList[i]
+          }
+        }
+        console.log(classLimit)
+        console.log(labelLimit)
       }
 
 
@@ -217,12 +345,11 @@
   }
   .listContainer{
     margin-top:100px;
-    margin-left:20px;
-    width:200px;
+    margin-left:50px;
+    width:400px;
     height:auto;
     padding-bottom: 100px;
     background-color:white;
-    text-align: center;
     display:inline-block;
     line-height: 60px;
     font-weight:500;
@@ -259,10 +386,10 @@
   }
 
   .questionBox{
-    width:80%;
+    width:60%;
     height:auto;
-    margin-top:80px;
-    margin-left:250px;
+    margin-top:100px;
+    margin-left:500px;
     background-color:white;
     display:inline-block;
     line-height: 50px;
@@ -375,6 +502,77 @@
     text-decoration: none;
     border-bottom: 2px solid rgba(187,187,187,1);
     color:rgba(0,0,0,0.87);
+  }
+  #classList button{
+    background-color: #c5464a;
+    color:white;
+    display:inline-block;
+    margin-top:0px;
+    margin-left:300px;
+    height:38px;
+  }
+  .classBlock{
+    width:100%;
+    margin-top:80px;
+    padding-left:30px;
+    padding-right:20px;
+    position: relative;
+    margin-bottom: 16px;
+    overflow: hidden;
+    display:block;
+  }
+  .block-name{
+    display: inline-block;
+    float: left;
+    width: 52px;
+    height: 30px;
+    line-height: 1;
+    font-size: 18px;
+    color: #99a2aa;
+    vertical-align:top ;
+  }
+.block-item-wrapper{
+  display: inline-block;
+  width: 310px;
+  overflow: hidden;
+  -webkit-transition: all .3s linear;
+  -o-transition: all .3s linear;
+  transition: all .3s linear;
+  min-height: 30px;
+  list-style: none;
+  padding-left:0px;
+  vertical-align:top ;
+  margin-top:0;
+}
+  .block-item{
+   display: inline-block;
+   vertical-align: top;
+   line-height: 1;
+   text-align: left;
+   width: auto;
+    margin-left:15px;
+   height: 30px;
+   font-size: 18px;
+   white-space: nowrap;
+   overflow: hidden;
+   -o-text-overflow: ellipsis;
+   text-overflow: ellipsis;
+   padding-right: 2px;
+   cursor: pointer;
+   outline: 0;
+ }
+  .labelBlock{
+    width:100%;
+    margin-top:10px;
+    padding-left:30px;
+    padding-right:20px;
+    position: relative;
+    margin-bottom: 16px;
+    overflow: hidden;
+    display:block;
+  }
+  .on{
+    color:#00a1d6
   }
 
 
