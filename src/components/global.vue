@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    const host="http://localhost:8082";
+    const host="http://query.liublack.cn/qs";
     const email='1234@qq.com'
     export default {
         host,

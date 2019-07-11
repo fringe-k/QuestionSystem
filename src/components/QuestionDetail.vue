@@ -36,14 +36,11 @@
          <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>
          <div class="bottomLine">
             <span style="color:rgba(145,139,139,1);font-size:20px;">{{QuestionDetail[0].date}}</span>
-            <span style="color:blue;font-size:20px;margin-left:70%;cursor:pointer" @click="toAnswer">我要回答</span>
+            <span style="color:blue;font-size:20px;margin-left:70%;cursor:pointer" @click="dialogVisible = true">我要回答</span>
          </div>
       </div>
       <!--问题展示end-->
-      <div v-if="isAnswer.key" style="margin-top:50px;">
-        <inputfield ref="input" class="inputfield"></inputfield>
-        <button @click="upload">提交</button>
-      </div>
+
       <div class="question-answer">
         <div class="answer-header">
           <span>这些人回答了</span>
@@ -93,6 +90,21 @@
 
     </div>
 
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="50%"
+      :before-close="handleClose" >
+      <span>请写下评论(右侧为效果预览)</span>
+      <div  style="margin-top:20px;">
+        <inputfield ref="input" class="inputfield"></inputfield>
+        <span slot="footer" class="dialog-footer">
+           <button @click="dialogVisible = false">取 消</button>
+           <button @click="upload">提交</button>
+        </span>
+      </div>
+    </el-dialog>
+
 
   </div>
 
@@ -127,6 +139,7 @@
   var answerList=[]
   var commentList=[]
   var isAnswer={key:false}
+  var dialogVisible=false
     export default {
       name: "QuestionDetail",
       components: {"inputfield": Input},
@@ -139,12 +152,13 @@
           commentList: commentList,
           isAnswer: isAnswer,
           textarea2:"",
+          dialogVisible:dialogVisible
         }
       },
       created() {
         console.log(this.$route.query)
         console.log(typeof (this.$route.query.questionId))
-        this.$axios.get(global.host + '/test/detail',
+        this.$axios.get(global.host + '/detail',
           {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -167,7 +181,7 @@
             QuestionDetail.push(l)
             console.log(QuestionDetail.Questioner)
           });
-        this.$axios.get(global.host + '/test/detail',
+        this.$axios.get(global.host + '/detail',
           {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -206,7 +220,7 @@
             commentList = []
           } else {
             answerList[i].commentShow = true
-            this.$axios.get(global.host + '/test/detail',
+            this.$axios.get(global.host + '/detail',
               {
                 headers: {
                   'Content-Type': 'application/x-www-form-urlencoded'
@@ -240,7 +254,9 @@
         },
         toAnswer: function (e) {
           isAnswer.key = true
-          console.log(isAnswer)
+          dialogVisible=true
+          console.log(isAnswer+dialogVisible)
+
         },
         upload: function (e) {
           console.log(this.$refs.input)
@@ -253,7 +269,7 @@
          }).then(() => {
            this.$axios({
                method:'post',
-               url:global.host + '/test/detail',
+               url:global.host + '/detail',
                params: {
                  action: "insert",
                  entity: "Answer",
@@ -298,7 +314,14 @@
            var i = e.target.getAttribute('data-item')
            answerList[i].inputShow=false
            answerList[i].commentContent=''
-         }
+         },
+        handleClose(done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+            })
+            .catch(_ => {});
+        }
       }
     }
 </script>
@@ -422,12 +445,13 @@
     padding-bottom:30px;
   }
   .inputfield{
-    width:500px;
+    width:800px;
     height:500px;
     z-index: 1000;
     postition:fixed;
     top:200px;
   }
+
 
 
 </style>

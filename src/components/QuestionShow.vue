@@ -28,7 +28,7 @@
       <div style="font-size:30px;text-align: center;width:100%">问题索引</div>
       <div class="indexSearch">
        <input
-        placeholder="请输入关键字(可以不输入直接筛选)"
+        placeholder="请输入关键字"
         v-model="inputSearch"
         style="width:60%;margin-left:50px;border:2px solid #c5464a;position:absolute" @keyup.enter="indexSearch">
         <button @click="indexSearch">搜索</button>
@@ -109,7 +109,7 @@
     created() {
       console.log("show1created在执行")
       console.log("-----------" + this.$route.query.lastClass + "------------")
-      this.$axios.get(global.host + '/test/admin',
+      this.$axios.get(global.host + '/admin',
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -129,7 +129,7 @@
       this.$axios(
         {
           method: 'get',
-          url: global.host + '/test/main',
+          url: global.host + '/main',
           params: {
             action: "select",
             entity: "QuestionType"
@@ -215,17 +215,19 @@
         this.$axios(
           {
             method: 'get',
-            url: global.host + '/test/main',
+            url: global.host + '/index',
             params: {
               action: "select",
               entity: "Question",
-              QuestionType: encodeURI("全部"),
+              keywords:"",
+              questionType: encodeURI("全部"),
               labels:encodeURI("全部"),
               index: 0,
-              num: 20,
-              orderBy: "time"
+              num: 50,
+
             }
           }).then(res => {
+            console.log("******************")
           console.log(res)
           for (var i = 0; i < res.data.length; i++) {
             var l = {
@@ -249,11 +251,16 @@
 
      },*/
   destroyed(){
-    var questionList = []
-    var classList=[{name:"全部"}]
-    var clickClass=[1]
-    var clickLabel=[1]
-    var labelList=["全部"]
+    console.log("QuestionShow has been destroyed")
+    questionList.splice(0,questionList.length)
+    classList.splice(0,classList.length)
+    classList.push({name:"全部"})
+    clickClass.splice(0,clickClass.length)
+    clickClass.push(1)
+    clickLabel.splice(0,clickLabel.length)
+    clickLabel.push(1)
+    labelList.splice(0,labelList.length)
+    labelList.push("全部")
 
   },
     methods: {
@@ -281,6 +288,50 @@
           clickClass.splice(u,1,1)
           clickClass.splice(0,1,0)
         }
+        var classLimit=""
+        var labelLimit=""
+        for(var i=0;i<clickClass.length;i++){
+          if(clickClass[i]==1){
+            classLimit+=classList[i].name+" "
+          }
+        }
+        for(var i=0;i<clickLabel.length;i++){
+          if(clickLabel[i]==1){
+            labelLimit+=labelList[i]
+          }
+        }
+        console.log(classLimit)
+        console.log(labelLimit)
+        this.$axios(
+          {
+            method: 'get',
+            url: global.host + '/index',
+            params: {
+              action: "select",
+              entity: "Question",
+              keywords:encodeURI(inputSearch),
+              questionType: encodeURI(classLimit),
+              labels:encodeURI(labelLimit),
+              index: 0,
+              num: 20,
+            }
+          }).then(res => {
+          console.log(res)
+          questionList.splice(0,questionList.length)
+          for (var i = 0; i < res.data.length; i++) {
+            var l = {
+              title: res.data[i].title,
+              Questioner: res.data[i].name,
+              date: util.formatDate(res.data[i].time),
+              view: res.data[i].frequency,
+              answer: res.data[i].numOfAnswer,
+              questionId: res.data[i].id,
+              userId: res.data[i].userId
+            }
+            questionList.push(l)
+          }
+        });
+
 
       },
       choseLabel:function(e){
@@ -299,7 +350,47 @@
           clickLabel.splice(u,1,1)
           clickLabel.splice(0,1,0)
         }
-
+        var classLimit=""
+        var labelLimit=""
+        for(var i=0;i<clickClass.length;i++){
+          if(clickClass[i]==1){
+            classLimit+=classList[i].name+" "
+          }
+        }
+        for(var i=0;i<clickLabel.length;i++){
+          if(clickLabel[i]==1){
+            labelLimit+=labelList[i]
+          }
+        }
+        this.$axios(
+          {
+            method: 'get',
+            url: global.host + '/index',
+            params: {
+              action: "select",
+              entity: "Question",
+              keywords:encodeURI(inputSearch),
+              questionType: encodeURI(classLimit),
+              labels:encodeURI(labelLimit),
+              index: 0,
+              num: 20,
+            }
+          }).then(res => {
+          console.log(res)
+          questionList.splice(0,questionList.length)
+          for (var i = 0; i < res.data.length; i++) {
+            var l = {
+              title: res.data[i].title,
+              Questioner: res.data[i].name,
+              date: util.formatDate(res.data[i].time),
+              view: res.data[i].frequency,
+              answer: res.data[i].numOfAnswer,
+              questionId: res.data[i].id,
+              userId: res.data[i].userId
+            }
+            questionList.push(l)
+          }
+        });
       },
       toWrite:function(e){
        this.$router.push({path:"./QuestionSubmit.html"})
@@ -313,7 +404,7 @@
         var labelLimit=""
         for(var i=0;i<clickClass.length;i++){
           if(clickClass[i]==1){
-            classLimit+=classList[i].name
+            classLimit+=classList[i].name+" "
           }
         }
         for(var i=0;i<clickLabel.length;i++){
@@ -323,6 +414,35 @@
         }
         console.log(classLimit)
         console.log(labelLimit)
+        this.$axios(
+          {
+            method: 'get',
+            url: global.host + '/index',
+            params: {
+              action: "select",
+              entity: "Question",
+              keywords:encodeURI(inputSearch),
+              questionType: encodeURI(classLimit),
+              labels:encodeURI(labelLimit),
+              index: 0,
+              num: 20,
+            }
+          }).then(res => {
+          questionList.splice(0,questionList.length)
+          for (var i = 0; i < res.data.length; i++) {
+            var l = {
+              title: res.data[i].title,
+              Questioner: res.data[i].name,
+              date: util.formatDate(res.data[i].time),
+              view: res.data[i].frequency,
+              answer: res.data[i].numOfAnswer,
+              questionId: res.data[i].id,
+              userId: res.data[i].userId
+            }
+            questionList.push(l)
+          }
+
+        });
       }
 
 
