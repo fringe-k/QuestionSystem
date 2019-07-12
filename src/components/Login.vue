@@ -22,6 +22,7 @@
 
 <script>
   import global from './global.vue'
+  import { JSEncrypt } from 'jsencrypt'
 
   export default {
     data() {
@@ -33,6 +34,7 @@
         },
         userName: '',
         password: '',
+        rsaPassword:'',
         error:{
           userName:'',
           password:'',
@@ -90,16 +92,29 @@
           this.error.password=''
         }
 
+        this.$axios(
+          {
+            method:'get',
+            url:"http://localhost:8082/test/rsaPassword",
+            params:{
+            }
+          }).then(res=>{
+          console.log(res)
+          let encryptor=new JSEncrypt()
+          let publicKey=res.data   //得到公钥
+          encryptor.setPublicKey(publicKey)
+          this.rsaPassword=encryptor.encrypt(this.password)
+          console.log(this.rsaPassword)
           this.$axios(
             {
               method:'post',
               url:"http://localhost:8082/test/loginMail",
               params:{
-                  mail:this.userName,
-                  password:this.password
+                mail:this.userName,
+                password:this.rsaPassword
               }
             }).then(res =>{
-              console.log(res)
+            console.log(res)
             if(res.data.trim()== "user")
             {
               global.email=this.userName
@@ -143,6 +158,11 @@
             console.info(e)
             console.log('连接失败')
           })
+        }).catch(e =>{
+          console.log("oooo")
+        })
+
+
       }
 
     }

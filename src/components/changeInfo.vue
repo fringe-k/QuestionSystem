@@ -1,7 +1,7 @@
 <template>
   <div :style="bg">
 
-    <div class="top" style="border: 1px dashed #000">
+    <div class="top">
       <ul>
         <li class="link01">Q/A SYSTEM</li>
         <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
@@ -38,11 +38,21 @@
     <div class="person">
 
       <div>
-        <img class="cycle" src="../assets/1.jpg" style="float:left"/>
+        <div>
+          <el-upload
+            class="avatar-uploader"
+            action="http://query.liublack.cn/qs/upload"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </div>
       </div>
 
       <div class="name">
-        <h3>&nbsp;康立言菜弟</h3>
+        <h3>&nbsp;&nbsp;{{this.userName}}</h3>
       </div>
       <!--头像&名字 end-->
       <button @click=" alterpsw" style="margin-left:10px;width: 100px;font-size: 18px;border:1px solid #000;cursor: pointer">修改密码</button>
@@ -65,15 +75,15 @@
         <div style="font-size: 20px">
           <br>
           <span >{{number[0].score}}</span>
-          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].question}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].answer}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].follow}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].collect}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].fan}}</span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
@@ -123,7 +133,7 @@
   import global from './global.vue'
 
   var data = [
-    {score:10,question:10,answer:20,follow:10,collect:10,fan:10},
+    {score:5,question:5,answer:5,follow:5,collect:5,fan:5},
   ];
 
   export default {
@@ -131,6 +141,7 @@
     data()
     {
       return{
+        imageUrl: '',
         message: '',
         number:data,
         bg: {
@@ -159,20 +170,52 @@
       this.$axios(
         {
           method:'get',
+          url:"http://localhost:8082/test/uploadphoto",
+          params:{
+            email:global.email,
+          }
+        }).then(res =>{
+        this.imageUrl=res.data.trim()
+        console.log(this.imageUrl)
+
+      }).catch(e =>{
+        console.log(1111)
+        console.info(e)
+      })
+
+      this.$axios(
+        {
+          method:'get',
           url:"http://localhost:8082/test/AlterInformation",
           params:{
               email:global.email
           }
         }).then(res =>{
           console.log(res)
-        this.userName=res.data.username
+        this.userName=decodeURI(res.data.username)
         this.email=res.data.mail
         this.age=res.data.age
         this.phone=res.data.phone
       }).catch(e =>{
-        console.log(1111)
         console.info(e)
       })
+
+      this.$axios(
+        {
+          method:'get',
+          url:"http://localhost:8082/test/ReturnInformation",
+           params:{
+             email:global.email
+           }
+         }).then(res =>{
+         console.log(res)
+        this.number[0].question=res.data.numOfQuery
+        this.number[0].answer=res.data.numOfAnswer
+        this.number[0].score=res.data.score
+       }).catch(e =>{
+         console.log(1111)
+         console.info(e)
+       })
     },
 
     methods:{
@@ -192,7 +235,56 @@
 
           }
         });
+      },
 
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        var uri='http://query.liublack.cn/qs'+res[0].uri
+        console.log(uri)
+        console.log(res[0].uri)
+        this.$axios(
+          {
+            method:'post',
+            url:"http://localhost:8082/test/uploadphoto",
+            params:{
+              email:global.email,
+              uri:uri
+            }
+          }).then(res =>{
+          if(res.data.trim()=='success')
+          {
+            this.$alert('上传头像成功', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+          }
+          else {
+            this.$alert('上传头像失败', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+              }
+            });
+          }
+
+        }).catch(e =>{
+          console.log(1111)
+          console.info(e)
+        })
+      },
+
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
       },
 
       confirm(){
@@ -201,48 +293,112 @@
         this.error.email=""
         this.error.age=''
         this.error.phone=''
+        if(!this.userName){
+          this.error.userName='用户名不能为空'
+          return false
+        }
+        else{
+          this.error.userName=''
+        }
+
+
+        if(!this.email){
+          this.error.email='邮箱不能为空'
+          return false
+        }
+        else{
+          this.error.email=''
+        }
+
+        if(!this.age){
+          this.error.age='年龄不能为空'
+          return false
+        }
+        else{
+          this.error.age=''
+        }
+
+        if(!this.phone){
+          this.error.phone='电话不能为空'
+          return false
+        }
+        else{
+          this.error.phone=''
+        }
+
+        let uPattern = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/
+        if(!uPattern.test(this.userName))
+        {
+          this.$alert('用户名不合法', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+          return false
+        }
+
+        let ePattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+        if(!ePattern.test(this.email))
+        {
+          this.$alert('邮箱不合格', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+
+            }
+          });
+          return false
+        }
+        let agePattern=/^[0-9]*$/
+        if(!agePattern.test(this.age))
+        {
+          this.$alert('年龄只能包含数字', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+
+            }
+          });
+          return false
+        }
+
         this.$axios(
           {
             method:'post',
             url:"http://localhost:8082/test/AlterInformation",
             params:{
-              username:this.userName,
+              username:encodeURI(this.userName),
               email:this.email,
               age:this.age,
               phone:this.phone
 
             }
           }).then(res =>{
-            console.log(res)
-          if((res.data.username.trim()=="true")&&(res.data.email.trim()=="false"))
-          {
-            this.error.userName="用户名不合格"
+          console.log(res)
+          if(res.data.trim()=="error") {
+            this.$alert('服务器繁忙！请稍后重试！', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
           }
-          else if((res.data.username.trim()=="false")&&(res.data.email.trim()=="true"))
+          else if(res.data.trim()== "repeat")
           {
-            this.error.email="邮箱不合法"
+            this.$alert('邮箱已经注册', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+            this.error.null=''
           }
-          else if(res.data.age==1519767717)
-          {
-            this.error.age="年龄只能包含数字"
-          }
-          else if(res.data.phone.trim()=="true")
-          {
-            this.error.phone="电话不能修改为空值"
-          }
-          else
-          {
-            this.error.userName=""
-            this.error.email=""
+        else{
             this.userName = res.data.username
-            console.log(res.data.username)
             this.email = res.data.mail
             this.age = res.data.age
             this.phone = res.data.phone
+            global.email=this.email
             this.success()
           }
         }).catch(e =>{
-          console.info(e)
+
         })
       }
 
@@ -290,8 +446,8 @@
 
   .listContainer{
     position: fixed;
-    top:28%;
-    margin-left:12%;
+    top:270px;
+    left:12%;
     width:180px;
     height:550px;
     background-color:white;
@@ -380,5 +536,35 @@
     background-color:wheat;
     font-size: 20px;
   }
+
+  .avatar-uploader{
+    border: 1px dashed #d9d9d9;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-left: 12%;
+    margin-top: 10px;
+    float:left;
+  }
+  .avatar-uploader{
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+    display: block;
+  }
+
 
 </style>

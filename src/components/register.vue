@@ -34,6 +34,8 @@
 </template>
 
 <script>
+  import { JSEncrypt } from 'jsencrypt'
+
     export default {
      data() {
        return {
@@ -46,6 +48,7 @@
          userName: '',
          password: '',
          confirmPassword:'',
+         rsaPassword:'',
          email:'',
          age:'',
          phone:'',
@@ -137,100 +140,137 @@
             this.error.phone=''
           }
 
+          let uPattern = /^[\u4e00-\u9fa5A-Za-z0-9-_]+$/
+          if(!uPattern.test(this.userName))
+          {
+            this.$alert('用户名不合法', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+            return false
+          }
+
+          let pPattern = /^[a-zA-Z0-9]{6,20}$/
+          if(!pPattern.test(this.password))
+          {
+            this.$alert('密码至少6位,可包括大写字母，小写字母，数字', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+            return false
+          }
+
+          if(this.password!=this.confirmPassword)
+          {
+            this.$alert('两次密码不一致', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+              }
+            });
+            return false
+          }
+
+          let ePattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/
+          if(!ePattern.test(this.email))
+          {
+            this.$alert('邮箱不合格', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+              }
+            });
+            return false
+          }
+
+          let agePattern=/^[0-9]*$/
+          if(!agePattern.test(this.age))
+          {
+            this.$alert('年龄只能包含数字', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+              }
+            });
+            return false
+          }
+
           this.$axios(
             {
-              method:'post',
-              url:"http://localhost:8082/test/sign",
+              method:'get',
+              url:"http://localhost:8082/test/rsaPassword",
               params:{
-                username:this.userName,
-                password:this.password,
-                confirmPassword:this.confirmPassword,
-                email:this.email,
-                age:this.age,
-                phone:this.phone
               }
-            }).then(res =>{
-            console.info(res)
-            if(res.data.trim()== "successfully")
-            {
-              this.$confirm('注册成功！按确定前往登录界面？', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'success'
-              }).then(() => {
-                this.$message({
-                  type: 'success',
-                  message: '到达登录界面',
-              });
+            }).then(res=>{
+            console.log(res)
+            let encryptor=new JSEncrypt()
+            let publicKey=res.data   //得到公钥
+            encryptor.setPublicKey(publicKey)
+            console.log(publicKey)
+            this.rsaPassword=encryptor.encrypt(this.password)
+            console.log(this.rsaPassword)
+            this.$axios(
+              {
+                method:'post',
+                url:"http://localhost:8082/test/sign",
+
+                params:{
+                  username:encodeURI(this.userName),
+                  password:this.rsaPassword,
+                  email:this.email,
+                  age:this.age,
+                  phone:this.phone
+                }
+              }).then(res =>{
+              console.info(res)
+              console.log(this.userName)
+              if(res.data.trim()== "successfully")
+              {
+                this.$confirm('注册成功！按确定前往登录界面？', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'success'
+                }).then(() => {
+                  this.$message({
+                    type: 'success',
+                    message: '到达登录界面',
+                  });
                   this.$router.push({path:'/Login'})
-              }).catch(() => {
-                this.$message({
-                  type: 'info',
-                  message: '已取消',
+                }).catch(() => {
+                  this.$message({
+                    type: 'info',
+                    message: '已取消',
+                  });
                 });
-              });
 
-            }
-            else if(res.data.trim()== "unsuccessfully")
-            {
-              this.$alert('邮箱已经注册', '提示', {
-                confirmButtonText: '确定',
-                callback: action => {
+              }
+              else if(res.data.trim()== "repeated")
+              {
+                this.$alert('邮箱已经注册', '提示', {
+                  confirmButtonText: '确定',
+                  callback: action => {
+                  }
+                });
+                this.error.null=''
+              }
+              else {
+                this.$alert('对不起，服务器繁忙', '提示', {
+                  confirmButtonText: '确定',
+                  callback: action => {
 
-                }
-              });
-              this.error.null=''
-            }
-            else if(res.data.trim()== "username")
-            {
-              this.$alert('用户名不合法', '提示', {
-                confirmButtonText: '确定',
-                callback: action => {
-                }
-              });
-              this.error.null=''
-            }
-            else if(res.data.trim()== "password")
-            {
-              this.$alert('密码至少6位', '提示', {
-                confirmButtonText: '确定',
-                callback: action => {
+                  }
+                });
+                this.error.null=''
+              }
+            }).catch(e =>{
+              console.info(e)
+            })
 
-                }
-              });
-              this.error.null=''
-            }
-            else if(res.data.trim()== "passwordTwo")
-            {
-              this.$alert('两次密码不一致', '提示', {
-                confirmButtonText: '确定',
-                callback: action => {
-
-                }
-              });
-              this.error.null=''
-            }
-            else if(res.data.trim()== "email")
-            {
-              this.$alert('邮箱不合格', '提示', {
-                confirmButtonText: '确定',
-                callback: action => {
-
-                }
-              });
-              this.error.null=''
-            }
-            else {
-              this.$alert('对不起，服务器繁忙', '提示', {
-                confirmButtonText: '确定',
-                callback: action => {
-
-                }
-              });
-              this.error.null=''
-            }
           }).catch(e =>{
             console.info(e)
+            console.log('连接失败')
           })
 
         }

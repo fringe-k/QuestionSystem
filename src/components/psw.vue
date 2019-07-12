@@ -1,7 +1,7 @@
 <template>
   <div :style="bg">
 
-    <div class="top" style="border: 1px dashed #000">
+    <div class="top" >
       <ul>
         <li class="link01">Q/A SYSTEM</li>
         <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
@@ -38,11 +38,21 @@
     <div class="person">
 
       <div>
-        <img class="cycle" src="../assets/1.jpg" style="float:left"/>
+        <div>
+          <el-upload
+            class="avatar-uploader"
+            action="http://query.liublack.cn/qs/upload"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </div>
       </div>
 
       <div class="name">
-        <h3>&nbsp;康立言菜弟</h3>
+        <h3>&nbsp;{{this.userName}}</h3>
       </div>
       <!--头像&名字 end-->
       <button @click="alterpsw" style="margin-left:10px;width: 100px;font-size: 18px;border:1px solid #000;cursor: pointer">修改密码</button>
@@ -65,15 +75,15 @@
         <div style="font-size: 20px">
           <br>
           <span >{{number[0].score}}</span>
-          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].question}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].answer}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].follow}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].collect}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].fan}}</span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
@@ -86,7 +96,7 @@
     <!--动态-->
     <div style="margin-top: 220px">
       <div class="reg_form" >
-        <h2 style="margin-left: 35%">请先验证旧密码是否正确</h2>
+        <h2 style="margin-left: 35%">请先填写完新旧密码后提交</h2>
         <input type="text"  class="qxs-ic_password qxs-icon" v-model="oldpsw" v-if="this.seen.oldpwdType" placeholder="旧密码" style="font-size: 20px;padding-top: 30px">
         <input  type="password" class="qxs-ic_password qxs-icon" style="font-size: 20px;padding-top: 30px" placeholder="旧密码" v-model="oldpsw" v-else>
         <img :src="see?seeImg:unseeImg" @click="changeoldType" style="height: 20px;width: 20px;cursor: pointer">
@@ -104,9 +114,7 @@
         <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
         <span v-if="error.null" class="err-msg" style="margin-left: 40%">{{error.null}}</span>
-        <br>
-        <button class="login_btn" :disabled="is_currect =='currect'" @click="con" style="font-size: 20px;margin-left: 20%" >验证密码</button>
-        <button class="login_btn" :disabled="is_currect !='currect'" @click="confirm" style="font-size: 20px;margin-left: 60%;" >确定修改</button>
+        <button class="login_btn" @click="confirm" style="font-size: 20px;margin-left: 40%;" >确定修改</button>
         <!--动态 end-->
       </div>
     </div>
@@ -131,8 +139,10 @@
 
 <script>
   import global from './global.vue'
+  import { JSEncrypt } from 'jsencrypt'
+
   var data = [
-    {score:10,question:10,answer:20,follow:10,collect:10,fan:10},
+    {score:5,question:5,answer:5,follow:5,collect:5,fan:5},
   ];
 
   export default {
@@ -140,6 +150,8 @@
     data()
     {
       return{
+        userName:'',
+        imageUrl: '',
         message: '',
         number:data,
         bg: {
@@ -150,6 +162,9 @@
         oldpsw: '',
         newpsw:'',
         confirmpsw:'',
+        rsaoldPassword:'',
+        rsanewPassword:'',
+        rsaconPassword:'',
         phone:'',
         is_currect:'',
         error:{
@@ -179,6 +194,54 @@
       this.see=''
       this.seeTwo=''
       this.seeThree=''
+
+      this.$axios(
+        {
+          method:'get',
+          url:"http://localhost:8082/test/uploadphoto",
+          params:{
+            email:global.email,
+          }
+        }).then(res =>{
+        this.imageUrl=res.data.trim()
+        console.log(this.imageUrl)
+
+      }).catch(e =>{
+        console.log(1111)
+        console.info(e)
+      })
+
+      this.$axios(
+        {
+          method:'get',
+          url:"http://localhost:8082/test/AlterInformation",
+          params:{
+            email:global.email
+          }
+        }).then(res =>{
+        console.log(res)
+        this.userName=decodeURI(res.data.username)
+      }).catch(e =>{
+        console.log(1111)
+        console.info(e)
+      })
+
+      this.$axios(
+        {
+          method:'get',
+          url:"http://localhost:8082/test/ReturnInformation",
+          params:{
+            email:global.email
+          }
+        }).then(res =>{
+        console.log(res)
+        this.number[0].question=res.data.numOfQuery
+        this.number[0].answer=res.data.numOfAnswer
+        this.number[0].score=res.data.score
+      }).catch(e =>{
+        console.log(1111)
+        console.info(e)
+      })
     },
 
     methods:{
@@ -195,6 +258,57 @@
         this.seeTwo=''
         this.seeThree=''
       },
+
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+        var uri='http://query.liublack.cn/qs'+res[0].uri
+        console.log(uri)
+        console.log(res[0].uri)
+        this.$axios(
+          {
+            method:'post',
+            url:"http://localhost:8082/test/uploadphoto",
+            params:{
+              email:global.email,
+              uri:uri
+            }
+          }).then(res =>{
+          if(res.data.trim()=='success')
+          {
+            this.$alert('上传头像成功', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+          }
+          else {
+            this.$alert('上传头像失败', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+              }
+            });
+          }
+
+        }).catch(e =>{
+          console.log(1111)
+          console.info(e)
+        })
+      },
+
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
+
 
       changeoldType(){
         this.see=!this.see
@@ -221,65 +335,112 @@
       },
 
       con(){
-        this.$axios(
-          {
-            method:'post',
-            url:"http://localhost:8082/test/psw",
-            params:{
-              email:global.email,
-              oldpsw:this.oldpsw,
-            }
-          }).then(res =>{
-            console.log(this.oldpsw)
-            console.log(res)
-            if(res.data.trim()=="correct")
-            {
-              this.error.oldpsw="验证成功"
-              this.is_currect='currect'
-            }
-          if(res.data.trim()=="failed")
-          {
-            this.error.oldpsw="验证失败"
-          }
-        }).catch(e =>{
-          console.info(e)
-        })
+
+
       },
       confirm(){
           this.error.oldpsw=''
           this.error.null = ''
           this.error.newpsw = ''
           this.error.confirmpsw = ''
+
+        if(!this.oldpsw){
+          this.error.oldpsw='请输入旧密码'
+          return false
+        }
+        else{
+          this.error.oldpsw=''
+        }
+
+        if(!this.newpsw){
+          this.error.newpsw='请输入新密码'
+          return false
+        }
+        else{
+          this.error.newpsw=''
+        }
+
+        if(!this.confirmpsw){
+          this.error.confirmpsw='请确定新密码'
+          return false
+        }
+        else{
+          this.error.confirmpsw=''
+        }
+
+        let pPattern = /^[a-zA-Z0-9]{6,20}$/
+        if(!pPattern.test(this.newpsw))
+        {
+          this.$alert('密码至少6位,可包括大写字母，小写字母，数字', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+          return false
+        }
+
+        if(this.newpsw!=this.confirmpsw)
+        {
+          this.$alert('两次密码不一致', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.success()
+            }
+          });
+          return false
+        }
+
+        this.$axios(
+          {
+            method:'get',
+            url:"http://localhost:8082/test/rsaPassword",
+            params:{
+            }
+          }).then(res=>{
+          console.log(res)
+          let encryptor=new JSEncrypt()
+          let publicKey=res.data
+          encryptor.setPublicKey(publicKey)
+          this.rsaoldPassword=encryptor.encrypt(this.oldpsw)
+          this.rsanewPassword=encryptor.encrypt(this.newpsw)
+          console.log(this.rsaoldPassword)
+          console.log(this.rsanewPassword)
           this.$axios(
-            {
-              method: 'post',
-              url: "http://localhost:8082/test/AlterPsw",
-              params: {
-                email: global.email,
-                oldpwd: this.oldpwd,
-                newpwd: this.newpsw,
-                confirm: this.confirmpsw
-              }
-            }).then(res => {
+              {
+                method:'post',
+                url:"http://localhost:8082/test/AlterPsw",
+                params:{
+                  email:global.email,
+                  oldpsw:this.rsaoldPassword,
+                  newpsw: this.rsanewPassword,
+                }
+              }).then(res =>{
               console.log(res)
-            if (res.data.trim() == "successfully") {
-              this.$alert('修改成功', '提示', {
+            if(res.data.trim()=="successfully")
+            {
+              this.$alert('修改密码成功！', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
                   this.success()
                 }
               });
             }
-            else if (res.data.trim() == "unqualified") {
-              this.error.newpsw = "密码至少要6位数"
+            if(res.data.trim()=="failed")
+            {
+              this.$alert('修改密码失败！请确定旧密码是否正确！', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                }
+              });
             }
-            else if (res.data.trim() == "not same") {
-              this.error.confirmpsw = "两次密码不一致"
-            }
-
-          }).catch(e => {
+          }).catch(e =>{
             console.info(e)
           })
+
+        }).catch(e =>{
+          console.info(e)
+          console.log('连接失败')
+        })
       }
 
     }
@@ -327,7 +488,7 @@
   .listContainer{
     position: fixed;
     top:270px;
-    margin-left:12%;
+    left:12%;
     width:180px;
     height:550px;
     background-color:white;
@@ -401,7 +562,7 @@
 
   .reg_form {
     position: fixed;
-    top:32%;
+    top:35%;
     width: 1200px;
     margin-left: 30%;
     padding-top: 25px;
@@ -415,4 +576,32 @@
     font-size: 22px;
   }
 
+  .avatar-uploader{
+    border: 1px dashed #d9d9d9;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-left: 12%;
+    margin-top: 10px;
+    float:left;
+  }
+  .avatar-uploader{
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+    display: block;
+  }
 </style>

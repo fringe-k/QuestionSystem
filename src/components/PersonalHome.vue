@@ -1,7 +1,7 @@
 <template>
-  <div :style="bg">
+  <div>
 
-    <div class="top" style="border: 1px dashed #000">
+    <div class="top">
     <ul>
       <li class="link01">Q/A SYSTEM</li>
       <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
@@ -38,11 +38,19 @@
     <div class="person">
 
       <div>
-        <img class="cycle" src="../assets/1.jpg" style="float:left"/>
+        <el-upload
+          class="avatar-uploader"
+          action="http://query.liublack.cn/qs/upload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </div>
 
       <div class="name">
-          <h3>&nbsp;康立言菜弟</h3>
+          <h3>&nbsp;{{this.userName}}</h3>
       </div>
 
       <button @click="alterpsw" class="button">修改密码</button>
@@ -66,15 +74,15 @@
         <div style="font-size: 20px">
           <br>
           <span >{{number[0].score}}</span>
-          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].question}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].answer}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].follow}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].collect}}</span>
-          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span>{{number[0].fan}}</span>
           <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </div>
@@ -89,20 +97,19 @@
     <div v-for="content in contents" >
       <div class="contain" >
         <div>
-          <img class="cycle" src="../assets/1.jpg" style="float:left;height:100px;width: 100px;padding-top: 12px"/>
+          <img class="cycle" :src="imageUrl" style="float:left;height:100px;width: 100px;padding-top: 12px"/>
         </div>
 
-        <div class="name" style="padding-top: 0px">
-          <h6>&nbsp;&nbsp;&nbsp;{{content.name}}</h6>
+        <div class="name" style="padding-top: 10px">
+          <h5>&nbsp;&nbsp;&nbsp;{{content.name}}</h5>
         </div>
 
         <div style="margin-top: 0px">
-          <span>{{content.day}}</span>
-          <span>{{content.time}}</span>
+          <span>{{content.dateTime}}</span>
         </div>
 
         <div class="content">
-          <p>{{content.con}}</p>
+          <p>&nbsp;&nbsp;{{content.con}}</p>
         </div>
 
         <div>
@@ -142,21 +149,31 @@
 </template>
 
 <script>
+  import global from './global.vue'
+  import util from '@/util.js'
+  //import {getAliOSSCreds} from '@/api/common'// 向后端获取 OSS秘钥信息
+   //import {createId} from '@/utils' // 一个生产唯一的id的方法
+   import OSS from 'ali-oss'
+
   var message="";
   var data = [
-    {score:10,question:10,answer:20,follow:10,collect:10,fan:10},
+    {score:5,question:5,answer:5,follow:5,collect:5,fan:5},
   ];
+  var content=[]
 
-  var content=[
+  /*var content=[
     {image:"1.jpg",name:"康立言菜弟",day:"2019-6-25",time:"17:02",con:"#隐形守护者# 最近这个游戏有点火，肖途能不能不杀小学妹啊，快哭了？？？",con_image:"2.png",p:10,d:10,z:10},
     {image:"1.jpg",name:"康立言菜弟",day:"2019-6-25",time:"17:02",con:"#隐形守护者# 最近这个游戏有点火，肖途能不能不杀小学妹啊，快哭了？？？",con_image:"2.png",p:10,d:10,z:10},
     {image:"1.jpg",name:"康立言菜弟",day:"2019-6-25",time:"17:02",con:"#隐形守护者# 最近这个游戏有点火，肖途能不能不杀小学妹啊，快哭了？？？",con_image:"2.png",p:10,d:10,z:10}
-  ];
+  ];*/
+
     export default {
       name: "PersonalHome",
       data()
       {
         return{
+          userName:'',
+          imageUrl: '',
           message: '',
           number:data,
           contents:content,
@@ -167,6 +184,83 @@
           },
         }
       },
+      created(){
+
+        this.$axios(
+          {
+            method:'get',
+            url:"http://localhost:8082/test/uploadphoto",
+            params:{
+              email:global.email,
+            }
+          }).then(res =>{
+          this.imageUrl=res.data.trim()
+          console.log(this.imageUrl)
+
+        }).catch(e =>{
+          console.log(1111)
+          console.info(e)
+        })
+
+       //this.imageUrl='http://query.liublack.cn/qs/contents/1077770518.jpg'
+        this.$axios(
+          {
+            method:'post',
+            url:"http://localhost:8082/test/ReturnQuestion",
+            params:{
+              mail:global.email
+            }
+          }).then(res =>{
+          console.info(res)
+          for (var i = 0; i < res.data.question.length; i++) {
+            var l = {
+              //img: res.data.question[i].photo,
+              name: this.userName,
+              dateTime: util.formatTime(res.data.question[i].time),
+              con: decodeURI(res.data.question[i].content),
+              //con_image:res.data.question[i].con_image,
+             // p:res.data.question[i].p,
+             // d:res.data.question[i].d,
+              //z:res.data.question[i].z,
+            }
+            content.push(l)
+          }
+        }).catch(e =>{
+          console.info(e)
+        })
+
+        this.$axios(
+          {
+            method:'get',
+            url:"http://localhost:8082/test/AlterInformation",
+            params:{
+              email:global.email
+            }
+          }).then(res =>{
+          console.log(res)
+          this.userName=decodeURI(res.data.username)
+        }).catch(e =>{
+          console.log(1111)
+          console.info(e)
+        })
+
+        this.$axios(
+          {
+            method:'get',
+            url:"http://localhost:8082/test/ReturnInformation",
+            params:{
+              email:global.email
+            }
+          }).then(res =>{
+          console.log(res)
+          this.number[0].question=res.data.numOfQuery
+          this.number[0].answer=res.data.numOfAnswer
+          this.number[0].score=res.data.score
+        }).catch(e =>{
+          console.log(1111)
+          console.info(e)
+        })
+      },
 
       methods:{
         to_changeInfo(){
@@ -175,6 +269,56 @@
 
         alterpsw(){
           this.$router.push({path:'/psw'})
+        },
+
+        handleAvatarSuccess(res, file) {
+          this.imageUrl = URL.createObjectURL(file.raw);
+          var uri='http://query.liublack.cn/qs'+res[0].uri
+          console.log(uri)
+          console.log(res[0].uri)
+          this.$axios(
+            {
+              method:'post',
+              url:"http://localhost:8082/test/uploadphoto",
+              params:{
+                email:global.email,
+                uri:uri
+              }
+            }).then(res =>{
+            if(res.data.trim()=='success')
+            {
+              this.$alert('上传头像成功', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                }
+              });
+            }
+            else {
+              this.$alert('上传头像失败', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+
+                }
+              });
+            }
+
+          }).catch(e =>{
+            console.log(1111)
+            console.info(e)
+          })
+        },
+
+        beforeAvatarUpload(file) {
+          const isJPG = file.type === 'image/jpeg';
+          const isLt2M = file.size / 1024 / 1024 < 2;
+
+          if (!isJPG) {
+            this.$message.error('上传头像图片只能是 JPG 格式!');
+          }
+          if (!isLt2M) {
+            this.$message.error('上传头像图片大小不能超过 2MB!');
+          }
+          return isJPG && isLt2M;
         },
 
       }
@@ -192,7 +336,7 @@
     position: fixed;
     left: 20px;
     right: 20px;
-    top:76px;
+    top:75px;
     background-color: white;
     height: 150px;
   }
@@ -266,5 +410,33 @@
     cursor: pointer
   }
 
+  .avatar-uploader{
+    border: 1px solid #000;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-left: 12%;
+    margin-top: 10px;
+    float:left;
+  }
+  .avatar-uploader{
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+  }
+  .avatar {
+    width: 120px;
+    height: 120px;
+    display: block;
+  }
 
 </style>
