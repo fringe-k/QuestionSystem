@@ -1,5 +1,5 @@
 <template>
-  <div id="body">
+  <div id="body" :style="bg">
     <div class="top">
       <ul>
         <li class="link01">Q/A SYSTEM</li>
@@ -31,76 +31,81 @@
     </div>
     <!--分类栏 end-->
     <div id ="mainContent" class="contentBox">
-      <table align="center" >
-        <tr class="firstLine">
-          <td>用户名</td>
-          <td>邮箱</td>
-          <td>是否允许登录</td>
-          <td>是否允许发言</td>
-          <td>删除与提交</td>
-        </tr>
-        <tr v-for="item,index in userList" >
-          <td>
-            {{item.userName}}
-          </td>
-          <td>
-            {{item.mail}}
-          </td>
-          <td>
-            <el-select v-if="item.allowAdmin"  @change='getAdminValue' :data-itemId="index" v-model="item.allowAdmin2"
-                       placeholder="是">
-              <el-option
-                v-for="item2 in options"
-                :key="item2.value"
-                :label="item2.label"
-                :value="item2.value">
-              </el-option>
+      <el-table
+        :data="userList"
+        height="725"
+        border
+        style="width: 100%">
+        <template slot-scope="scope">
+        <el-table-column
+          type="index"
+          width="50">
+        </el-table-column>
+        <el-table-column
+          prop="userName"
+          label="用户名"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="mail"
+          label="邮箱"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="allowAdmin"
+          label="是否允许登录">
+          <el-select v-if="scope.allowAdmin"  @change='getAdminValue'  v-model="scope.allowAdmin2"
+                     placeholder="是">
+            <el-option
+              v-for="item2 in options"
+              :key="item2.value"
+              :label="item2.label"
+              :value="item2.value">
+            </el-option>
 
-            </el-select>
-            <el-select v-else    @change='getAdminValue' :data-itemId="index" v-model="item.allowAdmin2"
-                       placeholder="否">
-              <el-option
-                v-for="item2 in options"
-                :key="item2.value"
-                :label="item2.label"
-                :value="item2.value">
-              </el-option>
-            </el-select>
-          </td>
-          <td>
-            <el-select v-if="item.allowCommit" @change='getCommitValue'   size="2" v-model="item.allowCommit2">
-              <el-option
-                v-for="item2 in options"
-                :key="item2.value"
-                :label="item2.label"
-                :value="item2.value">
-              </el-option>
+          </el-select>
+          <el-select v-else    @change='getAdminValue'  v-model="scope.allowAdmin2"
+                     placeholder="否">
+            <el-option
+              v-for="item2 in options"
+              :key="item2.value"
+              :label="item2.label"
+              :value="item2.value">
+            </el-option>
+          </el-select>
+        </el-table-column>
+        <el-table-column
+          prop="allowAdmin"
+          label="是否允许发言">
+          <el-select v-if="scope.allowCommit"  @change='getAdminValue'  v-model="scope.allowCommit2"
+                     placeholder="是">
+            <el-option
+              v-for="item2 in options"
+              :key="item2.value"
+              :label="item2.label"
+              :value="item2.value">
+            </el-option>
 
-            </el-select>
-            <el-select v-else  @change='getCommitValue' :data-itemId="index" v-model="item.allowCommit2">
-              <el-option
-                v-for="item2 in options"
-                :key="item2.value"
-                :label="item2.label"
-                :value="item2.value">
-              </el-option>
-            </el-select>
-          </td>
-          <td>
-            <span :data-itemId="index" class="click" @click="deleteUser" style="color:red">删除</span>
-            <span :data-itemId="index" class="click" @click="confirm">提交更改</span>
-          </td>
-        </tr>
+          </el-select>
+          <el-select v-else    @change='getAdminValue'  v-model="scope.allowAdmin2"
+                     placeholder="否">
+            <el-option
+              v-for="item2 in options"
+              :key="item2.value"
+              :label="item2.label"
+              :value="item2.value">
+            </el-option>
+          </el-select>
+        </el-table-column>
+        <el-table-column label="操作">
 
-      </table>
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :page-size="9"
-        layout="prev, pager, next, jumper"
-        :total="whole">
-      </el-pagination>
-      </div>
-      <!--内容显示栏end-->
+        </el-table-column>
+        </template>
+      </el-table>
+
+
+    </div>
+    <!--内容显示栏end-->
   </div>
 
 
@@ -115,8 +120,7 @@
   ];
   var leftList=["用户管理","类别管理","标签管理"];
   var userList=[]
-  var userList2=[]
-  var whole=0
+
   export default {
     name: 'Operator',
     data()
@@ -126,18 +130,23 @@
         questions:data,
         leftList:leftList,
         userList:userList,
-        userList2:userList2,
         isAllowAdmin,
-        whole:whole,
         options: [{
           value: '是',
           label: '是'
-    }, {
-      value: '否',
-      label: '否'
-    }]
-    }
+        }, {
+          value: '否',
+          label: '否'
+        }],
+        bg: {
+          backgroundImage: "url(" + require("../assets/bg3.jpg") + ")",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "100% 100%",
+        },
+
+      }
     },
+
     created()
     {
       console.log("Usercreated在执行")
@@ -152,7 +161,7 @@
           }
         })
         .then(function (response) {
-          whole=response.data.length
+
           for (var i = 0; i < response.data.length; i++) {
             var l={
               userName:response.data[i].name,
@@ -163,12 +172,9 @@
               allowAdmin2:!response.data[i].cannotLogin?"是":"否",
               allowCommit2:!response.data[i].cannotSpeak?"是":"否",
             }
-           userList.push(l)
+            userList.push(l)
           }
-          for (var i = 0; i < 9; i++) {
-             userList2.push(userList[i])
-          }
-          console.log(userList2)
+          console.log(userList)
         })
         .catch(function (error) {
           console.log(error);
@@ -188,7 +194,7 @@
         if(i==2){
           this.$router.push({path:'/OperatorLabel'})
         }
-     },
+      },
       test:function(event){
         console.log(that.router)
       },
@@ -206,7 +212,7 @@
       },
       deleteUser:function(e){
         var i=parseInt(e.target.getAttribute('data-itemId'))
-       console.log(typeof (parseInt(i))+"-----"+i)
+        console.log(typeof (parseInt(i))+"-----"+i)
         this.$confirm('此操作将删除该用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -231,8 +237,8 @@
               console.log(error);
             });
         })
-         .catch(() => {
-            });
+          .catch(() => {
+          });
 
       },
       confirm:function(e){
@@ -277,12 +283,13 @@
           });
         });
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+      handleEdit(index, row) {
+        console.log(index, row);
       },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+      handleDelete(index, row) {
+        console.log(index, row);
       }
+
     }
   }
 </script>
@@ -298,7 +305,7 @@
   #body{
     width: 100%;
     height: 100%;
-
+    margin:0;
   }
   .listContainer{
     margin-top:100px;
@@ -340,10 +347,9 @@
 
 
   table tr td{
+    border:1px solid gray;
     padding:10px;
-    border-left: none;
-    border-right: none;
-    border-bottom:1px solid rgba(187,187,187,1)
+
   }
   table{
     border-collapse:collapse;
@@ -352,7 +358,7 @@
     word-wrap:break-word;
   }
   tr.firstLine{
-    color:rgba(144,147,153,1)
+    background-color: lightGray;
   }
   .ui-link{
     margin: 0 auto;
@@ -376,6 +382,5 @@
     cursor:pointer;
     text-decoration: underline;
   }
-
 
 </style>

@@ -16,7 +16,7 @@ export default {
   name: 'InputField',
   data () {
     return {
-      content: '## Welcome to Your Vue.js App',
+      content: '#请输入',
       editor:null,
 
     }

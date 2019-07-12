@@ -23,5 +23,7 @@
     width:100%;
     height: 100%;
     background-color: rgba(246,246,246,1);
+    margin:0;
+    padding:0;
   }
 </style>
