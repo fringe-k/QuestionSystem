@@ -1,5 +1,10 @@
 
+import com.alibaba.fastjson.JSONObject;
+import com.mysql.cj.xdevapi.JsonArray;
 import qs.common.*;
+
+import java.io.File;
+
 public class DaoTest {
     public static void main(String []args) throws Exception{
 
@@ -33,11 +38,29 @@ public class DaoTest {
 //            e.printStackTrace();
 //        }
 
-        String sql = "select name from User";
-        DAO dao = new DAO();
-        dao.excuteQuery(sql);
+//        String sql = "select name from User";
+//        DAO dao = new DAO();
+//        dao.excuteQuery(sql);
+//
+////        System.out.print(dao.toJsonArray().toJSONString());
+//
+//        System.out.println(Class.class.getClass().getResource("/").getPath());
+//
+//        JsonArray jsonArray = new JsonArray();
+//        jsonArray.
+////        jsonArray.get(0).
+//
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.getLong()
 
-        System.out.print(dao.toJsonArray().toJSONString());
+        System.out.println(DaoTest.class.getClass().getResource("/").getPath());
+        String s = "/Users/pengfei/Desktop/javaweb/WEB-INF/classes/";
+        int index = s.lastIndexOf("WEB-INF");
+        s = s.substring(0,index);
+
+
+        System.out.println(s);
+
 
     }
 }

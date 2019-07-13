@@ -45,6 +45,7 @@ public class QuestionTypeDao extends DAO{
             questionType = new QuestionType();
             questionType.setId(rs.getLong("id"));
             questionType.setName(rs.getString("name"));
+            questionType.setIcon(rs.getString("icon"));
         }
         return questionType;
     }
@@ -59,6 +60,7 @@ public class QuestionTypeDao extends DAO{
             questionType = new QuestionType();
             questionType.setId(rs.getLong("id"));
             questionType.setName(rs.getString("name"));
+            questionType.setIcon(rs.getString("icon"));
         }
         return questionType;
     }

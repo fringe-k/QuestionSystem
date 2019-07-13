@@ -1,4 +1,6 @@
 package qs.common;
+import com.mysql.cj.xdevapi.SqlDataResult;
+
 import java.sql.*;
 import java.util.ArrayList;
 public class QuestionDao extends DAO{
@@ -58,6 +60,8 @@ public class QuestionDao extends DAO{
             question.setLabel(rs.getString("label"));
             question.setFrequency(rs.getLong("frequency"));
             question.setTitle(rs.getString("title"));
+            question.setIsReleased(rs.getLong("isReleased"));
+            question.setReward(rs.getLong("reward"));
         }
         return question;
     }
@@ -77,6 +81,10 @@ public class QuestionDao extends DAO{
             question.setContent(rs.getString("content"));
             question.setTime(rs.getTimestamp("time"));
             question.setLabel(rs.getString("label"));
+            question.setFrequency(rs.getLong("frequency"));
+            question.setTitle(rs.getString("title"));
+            question.setIsReleased(rs.getLong("isReleased"));
+            question.setReward(rs.getLong("reward"));
             questions.add(question);
         }
         return questions;
@@ -99,9 +107,47 @@ public class QuestionDao extends DAO{
             question.setLabel(rs.getString("label"));
             question.setFrequency(rs.getLong("frequency"));
             question.setTitle(rs.getString("title"));
-
+            question.setIsReleased(rs.getLong("isReleased"));
+            question.setReward(rs.getLong("reward"));
             questions.add(question);
         }
         return questions;
     }
+
+    public Long getNumOfAnswer(Long questionId) throws SQLException{
+        String sql = "select count(*)  from Answer where questionId = " +
+                questionId + " and isReleased = 1";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ResultSet rs = ptmt.executeQuery();
+        while(rs.next()){
+            return rs.getLong(1);
+        }
+        return new Long(0);
+    }
+
+//    public int search(String words) throws NullPointerException, SQLException {
+//        String searchMode = getSearchMode(words);
+////        String sql = String.format("select * from  Question where match (title, content) against ('%s' in boolean mode)", searchMode);
+//        String sql = "select * " +
+//                String.format(" match(title) against ('%s' in boolean mode) * 10 as res1 ", searchMode) +
+//                String.format(" match(content) against ('%s', in boolean mode) * 3 as res2 ",searchMode) +
+//                " from Question " +
+//                String.format(" where match(title, content) against('%s' in boolean mode) ",searchMode) +
+//                " order by (res1) + (res2) desc ";
+//        System.out.println(sql);
+//        excuteQuery(sql);
+//        return toJsonArray().size();
+//    }
+
+    public static String getSearchMode(String words){
+        String arr[] = words.split("\\s+");
+        String searchMode = "";
+        for (String ss:arr) {
+            searchMode += String.format("+%s ", ss);
+        }
+        return searchMode;
+    }
+
+
+
 }

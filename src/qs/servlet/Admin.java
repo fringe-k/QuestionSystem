@@ -27,6 +27,7 @@ public class Admin extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
@@ -73,6 +74,7 @@ public class Admin extends HttpServlet {
 
         }
         catch (SQLException e){
+            out.print("failure");
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
@@ -85,20 +87,21 @@ public class Admin extends HttpServlet {
             // 插入新的问题类型
             if(entity.equals("QuestionType")){
                 // 获取新的问题类型的名字
-                String name = req.getParameter("name");
+                String name = URLDecoder.decode(req.getParameter("name"),"UTF-8");
                 QuestionTypeDao qtdao = new QuestionTypeDao();
                 Long id = qtdao.createQuestionType(name);
                 out.print("success");
             }
             if(entity.equals("Label")){
                 // 获取新的问题类型的名字
-                String name = req.getParameter("name");
+                String name = URLDecoder.decode(req.getParameter("name"),"UTF-8");
                 LabelDao ldao = new LabelDao();
                 Long id = ldao.createLabel(name);
                 out.print("success");
             }
         }
         catch (SQLException e){
+            out.print("failure");
             e.printStackTrace();
             System.out.println(e.getMessage());
         }
@@ -123,7 +126,7 @@ public class Admin extends HttpServlet {
 
             }else if(entity.equals("QuestionType")){
                 QuestionTypeDao qtdao = new QuestionTypeDao();
-                String name = req.getParameter("name");
+                String name = URLDecoder.decode(req.getParameter("name"),"UTF-8");
                 qtdao.update(id, "name",name);
             }else if(entity.equals("Label")){
                 LabelDao ldao = new LabelDao();
@@ -144,6 +147,11 @@ public class Admin extends HttpServlet {
         PrintWriter out = resp.getWriter();
         String entity = req.getParameter("entity");
         String id = req.getParameter("id");
+        String name = req.getParameter("name");
+        if(name != null) {
+            name = URLDecoder.decode(name, "UTF-8");
+            name = String.format("\"%s\"", name);
+        }
         DAO dao = new DAO();
         try {
             if(entity.equals("User")) {
@@ -151,19 +159,30 @@ public class Admin extends HttpServlet {
                     out.print("success");
                 else out.print("failure");
             }
-            if(entity.equals("QuestionType")) {
+            if(entity.equals("QuestionType") && id != null) {
                 if (dao.excuteUpdate("delete from QuestionType where id = " + id))
                     out.print("success");
                 else out.print("failure");
             }
-            if(entity.equals("Label")) {
+            if(entity.equals("QuestionType") && name != null) {
+                if (dao.excuteUpdate("delete from QuestionType where name = \" " + name + "\""))
+                    out.print("success");
+                else out.print("failure");
+            }
+            if(entity.equals("Label") && id != null) {
                 if (dao.excuteUpdate("delete from Label where id = " + id))
+                    out.print("success");
+                else out.print("failure");
+            }
+            if(entity.equals("Label") && name != null) {
+                if (dao.excuteUpdate("delete from Label where name = " + name))
                     out.print("success");
                 else out.print("failure");
             }
 
         }
         catch (Exception e){
+            out.print("failure");
             e.printStackTrace();
             System.out.println(e.getMessage());
         }

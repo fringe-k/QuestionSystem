@@ -1,9 +1,18 @@
 package qs.common;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import javax.crypto.Cipher;
 import javax.xml.transform.Result;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.security.KeyPairGenerator;
 public class UserDao extends DAO{
+
 
     public UserDao(){
         super();
@@ -119,5 +128,30 @@ public class UserDao extends DAO{
         ptmt.setLong(2,id);
         return ptmt.executeUpdate() > 0;
     }
+
+    // 查询该用户提问了多少次
+    public Long getNumOfQuery(Long userId) throws SQLException{
+        String sql = "select count(*) from Question where userId = " +
+                userId + " and isReleased = 1";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ResultSet rs = ptmt.executeQuery();
+        while(rs.next()){
+            return rs.getLong(1);
+        }
+        return new Long(0);
+    }
+
+    // 查询该用户回答了多少次
+    public Long getNumOfAnswer(Long userId) throws SQLException{
+        String sql = "select count(*)  from Answer where userId = " +
+                userId + " and isReleased = 1";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ResultSet rs = ptmt.executeQuery();
+        while(rs.next()){
+            return rs.getLong(1);
+        }
+        return new Long(0);
+    }
+
 
 }

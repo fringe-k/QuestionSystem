@@ -24,11 +24,33 @@ public class DAO {
     public void setUser(String user) { this.user = user; }
     public void setPassword(String password) {this.password = password; }
 
+
     public JSONArray toJsonArray(int size) throws NullPointerException, SQLException {
         int count = 0;
         JSONArray jsonArray = new JSONArray();
         ResultSetMetaData metaData = resultSet.getMetaData();
         while (resultSet.next() && count < size) {
+            JSONObject json = new JSONObject();
+
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                if(resultSet.getObject(i) == null)
+                    json.put(metaData.getColumnLabel(i),"null");
+                else
+                    json.put(metaData.getColumnLabel(i), resultSet.getObject(i));
+            }
+            jsonArray.add(json);
+            count++;
+        }
+        return jsonArray;
+    }
+
+    public JSONArray toJsonArray(int start, int size) throws NullPointerException, SQLException {
+        int count = 0;
+        JSONArray jsonArray = new JSONArray();
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        while (resultSet.next() && count < size + start) {
+
+            if(count < start) continue;
             JSONObject json = new JSONObject();
 
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
@@ -101,11 +123,11 @@ public class DAO {
             ptmt.setString(6, user.getPassword());
             ptmt.setLong(7, user.getRole());
             ptmt.setLong(8,user.getScore());
-            ptmt.setString(8, user.getPhoto());
-            ptmt.setLong(9, user.getNumOfQuery());
-            ptmt.setLong(10, user.getNumOfAnswer());
-            ptmt.setLong(11, user.getCannotSpeak());
-            ptmt.setLong(12, user.getCannotLogin());
+            ptmt.setString(9, user.getPhoto());
+            ptmt.setLong(10, user.getNumOfQuery());
+            ptmt.setLong(11, user.getNumOfAnswer());
+            ptmt.setLong(12, user.getCannotSpeak());
+            ptmt.setLong(13, user.getCannotLogin());
         }catch (Exception e){
             System.err.println(e.getStackTrace());
             System.err.println("Failed to create a PreparedStatement for User!");
@@ -214,7 +236,7 @@ public class DAO {
 
         //拼接sql语句
         String  sql = "insert into " + "QuestionType(id,name)" +
-                "values (?,?)";
+                "values (?,?,?)";
         PreparedStatement ptmt = conn.prepareStatement(sql); // 预编译SQL，减少sql执行
 
         // 向sql语句传参
@@ -222,6 +244,7 @@ public class DAO {
             //传参
             ptmt.setLong(1, questionType.getId());
             ptmt.setString(2, questionType.getName());
+            ptmt.setString(3, questionType.getIcon());
 
         }catch (Exception e){
             e.printStackTrace();
@@ -234,13 +257,15 @@ public class DAO {
 
     public Boolean update(QuestionType questionType) throws Exception{
         //拼接sql语句
-        String sql = "update QuestionType set" + "name = ? where id = ?" ;
+        String sql = "update QuestionType set" + "name = ?, icon = ? where id = ?" ;
         PreparedStatement ptmt = conn.prepareStatement(sql); // 预编译SQL，减少sql执行
         // 向sql语句传参
         try {
             //传参
             ptmt.setString(1, questionType.getName());
-            ptmt.setLong(2, questionType.getId());
+            ptmt.setString(2, questionType.getIcon());
+            ptmt.setLong(3, questionType.getId());
+
 
         }catch (Exception e){
             e.printStackTrace();

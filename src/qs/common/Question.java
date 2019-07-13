@@ -10,6 +10,8 @@ public class Question {
     private Timestamp time;
     private String label;
     private String title;
+    private Long isReleased;
+    private Long reward;
 
     public Long getId(){ return id; }
     public Long getUserID() { return userId; }
@@ -19,6 +21,8 @@ public class Question {
     public Timestamp getTime() { return time; }
     public String getLabel() { return label; }
     public String getTitle() { return title; }
+    public Long getIsReleased() { return isReleased;}
+    public Long getReward() { return reward; }
 
     public void setId(Long id) { this.id = id; }
     public void setUserId(Long userId) { this.userId = userId; }
@@ -28,5 +32,6 @@ public class Question {
     public void setTime(Timestamp time) { this.time = time; }
     public void setLabel(String label) { this.label = label; }
     public void setTitle(String title) { this.title = title; }
-
+    public void setIsReleased(Long isReleased) { this.isReleased = isReleased; }
+    public void setReward(Long reward) { this.reward = reward; }
 }

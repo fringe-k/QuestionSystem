@@ -37,4 +37,34 @@ public class LabelDao extends DAO {
         ptmt.setLong(2,id);
         return ptmt.executeUpdate() > 0;
     }
+
+    public Label selectById(Long id) throws SQLException{
+        String sql = "select * from Label where id = ?";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ptmt.setLong(1,id);
+        ResultSet rs = ptmt.executeQuery();
+        Label label = null;
+        while(rs.next()){
+            label = new Label();
+            label.setId(rs.getLong("id"));
+            label.setName(rs.getString("name"));
+
+        }
+        return label;
+    }
+
+    public Label selectByName(String name) throws SQLException{
+        String sql = "select * from Label where name = ?";
+        PreparedStatement ptmt = conn.prepareStatement(sql);
+        ptmt.setString(1,name);
+        ResultSet rs = ptmt.executeQuery();
+        Label label = null;
+        while(rs.next()){
+            label = new Label();
+            label.setId(rs.getLong("id"));
+            label.setName(rs.getString("name"));
+
+        }
+        return label;
+    }
 }

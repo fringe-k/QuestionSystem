@@ -43,6 +43,6 @@ public class User{
     public void setPhone(String phone) { this.phone = phone; }
     public void setMail(String mail) { this.mail = mail; }
     public void setPassword(String password) { this.password = password; }
-    public void setPhoto(String photoURL) { this.photo = photo; }
+    public void setPhoto(String photo) { this.photo = photo; }
 
 };

@@ -1,5 +1,7 @@
 package qs.common;
 
+import com.alibaba.fastjson.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 public class AnswerDao extends DAO{
@@ -108,6 +110,22 @@ public class AnswerDao extends DAO{
         ResultSet rs = ptmt.executeQuery();
         if(rs.next()) return rs.getInt(1);
         else throw new SQLException();
+    }
+
+    public int search(String words) throws SQLException, NullPointerException{
+        String searchMode = getSearchMode(words);
+        String sql = String.format("select * from Answer where match(content) against ('%s', in boolean mode)", searchMode);
+        excuteQuery(sql);
+        return toJsonArray().size();
+    }
+
+    public String getSearchMode(String words){
+        String arr[] = words.split("\\s+");
+        String searchMode = "";
+        for (String ss:arr) {
+            searchMode += String.format("+%s ", ss);
+        }
+        return searchMode;
     }
 
 
