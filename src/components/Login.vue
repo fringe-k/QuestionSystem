@@ -115,9 +115,12 @@
               }
             }).then(res =>{
             console.log(res)
-            if(res.data.trim()== "user")
+            if(res.data.role.trim()== "user")
             {
               global.email=this.userName
+              global.userId=res.data.userId
+              console.log(res.data.userId)
+              console.log(global.userId)
               this.$alert('登录成功！请按确定前往主界面', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
@@ -125,9 +128,11 @@
                 }
               });
             }
-            else if(res.data.trim()== "manager")
+            else if(res.data.role.trim()== "manager")
             {
               global.email=this.userName
+              global.userId=res.data.userId
+              console.log(global.userId)
               this.$alert('管理员登录成功！请按确定前往管理界面', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
@@ -135,7 +140,7 @@
                 }
               });
             }
-            else if(res.data.trim()== "forbidden")
+            else if(res.data.role.trim()== "forbidden")
             {
               this.$alert('你已经被禁止登录！', '提示', {
                 confirmButtonText: '确定',
