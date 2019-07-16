@@ -1,31 +1,34 @@
 <template>
   <div id="body">
     <div class="top">
-      <ul>
-        <li class="link01">Q/A SYSTEM</li>
-        <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-        <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
-        <li class="link02">
-          <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+      <ul class="nav" style="padding-left: 6%;">
+        <li class="link01"> Q/A SYSTEM</li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        </li>
         <div class="search bar">
           <form>
             <input type="text" placeholder="请输入您要搜索的内容...">
-            <button type="submit"></button>
+            <button id="searchBtn" type="submit"></button>
           </form>
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button id="triggerBtn"><li><a href="#"><i class="iconfont">&#xe601;</i></a></li></button>
-
+          <button class="triggerBtn"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          <button class="triggerBtn"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="个人中心"><i class="iconfont">&#xe601;dsgrgrg</i></a></li></button>
         </div>
       </ul>
     </div>
     <!--导航栏end-->
 
     <div id="classList" class="listContainer" >
-      <li v-for="item,index in leftList" class="ui-link" @click="chose" :data-item="index">
+      <li v-for="item,index in leftList" :class="{'ui-link':1,'chosen':leftChosen[index]==1}" @click="chose" :data-item="index">
         {{item}}
       </li>
     </div>
@@ -63,7 +66,8 @@
   var that=this
   var leftList=["用户管理","类别管理","标签管理"];
   var labelList=[]
-
+  var leftChosen=[0,0,1]
+  var hasNotLogin = [1]
   export default {
     data() {
       return {
@@ -71,12 +75,24 @@
         dynamicTags: ['标签一', '标签二', '标签三'],
         inputVisible: false,
         labelList:labelList,
-        inputValue: ''
+        inputValue: '',
+        leftChosen:leftChosen,
+        circleUrl: global.photo,
+        hasNotLogin:hasNotLogin,
+        myId:global.userId,
+        myName:global.name
       }
     },
     created(){
+      if(global.userId==-1){
+        console.log(hasNotLogin)
+      }
+      else{
+        hasNotLogin.splice(0,hasNotLogin.length)
+        hasNotLogin.push(0)
+      }
       console.log("labelcreated在执行")
-      this.$axios.get(global.host + '/test/admin',
+      this.$axios.get(global.host + '/admin',
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -97,6 +113,7 @@
     destroyed(){
       labelList=[]
       console.log("labeldestroyed在执行")
+      var hasNotLogin = [1]
     },
     methods:
       {
@@ -113,7 +130,7 @@
         handleClose(tag) {
           console.log(tag)
           this.labelList.splice(this.labelList.indexOf(tag), 1);
-          this.$axios.get(global.host + '/test/admin',
+          this.$axios.get(global.host + '/admin',
             {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -143,7 +160,7 @@
           }
           this.inputVisible = false;
 
-          this.$axios.get(global.host + '/test/admin',
+          this.$axios.get(global.host + '/admin',
             {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -158,6 +175,45 @@
               console.log(response)
             })
           this.inputValue = '';
+        },
+        toLogin:function(){
+          this.$confirm('是否登陆?', '提示', {
+            confirmButtonText: '前往登陆',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+            this.$router.push({
+              path: '/Login',
+              query: {
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消登陆'
+            });
+          });
+        },
+        toPsw:function () {
+          this.$router.push({
+            path: '/psw',
+            query: {
+            }
+          })
+        },
+        toHome:function(){
+          this.$router.push({
+            path: '/',
+            query: {
+            }
+          })
+        },
+        toQuestion:function () {
+          this.$router.push({
+            path: '/QuestionShow',
+            query: {
+            }
+          })
         }
       }
   }
@@ -168,8 +224,8 @@
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "../components/css/searchBar.css";
-  @import "../components/css/top.css";
+  @import "css/searchBar.css";
+  @import "../components/css/guide.css";
 
   #body{
     width: 100%;
@@ -249,6 +305,9 @@
   }
   .testShow{
 
+  }
+  .chosen{
+    color:red;
   }
 
 </style>

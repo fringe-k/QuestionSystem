@@ -1,27 +1,45 @@
 <template>
   <div>
-   <div class="top">
-    <ul>
-      <li class="link01">Q/A SYSTEM</li>
-      <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-      <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
-      <li class="link02">
-        <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
-      </li>
-
-      <div class="search bar">
-        <form>
-          <input type="text" placeholder="请输入您要搜索的内容...">
-          <button type="submit"></button>
-        </form>
-      </div>
-      <div class="buBox">
-        <!-- 触发按钮 -->
-        <button id="triggerBtn"><li><a href="#"><i class="iconfont">&#xe601;</i></a></li></button>
-
-      </div>
-    </ul>
-   </div>
+    <div class="top">
+      <ul class="nav" style="padding-left: 6%;">
+        <li class="link01"> Q/A SYSTEM</li>
+        <li class="nav-item">
+          <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" @click="toQuestion" id="link03"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        </li>
+        <div class="search bar">
+          <form>
+            <input type="text" placeholder="请输入您要搜索的内容...">
+            <button id="searchBtn" type="submit"></button>
+          </form>
+        </div>
+        <div class="buBox">
+          <!-- 触发按钮 -->
+          <div v-if="hasNotLogin[0]">
+            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          </div>
+          <div v-else>
+            <button id="personBtn">
+              <div @click="toPsw">
+                <ul>
+                  <li style="float:left;margin-top: -2px">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
+                  </li>
+                  <li style="float:left;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心" style="text-align: end">{{myName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </button>
+          </div>
+        </div>
+      </ul>
+    </div>
     <!--导航栏end-->
     <div class="titleBox">
       <span class="title">{{QuestionDetail[0].title}}</span>
@@ -32,11 +50,17 @@
       </div>
     </div>
     <div class="content">
-      <div class="contentBox">
-         <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>
+      <div class="contentBox" id = "test-editormd-view">
+        <textarea style="display:none;" name="test-editormd-markdown-doc">###Hello world!</textarea>
+
+        <!--         <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>-->
          <div class="bottomLine">
-            <span style="color:rgba(145,139,139,1);font-size:20px;">{{QuestionDetail[0].date}}</span>
-            <span style="color:blue;font-size:20px;margin-left:70%;cursor:pointer" @click="dialogVisible = true">我要回答</span>
+            <div style="color:rgba(145,139,139,1);font-size:20px;display:inline-block;vertical-align:top;">{{QuestionDetail[0].date}}</div>
+            <div style="font-size:20px;display:inline-block;width:150px;margin-left:50px;vertical-align:top;color:red;">
+              <i class='iconfont 'style="font-size:20px;">&#xe61a;</i>积分悬赏:{{QuestionDetail[0].reward}}
+            </div>
+            <div style="color:blue;font-size:20px;margin-left:300px;cursor:pointer;display:inline-block;vertical-align:top;" @click="dialogVisible = true">我要回答</div>
+
          </div>
       </div>
       <!--问题展示end-->
@@ -53,7 +77,8 @@
                    <p style="cursor: pointer;width:150px;" >{{answer.answerer}}</p>
               </el-tooltip>
               <p style="color:gray;width:200px;">{{answer.dateTime}}</p>
-              <p style="margin-left:75px;cursor: pointer;width:100px;" >我要赞赏</p>
+              <p v-if="!answer.zan" style="margin-left:75px;cursor: pointer;width:100px;" :data-item="index" @click="toAward">我要赞赏</p>
+              <p v-else style="margin-left:75px;cursor: pointer;width:100px;" >已赞赏</p>
               <p style="margin-left:10px;width:60px;">{{index}}楼</p>
             </div>
             <span class="answerContent">
@@ -68,6 +93,8 @@
                   <span :data-item="index" @click="uploadComment">提交</span>
                   <span :data-item="index" @click="cancelComment">取消</span>
               </div>
+              <span v-if="!answer.like"  style="cursor:pointer;margin-left:50px;color:skyblue;" :data-item="index" @click="giveLike" > <i class='iconfont 'style="font-size:18px;">&#xe65c;</i>点赞</span>
+              <span v-else  style="cursor:pointer;margin-left:50px;color:red;" :data-item="index" @click="giveLike" > <i class='iconfont 'style="font-size:18px;">&#xe65c;</i>已赞</span>
             </div>
             <el-input v-if="answer.inputShow"
               type="textarea"
@@ -77,7 +104,7 @@
             </el-input>
 
             <div class="showComments" v-if="answer.commentShow">
-              <li v-for="comment in commentList" class="commentList" style="word-break: break-word">
+              <li v-for="comment in commentList[index]" class="commentList" style="word-break: break-word">
                 <span style="color:blue;cursor:pointer">{{comment.user}}</span><span>:{{comment.content}}</span>
               </li>
             </div>
@@ -99,8 +126,8 @@
       <div  style="margin-top:20px;">
         <inputfield ref="input" class="inputfield"></inputfield>
         <span slot="footer" class="dialog-footer">
-           <button @click="dialogVisible = false">取 消</button>
-           <button @click="upload">提交</button>
+           <el-button @click="dialogVisible = false">取 消</el-button>
+           <el-button @click="upload">提交</el-button>
         </span>
       </div>
     </el-dialog>
@@ -111,6 +138,27 @@
 </template>
 
 <script>
+
+  function  setPreview() {
+    var testEditormdView;
+    testEditormdView = editormd.markdownToHTML("test-editormd-view", {
+      markdown        : QuestionDetail[0].content ,//+ "\r\n" + $("#append-test").text(),
+      //htmlDecode      : true,       // 开启 HTML 标签解析，为con了安全性，默认不开启
+      htmlDecode      : "style,script,iframe",  // you can filter tags decode
+      //toc             : false,
+      tocm            : true,    // Using [TOCM]
+      //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
+      //gfm             : false,
+      //tocDropdown     : true,
+      // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
+      emoji           : true,
+      taskList        : true,
+      tex             : true,  // 默认不解析
+      flowChart       : true,  // 默认不解析
+      sequenceDiagram : true,  // 默认不解析
+    });
+  }
+
   import global from './global.vue'
   import util from '@/util.js'
   import Input from './InputField.vue'
@@ -140,6 +188,9 @@
   var commentList=[]
   var isAnswer={key:false}
   var dialogVisible=false
+  var userId=""
+  var hasAwarded=0
+  var hasNotLogin = [1]
     export default {
       name: "QuestionDetail",
       components: {"inputfield": Input},
@@ -148,16 +199,30 @@
           QuestionDetail: QuestionDetail,
           peInfo: PeInfo,
           answerList: answerList,
-          circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
           commentList: commentList,
           isAnswer: isAnswer,
           textarea2:"",
-          dialogVisible:dialogVisible
+          dialogVisible:dialogVisible,
+          hasAwarded:hasAwarded,
+          circleUrl: global.photo,
+          hasNotLogin:hasNotLogin,
+          myId:global.userId,
+          myName:global.name,
+          preview:null
         }
       },
       created() {
-        console.log(this.$route.query)
-        console.log(typeof (this.$route.query.questionId))
+        // that = this
+        if(global.userId==-1){
+          console.log(hasNotLogin)
+        }
+        else{
+          hasNotLogin.splice(0,hasNotLogin.length)
+          hasNotLogin.push(0)
+        }
+        console.log("-----接受数据-------")
+
+        userId=this.$route.query.userId
         this.$axios.get(global.host + '/detail',
           {
             headers: {
@@ -176,10 +241,14 @@
               content: response.data.content,
               Questioner: response.data.user,
               date: util.formatDate(response.data.date),
-              labels: JSON.parse(response.data.label)
+              labels: JSON.parse(response.data.label),
+              reward:response.data.reward,
+              userId:userId
             }
             QuestionDetail.push(l)
-            console.log(QuestionDetail.Questioner)
+            setPreview()
+            console.log("-----以下是问题详细-----")
+            console.log(QuestionDetail)
           });
         this.$axios.get(global.host + '/detail',
           {
@@ -190,11 +259,14 @@
               action: "select",
               entity: "Answer",
               questionId: this.$route.query.questionId,
+              userId:global.userId,
               index: 0,
               num: 50
             }
           })
           .then(function (response) {
+            console.log("======answerList")
+            console.log(response)
             for (var i = 0; i < response.data.length; i++) {
               var l = {
                 img: response.data[i].photo,
@@ -204,12 +276,40 @@
                 answerId: response.data[i].id,
                 commentShow: false,
                 inputShow:false,
-                commentContent:""
+                commentContent:"",
+                hasBeenAwarded:0,
+                like:0
               }
               answerList.push(l)
+              commentList.push([])
             }
-          });
 
+          })
+
+        this.$axios(
+          {
+            method: 'post',
+            url: global.host + '/G-A',
+            params: {
+              questionId: this.$route.query.questionId,
+              email:global.email,
+            }
+          }).then(res => {
+          console.log("----以下是是否悬赏信息--------")
+          console.log(res)
+          hasAwarded=res.data;
+        });
+
+
+
+      },
+      destroyed(){
+        QuestionDetail =[]
+        PeInfo=[]
+        answerList=[]
+        commentList=[]
+        isAnswer={key:false}
+        var hasNotLogin = [1]
       },
       methods: {
         showCommentOf: function (e) {
@@ -217,8 +317,9 @@
           console.log(e.target.getAttribute('data-item'))
           if (answerList[i].commentShow) {
             answerList[i].commentShow = false
-            commentList = []
+            commentList[i].splice(0, commentList[i].length)
           } else {
+            commentList[i].splice(0, commentList[i].length)
             answerList[i].commentShow = true
             this.$axios.get(global.host + '/detail',
               {
@@ -234,13 +335,16 @@
                 }
               })
               .then(function (response) {
-                for (var i = 0; i < response.data.length; i++) {
+                console.log(response)
+                for (var u = 0; u < response.data.length; u++) {
                   var l = {
-                    user: response.data[i].name,
-                    content: response.data[i].content
+                    user: response.data[u].name,
+                    content: response.data[u].content
                   }
-                  commentList.push(l)
+                  commentList[i].push(l)
                 }
+                console.log("----------" + i)
+                console.log(commentList[i])
               });
 
 
@@ -249,79 +353,183 @@
         },
         toComment: function (e) {
           var i = e.target.getAttribute('data-item')
-          answerList[i].inputShow=true
+          answerList[i].inputShow = true
 
         },
         toAnswer: function (e) {
           isAnswer.key = true
-          dialogVisible=true
-          console.log(isAnswer+dialogVisible)
+          dialogVisible = true
+          console.log(isAnswer + dialogVisible)
 
         },
         upload: function (e) {
           console.log(this.$refs.input)
-          var i=document.getElementById("content").value
+          var i = document.getElementById("content").value
           console.log(document.getElementById("content").value)
           this.$confirm('确认提交?', '提示', {
-           confirmButtonText: '确定',
-           cancelButtonText: '取消',
-           type: 'warning'
-         }).then(() => {
-           this.$axios({
-               method:'post',
-               url:global.host + '/detail',
-               params: {
-                 action: "insert",
-                 entity: "Answer",
-                 questionId:this.$route.query.questionId,
-                 mail:global.email,
-                 content:encodeURI(i)
-               }
-             })
-             .then(function (response) {
-               location.reload()
-             })
-       });
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$axios({
+              method: 'post',
+              url: global.host + '/detail',
+              params: {
+                action: "insert",
+                entity: "Answer",
+                questionId: this.$route.query.questionId,
+                mail: global.email,
+                content: encodeURI(i)
+              }
+            })
+              .then(function (response) {
+                location.reload()
+              })
+          });
         },
-        uploadComment:function(e){
+        uploadComment: function (e) {
           var u = e.target.getAttribute('data-item')
-         console.log(answerList[u].commentContent)
+          console.log(answerList[u].commentContent)
           this.$confirm('确认提交评论?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
             this.$axios({
-              method:'post',
-              url:global.host + '/test/detail',
+              method: 'post',
+              url: global.host + '/detail',
               params: {
                 action: "insert",
                 entity: "Comment",
-                answerId:answerList[u].answerId,
-                mail:global.email,
-                content:encodeURI(answerList[u].commentContent)
+                answerId: answerList[u].answerId,
+                mail: global.email,
+                content: encodeURI(answerList[u].commentContent)
               }
             })
               .then(function (response) {
-                answerList[u].commentContent=''
-                answerList[u].inputShow=false
+                answerList[u].commentContent = ''
+                answerList[u].inputShow = false
                 location.reload()
 
-              })
+              });
           });
         },
-         cancelComment:function(e){
-           var i = e.target.getAttribute('data-item')
-           answerList[i].inputShow=false
-           answerList[i].commentContent=''
-         },
+        cancelComment: function (e) {
+          var i = e.target.getAttribute('data-item')
+          answerList[i].inputShow = false
+          answerList[i].commentContent = ''
+        },
         handleClose(done) {
           this.$confirm('确认关闭？')
             .then(_ => {
               done();
             })
-            .catch(_ => {});
-        }
+            .catch(_ => {
+            });
+        },
+        giveLike: function (e) {
+          var u = e.target.getAttribute('data-item')
+          console.log(global.userId + "给" + answerList[u].answerId + "点了赞")
+          answerList[u].like=1
+          this.$axios({
+            method: 'post',
+            url: global.host + '/ScoreSystem',
+            params: {
+              answerId: answerList[u].answerId,
+              email: global.email,
+            }
+          })
+            .then(function (response) {
+              console.log(response)
+
+            });
+
+        },
+        toAward: function (e) {
+          var u = e.target.getAttribute('data-item')
+          console.log("用户ID："+global.userId )
+          console.log("提问者ID："+QuestionDetail[0].userId)
+          if (global.userId != QuestionDetail[0].userId)
+          {
+            this.$alert('只有提问者才可以赞赏', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+              }
+            });
+          }
+          else if(hasBeenAwarded)
+          {
+            this.$alert('您的悬赏已经使用', '提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+              }
+            });
+          }
+          else
+            {
+
+              this.$confirm("确认赞赏该回答？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$axios({
+                  method: 'get',
+                  url: global.host + '/ScoreSystem',
+                  params: {
+                    answerId: answerList[u].answerId,
+                    questionId: this.$route.query.questionId,
+                  }
+                })
+                  .then(function (response) {
+                    console.log(response)
+                  });
+              })
+
+          }
+
+          },
+        toLogin:function(){
+          this.$confirm('是否登陆?', '提示', {
+            confirmButtonText: '前往登陆',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+            this.$router.push({
+              path: '/Login',
+              query: {
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消登陆'
+            });
+          });
+        },
+        toPsw:function () {
+          this.$router.push({
+            path: '/psw',
+            query: {
+            }
+          })
+        },
+        toHome:function(){
+          this.$router.push({
+            path: '/',
+            query: {
+            }
+          })
+        },
+        toQuestion:function () {
+          this.$router.push({
+            path: '/QuestionShow',
+            query: {
+            }
+          })
+        },
+
       }
     }
 </script>
@@ -330,8 +538,9 @@
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "../components/css/searchBar.css";
-  @import "../components/css/top.css";
+  @import "../assets/style/icon/iconfont.css";
+  @import "css/searchBar.css";
+  @import "../components/css/guide.css";
   .top{
     position:fixed;
     border-bottom: 1px solid #bd5151;

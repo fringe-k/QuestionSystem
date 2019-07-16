@@ -1,9 +1,9 @@
 /*.bar7 {background: #7BA7AB;}*/
 div.search {
-    position: relative;
-    float: left;
-    width: 300px;
-    margin-left: 15%;
+    margin-top: 7px;
+    position: fixed;
+    left:900px;
+    width: 300px;           
     }
 .bar form {
     height: 42px;
@@ -16,9 +16,11 @@ div.search {
     background: rgb(255, 255, 255);
     transition: .3s linear;
     float: right;
+  padding-left: 13px;
 }
 .bar input:focus {
     width: 300px;
+  outline: none;
 }
 .bar button {
     background: none;
@@ -35,18 +37,16 @@ form {
     width: 300px;
     margin: 0 auto;
 }
-
-input, button {
+button {
+  border: none;
+  outline: none;
+}
+/*input, button {
     border: none;
     outline: none;
 }
 
-input {
-    width: 100%;
-    height: 32px;
-    padding-left: 13px;
-}
-
+*/
 #searchBtn {
     height: 36px;
     width: 42px;
@@ -54,3 +54,4 @@ input {
     position: absolute;
     background: none;
 }
+

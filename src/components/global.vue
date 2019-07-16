@@ -4,10 +4,17 @@
 
 <script>
     const host="http://query.liublack.cn/qs";
-    const email='1234@qq.com'
+    // const host="http://localhost:8082/test";
+    const email='441788593@qq.com'
+    const userId=2
+    const photo=''
+    const name='小胖子'
     export default {
         host,
-        email
+        email,
+        userId,
+      photo,
+      name
     }
 
 </script>

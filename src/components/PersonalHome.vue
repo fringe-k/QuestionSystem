@@ -2,37 +2,44 @@
   <div>
 
     <div class="top">
-    <ul>
-      <li class="link01">Q/A SYSTEM</li>
-      <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-      <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
-      <li class="link02">
-        <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
-        <!-- <ul>
-            <li><a href="#">二级菜单</a></li>
-            <li><a href="#">二级菜单</a></li>
-        </ul> -->
-      </li>
-
-      <div class="search bar">
-        <form>
-          <input type="text" placeholder="请输入您要搜索的内容...">
-          <button type="submit"></button>
-        </form>
-      </div>
-      <div class="buBox">
-        <!-- 触发按钮 -->
-        <button id="triggerBtn">
-          <li>
-            <a href="#">
-              <i class="iconfont">&#xe601;</i>
-            </a>
-          </li>
-        </button>
-
-      </div>
-    </ul>
-    <!--导航栏 end-->
+      <ul class="nav" style="padding-left: 6%;">
+        <li class="link01"> Q/A SYSTEM</li>
+        <li class="nav-item">
+          <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        </li>
+        <div class="search bar">
+          <form>
+            <input type="text" placeholder="请输入您要搜索的内容...">
+            <button id="searchBtn" type="submit"></button>
+          </form>
+        </div>
+        <div class="buBox">
+          <!-- 触发按钮 -->
+          <div v-if="hasNotLogin[0]">
+            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          </div>
+          <div v-else>
+            <button id="personBtn">
+              <div @click="toPsw">
+                <ul>
+                  <li style="float:left;margin-top: -2px">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
+                  </li>
+                  <li style="float:left;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心" style="text-align: end">{{myName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </button>
+          </div>
+        </div>
+      </ul>
     </div>
 
     <div class="person">
@@ -154,7 +161,7 @@
   //import {getAliOSSCreds} from '@/api/common'// 向后端获取 OSS秘钥信息
    //import {createId} from '@/utils' // 一个生产唯一的id的方法
    import OSS from 'ali-oss'
-
+  var hasNotLogin = [1]
   var message="";
   var data = [
     {score:5,question:5,answer:5,follow:5,collect:5,fan:5},
@@ -182,14 +189,24 @@
             backgroundRepeat: "no-repeat",
             backgroundSize: "100% 100%",
           },
+          circleUrl: global.photo,
+          hasNotLogin:hasNotLogin,
+          myId:global.userId,
+          myName:global.name
         }
       },
       created(){
-
+        if(global.userId==-1){
+          console.log(hasNotLogin)
+        }
+        else{
+          hasNotLogin.splice(0,hasNotLogin.length)
+          hasNotLogin.push(0)
+        }
         this.$axios(
           {
             method:'get',
-            url:"http://localhost:8082/test/uploadphoto",
+            url:global.host+"/uploadphoto",
             params:{
               email:global.email,
             }
@@ -206,7 +223,7 @@
         this.$axios(
           {
             method:'post',
-            url:"http://localhost:8082/test/ReturnQuestion",
+            url:global.host+"/ReturnQuestion",
             params:{
               mail:global.email
             }
@@ -232,7 +249,7 @@
         this.$axios(
           {
             method:'get',
-            url:"http://localhost:8082/test/AlterInformation",
+            url:global.host+"/AlterInformation",
             params:{
               email:global.email
             }
@@ -247,7 +264,7 @@
         this.$axios(
           {
             method:'get',
-            url:"http://localhost:8082/test/ReturnInformation",
+            url:global.host+"/ReturnInformation",
             params:{
               email:global.email
             }
@@ -261,7 +278,9 @@
           console.info(e)
         })
       },
-
+      destroyed(){
+        var hasNotLogin = [1]
+      },
       methods:{
         to_changeInfo(){
           this.$router.push({path:'/changeInfo'})
@@ -279,7 +298,7 @@
           this.$axios(
             {
               method:'post',
-              url:"http://localhost:8082/test/uploadphoto",
+              url:global.host+"/uploadphoto",
               params:{
                 email:global.email,
                 uri:uri
@@ -320,7 +339,34 @@
           }
           return isJPG && isLt2M;
         },
-
+        toLogin:function(){
+          this.$router.push({
+            path: '/Login',
+            query: {
+            }
+          })
+        },
+        toHome:function(){
+          this.$router.push({
+            path: '/',
+            query: {
+            }
+          })
+        },
+        toPsw:function () {
+          this.$router.push({
+            path: '/psw',
+            query: {
+            }
+          })
+        },
+        toQuestion:function () {
+          this.$router.push({
+            path: '/QuestionShow',
+            query: {
+            }
+          })
+        }
       }
     }
 </script>
@@ -329,8 +375,8 @@
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "../components/css/searchBar.css";
-  @import "../components/css/top.css";
+  @import "css/searchBar.css";
+  @import "../components/css/guide.css";
 
   .person{
     position: fixed;
@@ -373,7 +419,7 @@
     text-align: center;
     display:inline-block;
     line-height: 40px;
-    border:1px solid #000
+    border:1px solid #bd5151;
   }
   .ui-link{
     margin: 0 auto;
@@ -406,8 +452,9 @@
     margin-left:10px;
     width:100px;
     font-size: 18px;
-    border:1px solid #000;
-    cursor: pointer
+    border:1px solid #bd5151;
+    cursor: pointer;
+    background-color: white;
   }
 
   .avatar-uploader{

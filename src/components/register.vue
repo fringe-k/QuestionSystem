@@ -2,6 +2,8 @@
   <div :style="bg" style="height: 100%">
     <div style="width: 100%"></div>
     <div class="reg_form" >
+      <a class="link01" style="margin-left: 30%"> Q/A SYSTEM</a>
+      <br>
       <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
 
@@ -35,6 +37,7 @@
 
 <script>
   import { JSEncrypt } from 'jsencrypt'
+  import global from './global.vue'
 
     export default {
      data() {
@@ -200,7 +203,7 @@
           this.$axios(
             {
               method:'get',
-              url:"http://localhost:8082/test/rsaPassword",
+              url:global.host+"/rsaPassword",
               params:{
               }
             }).then(res=>{
@@ -214,30 +217,39 @@
             this.$axios(
               {
                 method:'post',
-                url:"http://localhost:8082/test/sign",
+                url:global.host+"/sign",
 
                 params:{
                   username:encodeURI(this.userName),
                   password:this.rsaPassword,
                   email:this.email,
                   age:this.age,
-                  phone:this.phone
+                  phone:this.phone,
                 }
               }).then(res =>{
+
               console.info(res)
-              console.log(this.userName)
               if(res.data.trim()== "successfully")
               {
-                this.$confirm('注册成功！按确定前往登录界面？', '提示', {
+                this.$confirm('注册成功！按确定将发送验证邮件到邮箱！请到邮箱确定激活账号才可登录！', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
                   type: 'success'
                 }).then(() => {
-                  this.$message({
-                    type: 'success',
-                    message: '到达登录界面',
-                  });
-                  this.$router.push({path:'/Login'})
+                  global.email=this.email
+                  this.$axios(
+                    {
+                      method:'post',
+                      url:global.host+"/SendEmail",
+
+                      params:{
+                        email:this.email,
+                        type:'register'
+                      }
+                    }).then(res=>{
+                      console.log(res)
+                  })
+
                 }).catch(() => {
                   this.$message({
                     type: 'info',
@@ -264,6 +276,7 @@
                 });
                 this.error.null=''
               }
+
             }).catch(e =>{
               console.info(e)
             })
@@ -280,6 +293,7 @@
 </script>
 
 <style scoped>
+  @import "../components/css/guide.css";
 
   .outer_label {
     position: relative;
@@ -314,7 +328,7 @@
 
   .reg_form {
     position: absolute;
-    top:20%;
+    top:10%;
     width: 520px;
     margin-left: 37%;
     background-color: white;
@@ -359,6 +373,7 @@
     background-color: white;
     filter: brightness(1.4);
     border-radius: 15%;
+    outline:none;
   }
 
   .qxs-icon {
@@ -369,11 +384,12 @@
     padding-left: 10%;
     border: 0;
     border-bottom: solid 2px lavender;
+    outline-color: #bd5151;
   }
 
   .err-msg{
     width: 50px;
-    background-color:wheat;
+    background-color:white;
     font-size: 20px;
   }
 

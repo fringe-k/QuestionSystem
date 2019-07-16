@@ -1,8 +1,9 @@
 div.buBox{
-    position: absolute;
-    top:16px; 
-    right:0;
-    width: 300px;        
+    position: relative;
+    margin-top: 5px;
+    right:5%;
+    width: 80px;
+  left: 100px;
 }
 /* .bu button{
     text-decoration: none;
@@ -12,7 +13,8 @@ div.buBox{
     padding-bottom: 0px;
     border-bottom:  0px solid rgb(189, 81, 81);
 } */
-.bu li a{
+
+.buBox li a{
   /* 设置链接内容显示的格式*/
     display: block; /* 把链接显示为块元素可使整个链接区域可点击 */
     color:rgb(153, 148, 148);
@@ -22,8 +24,41 @@ div.buBox{
     text-decoration: none; /*去除下划线*/
     cursor: pointer;
     }
-.bu li a:hover{
+.buBox li a:hover{
     color: #bd5151;
     padding-bottom: 0px;
     border-bottom:  0px solid rgb(189, 81, 81);
+}
+#triggerBtn{
+  background:none;
+  border: none;
+  width: 300px;
+}
+#personBtn{
+  background:none;
+  border: none;
+  width: 300px;
+  margin-top: -15px;
+}
+.btns button {
+  padding: 2px 0px;
+}
+
+.btns button, .btn {
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-transition: background 300ms ease-out;
+  transition: background 300ms ease-out;
+}
+
+.btns button:hover, .btn:hover {
+  background: #f6f6f6;
+  border-color: rgba(189,81,81,.8);
+}
+.btns button:focus{
+  outline: none;
 }

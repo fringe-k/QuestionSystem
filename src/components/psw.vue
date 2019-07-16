@@ -1,38 +1,45 @@
 <template>
   <div :style="bg">
 
-    <div class="top" >
-      <ul>
-        <li class="link01">Q/A SYSTEM</li>
-        <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-        <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
-        <li class="link02">
-          <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
-          <!-- <ul>
-              <li><a href="#">二级菜单</a></li>
-              <li><a href="#">二级菜单</a></li>
-          </ul> -->
+    <div class="top">
+      <ul class="nav" style="padding-left: 6%;">
+        <li class="link01"> Q/A SYSTEM</li>
+        <li class="nav-item">
+          <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" @click="toQuestion" id="link03"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        </li>
         <div class="search bar">
           <form>
             <input type="text" placeholder="请输入您要搜索的内容...">
-            <button type="submit"></button>
+            <button id="searchBtn" type="submit"></button>
           </form>
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button id="triggerBtn">
-            <li>
-              <a href="#">
-                <i class="iconfont">&#xe601;</i>
-              </a>
-            </li>
-          </button>
-
+          <div v-if="hasNotLogin[0]">
+            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          </div>
+          <div v-else>
+            <button id="personBtn">
+              <div @click="toPsw">
+                <ul>
+                  <li style="float:left;margin-top: -2px">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
+                  </li>
+                  <li style="float:left;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心" style="text-align: end">{{myName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </button>
+          </div>
         </div>
       </ul>
-      <!--导航栏 end-->
     </div>
 
     <div class="person">
@@ -55,7 +62,7 @@
         <h3>&nbsp;{{this.userName}}</h3>
       </div>
       <!--头像&名字 end-->
-      <button @click="alterpsw" style="margin-left:10px;width: 100px;font-size: 18px;border:1px solid #000;cursor: pointer">修改密码</button>
+      <button @click="alterpsw" style="margin-left:10px;width: 100px;font-size: 18px;border:1px solid #bd5151;cursor: pointer;background-color: white">修改密码</button>
 
       <div class="study_info">
         <div style="font-size: 25px">
@@ -97,6 +104,7 @@
     <div style="margin-top: 220px">
       <div class="reg_form" >
         <h2 style="margin-left: 35%">请先填写完新旧密码后提交</h2>
+        <br>
         <input type="text"  class="qxs-ic_password qxs-icon" v-model="oldpsw" v-if="this.seen.oldpwdType" placeholder="旧密码" style="font-size: 20px;padding-top: 30px">
         <input  type="password" class="qxs-ic_password qxs-icon" style="font-size: 20px;padding-top: 30px" placeholder="旧密码" v-model="oldpsw" v-else>
         <img :src="see?seeImg:unseeImg" @click="changeoldType" style="height: 20px;width: 20px;cursor: pointer">
@@ -114,7 +122,9 @@
         <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
         <span v-if="error.null" class="err-msg" style="margin-left: 40%">{{error.null}}</span>
-        <button class="login_btn" @click="confirm" style="font-size: 20px;margin-left: 40%;" >确定修改</button>
+        <button class="login_btn" @click="confirm" style="font-size: 25px;margin-left: 40%;" >确定修改</button>
+        <br><br><br><br>
+
         <!--动态 end-->
       </div>
     </div>
@@ -144,7 +154,8 @@
   var data = [
     {score:5,question:5,answer:5,follow:5,collect:5,fan:5},
   ];
-
+  var hasNotLogin = [1]
+  var hasNotLogin = [1]
   export default {
     name: "psw",
     data()
@@ -183,9 +194,20 @@
         seeThree:'',
         seeImg:require('../assets/see.png'),
         unseeImg:require('../assets/unsee.png'),
+        circleUrl: global.photo,
+        hasNotLogin:hasNotLogin,
+        myId:global.userId,
+        myName:global.name,
       }
     },
     created(){
+      if(global.userId==-1){
+        console.log(hasNotLogin)
+      }
+      else{
+        hasNotLogin.splice(0,hasNotLogin.length)
+        hasNotLogin.push(0)
+      }
       this.error.oldpsw=''
       this.error.null = ''
       this.error.newpsw = ''
@@ -198,7 +220,7 @@
       this.$axios(
         {
           method:'get',
-          url:"http://localhost:8082/test/uploadphoto",
+          url:global.host+"/uploadphoto",
           params:{
             email:global.email,
           }
@@ -214,7 +236,7 @@
       this.$axios(
         {
           method:'get',
-          url:"http://localhost:8082/test/AlterInformation",
+          url:global.host+"/AlterInformation",
           params:{
             email:global.email
           }
@@ -229,7 +251,7 @@
       this.$axios(
         {
           method:'get',
-          url:"http://localhost:8082/test/ReturnInformation",
+          url:global.host+"/ReturnInformation",
           params:{
             email:global.email
           }
@@ -267,7 +289,7 @@
         this.$axios(
           {
             method:'post',
-            url:"http://localhost:8082/test/uploadphoto",
+            url:global.host+"/uploadphoto",
             params:{
               email:global.email,
               uri:uri
@@ -393,7 +415,7 @@
         this.$axios(
           {
             method:'get',
-            url:"http://localhost:8082/test/rsaPassword",
+            url:global.host+"/rsaPassword",
             params:{
             }
           }).then(res=>{
@@ -408,7 +430,7 @@
           this.$axios(
               {
                 method:'post',
-                url:"http://localhost:8082/test/AlterPsw",
+                url:global.host+"/AlterPsw",
                 params:{
                   email:global.email,
                   oldpsw:this.rsaoldPassword,
@@ -441,8 +463,35 @@
           console.info(e)
           console.log('连接失败')
         })
+      },
+      toLogin:function(){
+        this.$router.push({
+          path: '/Login',
+          query: {
+          }
+        })
+      },
+      toHome:function(){
+        this.$router.push({
+          path: '/',
+          query: {
+          }
+        })
+      },
+      toPsw:function () {
+        this.$router.push({
+          path: '/psw',
+          query: {
+          }
+        })
+      },
+      toQuestion:function () {
+        this.$router.push({
+          path: '/QuestionShow',
+          query: {
+          }
+        })
       }
-
     }
   }
 </script>
@@ -451,8 +500,8 @@
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "../components/css/searchBar.css";
-  @import "../components/css/top.css";
+  @import "css/searchBar.css";
+  @import "../components/css/guide.css";
 
   .person{
     position: fixed;
@@ -495,7 +544,7 @@
     text-align: center;
     display:inline-block;
     line-height: 40px;
-    border:1px solid #000
+    border:1px solid #bd5151;
   }
   .ui-link{
     margin: 0 auto;
@@ -522,23 +571,6 @@
     background-size: 30px 30px;
     background-position: 3%;
   }
-  .qxs-ic_phone {
-    background: url("../assets/phone.png") no-repeat;
-    background-size: 30px 30px;
-    background-position: 3%;
-  }
-
-  .qxs-ic_age {
-    background: url("../assets/age.png") no-repeat;
-    background-size: 30px 30px;
-    background-position: 3%;
-  }
-
-  .qxs-ic_email{
-    background: url("../assets/email.png") no-repeat;
-    background-size: 30px 30px;
-    background-position: 3%;
-  }
 
   .login_btn {
     width: 150px;
@@ -558,11 +590,12 @@
     padding-left: 10%;
     border: 0;
     border-bottom: solid 3px lavender;
+    outline-color: #bd5151;
   }
 
   .reg_form {
     position: fixed;
-    top:35%;
+    top:270px;
     width: 1200px;
     margin-left: 30%;
     padding-top: 25px;
@@ -572,7 +605,7 @@
 
   .err-msg{
     width: 50px;
-    background-color:wheat;
+    background-color:white;
     font-size: 22px;
   }
 

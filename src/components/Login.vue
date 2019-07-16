@@ -2,6 +2,8 @@
   <div  :style="bg" style="height: 100%">
 
       <div class="login_form">
+        <a class="link01" style="margin-left: 30%"> Q/A SYSTEM</a>
+        <br>
         <input type="text"  class="qxs-ic_email qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px;padding-top: 30px">
         <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
 
@@ -62,12 +64,41 @@
         this.seen.pswType=!this.seen.pswType
       },
       to_reset(){
-        this.$alert('好好想一下，加油！', '提示', {
-          confirmButtonText: '确定',
-          callback: action => {
+        if(!this.userName)
+        {
+          this.$alert('请先填写邮箱再忘记密码！', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
 
-          }
-        });
+        }
+        else {
+          this.$alert('确定忘记密码？', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$axios(
+                {
+                  method:'post',
+                  url:global.host+"/SendEmail",
+
+                  params:{
+                    email:this.userName,
+                    type:'ForgetPassword'
+                  }
+                }).then(res=>{
+                  global.email=this.userName
+                console.log(res)
+                this.$alert('邮件已经发送！', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                 }
+               });
+              })
+
+            }
+          });
+        }
       },
 
       to_reg(){
@@ -95,7 +126,7 @@
         this.$axios(
           {
             method:'get',
-            url:"http://localhost:8082/test/rsaPassword",
+            url:global.host+"/rsaPassword",
             params:{
             }
           }).then(res=>{
@@ -108,7 +139,7 @@
           this.$axios(
             {
               method:'post',
-              url:"http://localhost:8082/test/loginMail",
+              url:global.host+"/loginMail",
               params:{
                 mail:this.userName,
                 password:this.rsaPassword
@@ -119,8 +150,11 @@
             {
               global.email=this.userName
               global.userId=res.data.userId
-              console.log(res.data.userId)
+              global.name=decodeURI(res.data.name)
+              global.photo=res.data.photo
               console.log(global.userId)
+              console.log(global.name)
+              console.log(global.photo)
               this.$alert('登录成功！请按确定前往主界面', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
@@ -132,6 +166,8 @@
             {
               global.email=this.userName
               global.userId=res.data.userId
+              global.name=decodeURI(res.data.name)
+              global.photo=res.data.photo
               console.log(global.userId)
               this.$alert('管理员登录成功！请按确定前往管理界面', '提示', {
                 confirmButtonText: '确定',
@@ -142,7 +178,7 @@
             }
             else if(res.data.role.trim()== "forbidden")
             {
-              this.$alert('你已经被禁止登录！', '提示', {
+              this.$alert('账号未激活，禁止登陆！', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
 
@@ -176,6 +212,8 @@
 </script>
 
 <style>
+  @import "../components/css/guide.css";
+
   .login_form {
     position: absolute;
     top:30%;
@@ -233,6 +271,7 @@
     background-color: white;
     filter: brightness(1.4);
     border-radius: 15%;
+    outline:none;
   }
 
   body {
@@ -270,10 +309,11 @@
     padding-left: 10%;
     border: 0;
     border-bottom: solid 2px lavender;
+    outline-color: #bd5151;
   }
   .err-msg{
     width: 50px;
-    background-color:wheat;
+    background-color:white;
     font-size: 20px;
   }
 

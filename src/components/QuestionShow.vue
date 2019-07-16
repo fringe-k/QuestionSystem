@@ -1,24 +1,42 @@
 <template>
   <div id="body">
     <div class="top">
-      <ul>
-        <li class="link01">Q/A SYSTEM</li>
-        <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-        <li class="link02"><a  @click="toWrite"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
-        <li class="link02">
-          <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+      <ul class="nav" style="padding-left: 6%;">
+        <li class="link01"> Q/A SYSTEM</li>
+        <li class="nav-item">
+          <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="link03"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        </li>
         <div class="search bar">
           <form>
             <input type="text" placeholder="请输入您要搜索的内容...">
-            <button type="submit"></button>
+            <button id="searchBtn" type="submit"></button>
           </form>
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button id="triggerBtn"><li><a @click="toPersonalHome"><i class="iconfont">&#xe601;</i></a></li></button>
-
+          <div v-if="hasNotLogin[0]">
+            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          </div>
+          <div v-else>
+            <button id="personBtn">
+              <div @click="toPsw">
+                <ul>
+                  <li style="float:left;margin-top: -2px">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
+                  </li>
+                  <li style="float:left;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心" style="text-align: end">{{myName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </button>
+          </div>
         </div>
       </ul>
     </div>
@@ -85,7 +103,7 @@
   var labelList=["全部"]
   var chosenOne=0;
   var inputSearch=""
-
+  var hasNotLogin = [1]
   export default {
     name: 'QuestionShow',
     data()
@@ -97,7 +115,11 @@
         inputSearch:inputSearch,
         labelList:labelList,
         clickClass:clickClass,
-        clickLabel:clickLabel
+        clickLabel:clickLabel,
+        circleUrl: global.photo,
+        hasNotLogin:hasNotLogin,
+        myId:global.userId,
+        myName:global.name
       }
     },
     watch:{
@@ -107,6 +129,13 @@
        }
     },
     created() {
+      if(global.userId==-1){
+        console.log(hasNotLogin)
+      }
+      else{
+        hasNotLogin.splice(0,hasNotLogin.length)
+        hasNotLogin.push(0)
+      }
       console.log("show1created在执行")
       console.log("-----------" + this.$route.query.lastClass + "------------")
       this.$axios.get(global.host + '/admin',
@@ -261,16 +290,39 @@
     clickLabel.push(1)
     labelList.splice(0,labelList.length)
     labelList.push("全部")
-
+    var hasNotLogin = [1]
   },
     methods: {
       toQuestionDetail:function (e){
-        var i=e.target.getAttribute('data-item')
-        console.log(e.target.getAttribute('data-item'))
-        this.$router.push({path:'/QuestionDetail',
-                            query:{questionId:questionList[i].questionId,
-                                   userId:questionList[i].userId}
-        })
+        if(global.userId==-1){
+          this.$confirm('查看问题详情需要您登陆, 是否继续?', '提示', {
+            confirmButtonText: '前往登陆',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+            this.$router.push({
+              path: '/Login',
+              query: {
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消登陆'
+            });
+          });
+        }
+        else {
+          var i = e.target.getAttribute('data-item')
+          console.log(e.target.getAttribute('data-item'))
+          this.$router.push({
+            path: '/QuestionDetail',
+            query: {
+              questionId: questionList[i].questionId,
+              userId: questionList[i].userId
+            }
+          })
+        }
       },
       choseClass:function(e){
         var u=e.target.getAttribute('data-itemId')
@@ -443,21 +495,38 @@
           }
 
         });
+      },
+      toLogin:function(){
+        this.$router.push({
+          path: '/Login',
+          query: {
+          }
+        })
+      },
+      toHome:function(){
+        this.$router.push({
+          path: '/',
+          query: {
+          }
+        })
+      },
+      toPsw:function () {
+    this.$router.push({
+      path: '/psw',
+      query: {
       }
-
-
+    })
+  }
     }
   }
 </script>
 
 <style scoped>
-
-  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
-  @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "../components/css/searchBar.css";
-  @import "../components/css/top.css";
-
+  @import "../components/css/guide.css";
+  @import "css/searchBar.css";
+  @import "../components/css/buttonBox.css";
+  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   #body{
     width: 100%;
     height: 100%;
@@ -694,7 +763,6 @@
   .on{
     color:#00a1d6
   }
-
 
 
 </style>

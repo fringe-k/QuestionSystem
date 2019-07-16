@@ -1,31 +1,49 @@
 <template>
   <div id="body">
     <div class="top">
-      <ul>
-        <li class="link01">Q/A SYSTEM</li>
-        <li><a href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a></li>
-        <li class="link02"><a href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp提问</a></li>
-        <li class="link02">
-          <a href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+      <ul class="nav" style="padding-left: 6%;">
+        <li class="link01"> Q/A SYSTEM</li>
+        <li class="nav-item">
+          <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
-
+        <li class="nav-item">
+          <a class="nav-link" @click="toQuestion"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+        </li>
         <div class="search bar">
           <form>
             <input type="text" placeholder="请输入您要搜索的内容...">
-            <button type="submit"></button>
+            <button id="searchBtn" type="submit"></button>
           </form>
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button id="triggerBtn"><li><a href="#"><i class="iconfont">&#xe601;</i></a></li></button>
-
+          <div v-if="hasNotLogin[0]">
+            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          </div>
+          <div v-else>
+            <button id="personBtn">
+              <div @click="toPsw">
+                <ul>
+                  <li style="float:left;margin-top: -2px">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
+                  </li>
+                  <li style="float:left;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心" style="text-align: end">{{myName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </button>
+          </div>
         </div>
       </ul>
     </div>
     <!--导航栏end-->
 
     <div id="classList" class="listContainer" >
-      <li v-for="item,index in leftList" class="ui-link" @click="chose" :data-item="index">
+      <li v-for="item,index in leftList" :class="{'ui-link':1,'chosen':leftChosen[index]==1}" @click="chose" :data-item="index">
         {{item}}
       </li>
     </div>
@@ -63,7 +81,8 @@
   var that=this
   var leftList=["用户管理","类别管理","标签管理"];
   var classList=[]
-
+  var leftChosen=[0,1,0]
+  var hasNotLogin = [1]
   export default {
     data() {
       return {
@@ -71,12 +90,24 @@
         dynamicTags: ['标签一', '标签二', '标签三'],
         inputVisible: false,
         classList:classList,
-        inputValue: ''
+        inputValue: '',
+        leftChosen:leftChosen,
+        circleUrl: global.photo,
+        hasNotLogin:hasNotLogin,
+        myId:global.userId,
+        myName:global.name
       }
     },
      created(){
+       if(global.userId==-1){
+         console.log(hasNotLogin)
+       }
+       else{
+         hasNotLogin.splice(0,hasNotLogin.length)
+         hasNotLogin.push(0)
+       }
        console.log("classcreated在执行")
-       this.$axios.get(global.host + '/test/admin',
+       this.$axios.get(global.host + '/admin',
          {
            headers: {
              'Content-Type': 'application/x-www-form-urlencoded'
@@ -96,6 +127,7 @@
     destroyed(){
       console.log("Classdestroyed在执行")
       classList=[]
+      var hasNotLogin = [1]
     },
         methods:
       {
@@ -112,7 +144,7 @@
         handleClose(tag) {
           console.log(tag)
           this.classList.splice(this.classList.indexOf(tag), 1);
-          this.$axios.get(global.host + '/test/admin',
+          this.$axios.get(global.host + '/admin',
             {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -127,14 +159,12 @@
               console.log(response)
             })
         },
-
         showInput() {
           this.inputVisible = true;
           this.$nextTick(_ => {
             this.$refs.saveTagInput.$refs.input.focus();
           });
         },
-
         handleInputConfirm() {
           let inputValue = this.inputValue;
           if (inputValue) {
@@ -142,7 +172,7 @@
           }
           this.inputVisible = false;
 
-          this.$axios.get(global.host + '/test/admin',
+          this.$axios.get(global.host + '/admin',
             {
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -157,18 +187,56 @@
               console.log(response)
             })
           this.inputValue = '';
+        },
+        toLogin:function(){
+          this.$confirm('是否登陆?', '提示', {
+            confirmButtonText: '前往登陆',
+            cancelButtonText: '否',
+            type: 'warning'
+          }).then(() => {
+            this.$router.push({
+              path: '/Login',
+              query: {
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消登陆'
+            });
+          });
+        },
+        toPsw:function () {
+          this.$router.push({
+            path: '/psw',
+            query: {
+            }
+          })
+        },
+        toHome:function(){
+          this.$router.push({
+            path: '/',
+            query: {
+            }
+          })
+        },
+        toQuestion:function () {
+          this.$router.push({
+            path: '/QuestionShow',
+            query: {
+            }
+          })
         }
       }
     }
 </script>
 
 <style scoped>
-
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
   @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "../components/css/searchBar.css";
-  @import "../components/css/top.css";
+  @import "css/searchBar.css";
+  @import "../components/css/guide.css";
 
   #body{
     width: 100%;
@@ -198,6 +266,9 @@
     display:inline-block;
     line-height: 50px;
     vertical-align:top;
+    padding-bottom: 50px;
+    padding-top: 30px;
+    padding-left:30px;
   }
 
 
@@ -222,6 +293,9 @@
   }
   .el-tag + .el-tag {
     margin-left: 10px;
+    font-size:25px;
+    line-height: 50px;
+    height:60px;
   }
   .button-new-tag {
     margin-left: 10px;
@@ -248,6 +322,9 @@
   }
   .testShow{
 
+  }
+  .chosen{
+    color:red;
   }
 
 </style>
