@@ -1,7 +1,8 @@
 package qs.servlet;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mysql.cj.xdevapi.JsonArray;
+
 import com.sun.deploy.net.HttpRequest;
 import com.sun.deploy.net.HttpResponse;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
@@ -17,6 +18,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.net.URLDecoder;
 import java.sql.ResultSet;
+
 
 @WebServlet("/detail")
 public class QuestionDetail extends HttpServlet {
@@ -38,9 +40,6 @@ public class QuestionDetail extends HttpServlet {
         else if(action.equals("addNumOfAgree")){
             doAddNumOfAgree(req, resp);
         }
-
-
-
 
     }
 
@@ -111,7 +110,14 @@ public class QuestionDetail extends HttpServlet {
     }
 
     public void doSelectAnswer(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+        User user = (User)req.getSession().getAttribute("user");
         PrintWriter out = resp.getWriter();
+//        if(user == null) out.print("no user login!");
+//        // for debug
+//        user = new User();
+//        user.setId(2l);
+
+
         Long qid = Long.valueOf(req.getParameter("questionId"));
         int index = Integer.parseInt(req.getParameter("index"));
         int num = Integer.parseInt(req.getParameter("num"));
@@ -119,7 +125,7 @@ public class QuestionDetail extends HttpServlet {
         if (orderBy == null)
             orderBy = "time";
         if(orderBy.equals("numOfAgree")) orderBy = " numOfAgree desc ";
-        String sql = " select Answer.*, User.id, User.name, User.photo from Answer, User where questionId = " + qid +
+        String sql = " select Answer.*, User.name, User.photo from Answer, User where questionId = " + qid +
                 " and Answer.userId = User.id  and Answer.isReleased = 1 order by " + orderBy;
 
         // for debug
@@ -128,7 +134,17 @@ public class QuestionDetail extends HttpServlet {
         try {
             DAO dao = new DAO();
             dao.excuteQuery(sql);
-            out.print(dao.toJsonArray(index, num).toJSONString());
+            JSONArray jsonArray = dao.toJsonArray(index, num);
+            // 查询每个
+            for (int i = 0; i < jsonArray.size(); i++){
+                JSONObject json = (JSONObject) jsonArray.remove(i);
+                Long answerId = json.getLong("id");
+                String sql2 = String.format("select count(*) hasAgreed from Agree where answerId = %d and userId = %d",answerId, user.getId());
+                dao.excuteQuery(sql2);
+                json.put("hasAgreed", ((JSONObject)dao.toJsonArray().get(0)).getLong("hasAgreed"));
+                jsonArray.add(i, json);
+            }
+            out.print(jsonArray.toJSONString());
         }catch (Exception e){
             e.printStackTrace();
             System.out.println(e.getMessage());
@@ -136,13 +152,24 @@ public class QuestionDetail extends HttpServlet {
     }
 
     public void doAddNumOfAgree(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+        User user = (User)req.getSession().getAttribute("user");
+        // for Debug
+        user = new User();
+        user.setId(2l);
+
         Long aid = Long.valueOf(req.getParameter("answerId"));
         PrintWriter out = resp.getWriter();
         try {
             AnswerDao adao = new AnswerDao();
             Answer answer = adao.selectById(aid);
-            adao.update(aid, "numOfAgree", answer.getNumOfAgree() + 1);
-            out.print("success");
+            String sql = String.format("insert into Agree(answerId, userId) values(%d,%d)",aid,user.getId());
+            if(adao.excuteUpdate(sql)){
+                adao.update(aid, "numOfAgree", answer.getNumOfAgree() + 1);
+                out.print("success");
+            }else{
+                out.print("failure");
+            }
+
         }catch (Exception e){
             e.printStackTrace();
             System.out.println(e.getMessage());

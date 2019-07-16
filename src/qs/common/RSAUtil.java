@@ -13,7 +13,7 @@ import java.security.interfaces.RSAPublicKey;
  */
 public class RSAUtil {
 
-    private static final String KEY_DIR = "/Users/pengfei/";
+    private static final String KEY_DIR = "/home/liublack/";
     private static final String PUBLIC_KEY_FNAME =  "public.pem";
     private static final String PRIVATE_KEY_FNAME = "private.pem";
     private static HashMap<String,Key> keys = null;

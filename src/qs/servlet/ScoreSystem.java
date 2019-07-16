@@ -18,18 +18,22 @@ import java.util.ArrayList;
 public class ScoreSystem extends HttpServlet
 {
     //悬赏积分
-    public void getScore(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void giveScore(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Long questionId = Long.valueOf(request.getParameter("questionId"));
         Long answerId=Long.valueOf(request.getParameter("answerId"));
 
         try {
-            String sql=" select userId from Answer where answerId = " + answerId + " and questionId = " + questionId ;
+            String sql=" select userId from Answer where id = " + answerId + " and questionId = " + questionId ;
             AnswerDao adao = new AnswerDao();
             adao.connect();
             adao.excuteQuery(sql);
             ResultSet rs = adao.getResultSet();
-            Long userId=rs.getLong(1);
+            Long userId=0L;
+            while(rs.next()) {
+                userId = rs.getLong(1);
+
+            }
 
             QuestionDao qdao=new QuestionDao();
             Question question=qdao.selectById(questionId);
@@ -54,13 +58,23 @@ public class ScoreSystem extends HttpServlet
             user.setNumOfAnswer(user.getNumOfAnswer());
             user.setNumOfQuery(user.getNumOfQuery());
 
-            question.setAlreadyAward(1L);//标记为：已被悬赏
-            qdao.insert(question);
-
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
+
+
+            if(question.getAlreadyAward()==0L) {
+                out.println("ok");
+                question.setAlreadyAward(1L);//标记为：已被悬赏
+                qdao.update(question);
+
+            }
+            else
+            {
+                out.println("repeat");
+            }
+
             userdao.connect();
-            if (!userdao.insert(user)) {
+            if (!userdao.update(user)) {
 
                 out.println("unsuccessfully");
 
@@ -85,24 +99,33 @@ public class ScoreSystem extends HttpServlet
             response.setCharacterEncoding("UTF-8");
             PrintWriter out = response.getWriter();
 
-            String sql=" select userId from Answer where answerId = " + answerId  ;//" and questionId = " + questionId ;
+            String sql=" select userId from Answer where id = " + answerId  ;//" and questionId = " + questionId ;
             AnswerDao answerdao = new AnswerDao();
             answerdao.connect();
             answerdao.excuteQuery(sql);
             ResultSet rs = answerdao.getResultSet();
-            Long userId=rs.getLong(1);
+            Long userId=0L;
+            while(rs.next()) {
+                userId = rs.getLong(1);
+
+            }
 
             Answer answer=answerdao.selectById(answerId);
             answer.setNumOfAgree(answer.getNumOfAgree()+1);
 
             UserDao LoginUserdao=new UserDao();
             User LoginUser=LoginUserdao.selectByMail(mail);
-            String sql2=" select count(*) from Answer where answerId = " + answerId + " and LoginUserId = " + LoginUser.getId() ;
+            String sql2=" select count(*) from Agree where answerId = " + answerId  + " and userId = " + LoginUser.getId();
             AgreeDao agreedao = new AgreeDao();
             agreedao.connect();
             agreedao.excuteQuery(sql2);
             ResultSet rs2 = agreedao.getResultSet();
-            if(rs2.next())
+            Long cnt=0L;
+            while(rs2.next()){
+                cnt = rs2.getLong(1);
+                break;
+            }
+            if(cnt!=0)
             {
                 out.println("already givelike");
             }
@@ -110,21 +133,8 @@ public class ScoreSystem extends HttpServlet
                 UserDao userdao = new UserDao();
                 userdao.connect();
                 User user = userdao.selectById(userId);
-
-
-                user.setName(user.getName());
-                user.setPhoto(user.getPhoto());
-                user.setMail(user.getmail());
-                user.setPhone(user.getPhone());
-                user.setAge(user.getAge());
-                user.setId(user.getId());
-                user.setPassword(user.getPassword());
-                user.setRole(user.getRole());
                 user.setScore(user.getScore() + 1);
-                user.setCannotLogin(user.getCannotLogin());
-                user.setCannotSpeak(user.getCannotSpeak());
-                user.setNumOfAnswer(user.getNumOfAnswer());
-                user.setNumOfQuery(user.getNumOfQuery());
+
 
                 Agree agree=new Agree();
                 agree.setAnswerId(answerId);
@@ -133,16 +143,13 @@ public class ScoreSystem extends HttpServlet
 
 
                 userdao.connect();
-                if (!userdao.insert(user)) {
+                userdao.update(user);
+                out.println("successfully");
 
-                    out.println("unsuccessfully");
-
-                } else {
-                    out.println("successfully");
-                }
             }
         }catch(Exception e)
         {
+            System.out.println("error");
            e.getMessage() ;
         }
     }
@@ -161,7 +168,7 @@ public class ScoreSystem extends HttpServlet
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try
         {
-            getScore(request,response);
+            giveScore(request,response);
         }catch(Exception e)
         {
             e.getMessage();

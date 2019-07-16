@@ -171,8 +171,8 @@ public class DAO {
 
     public Boolean insert(Question question) throws Exception{
         //拼接sql语句
-        String  sql = "insert into Question(id,userId,type,content,time,label,frequency,title)" +
-                "values(?,?,?,?,?,?,?,?)";
+        String  sql = "insert into Question(id,userId,type,content,time,label,frequency,title,alreadyAward)" +
+                "values(?,?,?,?,?,?,?,?,?)";
 
         PreparedStatement ptmt = conn.prepareStatement(sql); // 预编译SQL，减少sql执行
 
@@ -187,6 +187,7 @@ public class DAO {
             ptmt.setString(6, question.getLabel());
             ptmt.setLong(7, question.getFrequency());
             ptmt.setString(8, question.getTitle());
+            ptmt.setLong(9, question.getAlreadyAward());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -200,7 +201,7 @@ public class DAO {
     //修改数据
     public Boolean update(Question question) throws Exception{
         //拼接sql语句
-        String sql = "update Question" + "userId = ?,type = ?, content = ?,time = ?,label = ?,frequency = ?,title = ?"+
+        String sql = "update Question set userId = ?,type = ?, content = ?,time = ?,label = ?,frequency = ?,title = ?,alreadyAward = ? "+
                 "where id = ?";
         PreparedStatement ptmt = conn.prepareStatement(sql); // 预编译SQL，减少sql执行
         // 向sql语句传参
@@ -213,13 +214,15 @@ public class DAO {
             ptmt.setString(5, question.getLabel());
             ptmt.setLong(6, question.getFrequency());
             ptmt.setString(7, question.getTitle());
-            ptmt.setLong(8, question.getId());
+
+            ptmt.setLong(8, question.getAlreadyAward());
+            ptmt.setLong(9, question.getId());
 
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to create a PreparedStatement for Question!");
         }
-
+//System.out.println("9999999999999");
         //开始执行sql语句
         return ptmt.executeUpdate() > 0;
 
@@ -455,6 +458,34 @@ public class DAO {
         String sql = "update "+ table +"set" + attribute + " = ? where id = ?";
         PreparedStatement ptmt = conn.prepareStatement(sql);
         ptmt.setObject(1,value, getSqlType(value));
+        return ptmt.executeUpdate() > 0;
+    }
+
+    public Boolean insert(Agree agree) throws Exception{
+
+        //拼接sql语句
+        String  sql = "insert into " + "Agree(answerId,userId)" + "values (?,?)";
+        PreparedStatement ptmt = conn.prepareStatement(sql); // 预编译SQL，减少sql执行
+        // 向sql语句传参
+        try {
+            //传参
+            ptmt.setLong(1, agree.getAnswerId());
+            ptmt.setLong(2, agree.getUserId());
+
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Failed to create a PreparedStatement for Answer!");
+        }
+        //开始执行sql语
+        return ptmt.executeUpdate() > 0;
+
+    }
+
+    public Boolean delete(Agree agree) throws Exception {
+        String deleteSql = "delete from Agree where answerId= ?,userId= ?";
+        PreparedStatement ptmt = conn.prepareStatement(deleteSql); // 预编译SQL，减少sql执行
+        ptmt.setLong(1,agree.getAnswerId());
+        ptmt.setLong(2,agree.getUserId());
         return ptmt.executeUpdate() > 0;
     }
 }

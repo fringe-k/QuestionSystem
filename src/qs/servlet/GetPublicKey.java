@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 /**
  * 用于接受公钥请求的Servlet
  */
-@WebServlet("/publicKey")
+@WebServlet("/rsaPassword")
 public class GetPublicKey extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

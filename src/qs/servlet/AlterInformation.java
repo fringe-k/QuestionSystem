@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import qs.common.*;
 
 import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -23,76 +25,65 @@ public class AlterInformation extends HttpServlet
     /*修改用户个人信息  */
     private void updatePersonal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        response.setContentType("text");
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
+
+        //User user =  (User) request.getSession().getAttribute("user");
         String  mail=request.getParameter("email");
         try {
-            User userNow = userDao.selectByMail(mail);
+            //获取网页上输入的各项信息
             User user = userDao.selectByMail(mail);
+
             String phone = request.getParameter("phone");
-            String username = request.getParameter("username");
+            String username = URLDecoder.decode(request.getParameter("username"),"UTF-8");
             Long age = Long.parseLong(request.getParameter("age"));
             String email = request.getParameter("email");
 
             boolean isOk = true;
-            String t="true";
-            String f="false";
 
-            if (!username.matches("[a-zA-Z\\d]{1,20}") && isOk) {
-                isOk = false;
-                JSONObject json = new JSONObject();
-                json.put("username", t);
-                json.put("email", f);
-                out.println(json.toJSONString());
-            }
+            User userd = userDao.selectByMail(email);
+            if(userd==null) {//进行修改
+                if (isOk) {
+                    User userNow =new User();
+                    System.out.println("信息修改");
+                    System.out.println(username);
 
-            if (!email.matches("\\w+@\\w+(\\.\\w+)+") && isOk) {
-                isOk = false;
-                JSONObject json = new JSONObject();
-                json.put("username", t);
-                json.put("email",f);
-                out.println(json.toJSONString());
-            }
+                    userNow.setPhone(phone);
+                    userNow.setAge(age);
+                    userNow.setMail(email);
+                    userNow.setName(username);
+                    userNow.setPhoto(user.getPhoto());
+                    userNow.setId(user.getId());
+                    userNow.setPassword(user.getPassword());
+                    userNow.setRole(user.getRole());
+                    userNow.setScore(user.getScore());
+                    userNow.setCannotLogin(user.getCannotLogin());
+                    userNow.setCannotSpeak(user.getCannotSpeak());
+                    userNow.setNumOfAnswer(user.getNumOfAnswer());
+                    userNow.setNumOfQuery(user.getNumOfQuery());
 
-            if (isOk) {
-                System.out.println("信息修改");
-                System.out.println(username);
-
-                //进行修改
-                userNow.setPhone(phone);
-                userNow.setAge(age);
-                userNow.setMail(mail);
-                userNow.setName(username);
-                userNow.setPhoto(user.getPhoto());
-                userNow.setId(user.getId());
-                userNow.setPassword(user.getPassword());
-                userNow.setRole(user.getRole());
-                userNow.setScore(user.getScore());
-                userNow.setCannotLogin(user.getCannotLogin());
-                userNow.setCannotSpeak(user.getCannotSpeak());
-                userNow.setNumOfAnswer(user.getNumOfAnswer());
-                userNow.setNumOfQuery(user.getNumOfQuery());
-
-                //数据库
-                UserDao userdao = new UserDao();
-                userdao.connect();
-                if (userdao.update(userNow)) {
+                    //数据库
+                    UserDao userdao = new UserDao();
+                    userdao.connect();
+                    if (userdao.update(userNow)) {
 
 
-                    JSONObject json = new JSONObject();
-                    json.put("phone", phone);
-                    json.put("username", username);
-                    json.put("age", age);
-                    json.put("mail", mail);
+                        JSONObject json = new JSONObject();
+                        json.put("phone", phone);
+                        json.put("username", username);
+                        json.put("age", age);
+                        json.put("mail", email);
 
-                    out.println(json.toJSONString());
+                        out.println(json.toJSONString());
 
-
+                    }
                 }
             }
+            else
+                out.println("repeat");
         }
         catch (Exception e) {
-            System.out.println("error!!!!!!!");
+            out.println("error");
         }
 
     }
@@ -116,7 +107,9 @@ public class AlterInformation extends HttpServlet
                     String  mail=request.getParameter("email");
                     User user= userDao.selectByMail(mail);
                     String phone = user.getPhone();
-                    String username = user.getName();
+                    String username= URLEncoder.encode(user.getName(),"UTF-8");
+                    System.out.println(username);
+                    //String username = URLDecoder.decode(request.getParameter("username"),"UTF-8");
                     Long age=user.getAge();
                     System.out.println(mail);
 

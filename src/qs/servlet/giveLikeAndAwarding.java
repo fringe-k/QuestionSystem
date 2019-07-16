@@ -22,6 +22,7 @@ public class giveLikeAndAwarding extends HttpServlet
         PrintWriter out = response.getWriter();
         Long qid = Long.valueOf(request.getParameter("questionId"));
         String mail = request.getParameter("email");
+        System.out.println(mail);
         String orderBy = request.getParameter("orderBy");
 
         try {
@@ -29,6 +30,7 @@ public class giveLikeAndAwarding extends HttpServlet
             JSONObject json = new JSONObject();
 
             UserDao LoginUserdao=new UserDao();
+            LoginUserdao.connect();
             User LoginUser=LoginUserdao.selectByMail(mail);
 
             AnswerDao adao = new AnswerDao();
@@ -54,7 +56,7 @@ public class giveLikeAndAwarding extends HttpServlet
             for(int i=0;i<answers.size();i++) {
 
                 Long answerId=answers.get(i).getId();
-                String sql = " select count(*) from Answer where answerId = " + answerId + " and LoginUserId = " + LoginUser.getId();
+                String sql = " select count(*) from Agree where answerId = " + answerId + " and userId = " + LoginUser.getId();
                 AgreeDao agreedao = new AgreeDao();
                 agreedao.connect();
                 agreedao.excuteQuery(sql);
@@ -82,30 +84,19 @@ public class giveLikeAndAwarding extends HttpServlet
 
     public void getInformationAwarding(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
+
         Long questionId= Long.valueOf(req.getParameter("questionId"));
         String mail = req.getParameter("email");
-        //String orderBy = req.getParameter("orderBy");
+
         try {
-//            if (orderBy == null)
-//                orderBy = "time";
-//            if(orderBy.equals("numOfAgree")) orderBy = " numOfAgree desc ";
-//            String sql2 = " select Answer.id from Answer  where questionId = " + questionId +
-//                    " and Answer.isReleased = 1 order by " + orderBy;
-//            adao.excuteQuery(sql2);
-//            ArrayList<Answer> answers= new ArrayList<Answer>();
-//            ResultSet rs = adao.getResultSet();
-//            while(rs.next()){
-//                Long id = rs.getLong(1);
-//                Answer answer=adao.selectById(id);
-//                answers.add(answer);
-//            }
 
             QuestionDao qdao=new QuestionDao();
+            qdao.connect();
             Question question=qdao.selectById(questionId);
-            if(question.getAlreadyAward()==0)//未被悬赏
-                out.println(false);
-            else if(question.getAlreadyAward()==1)
-                out.println(true);
+            out.println(question.getAlreadyAward());
+
+
+
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -115,10 +106,11 @@ public class giveLikeAndAwarding extends HttpServlet
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try{
+
             this.getInformationAwarding(request,response);
         }
         catch(Exception e) {
-            System.out.println("error");
+            System.out.println("error!!!!!!!!!!!!!!!!!!!!!!");
         }
     }
 

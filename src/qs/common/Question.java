@@ -12,6 +12,7 @@ public class Question {
     private String title;
     private Long isReleased;
     private Long reward;
+    private Long alreadyAward;
 
     public Long getId(){ return id; }
     public Long getUserID() { return userId; }
@@ -23,6 +24,7 @@ public class Question {
     public String getTitle() { return title; }
     public Long getIsReleased() { return isReleased;}
     public Long getReward() { return reward; }
+    public Long getAlreadyAward() { return alreadyAward; }
 
     public void setId(Long id) { this.id = id; }
     public void setUserId(Long userId) { this.userId = userId; }
@@ -34,4 +36,5 @@ public class Question {
     public void setTitle(String title) { this.title = title; }
     public void setIsReleased(Long isReleased) { this.isReleased = isReleased; }
     public void setReward(Long reward) { this.reward = reward; }
+    public void setAlreadyAward(Long alreadyAward) { this.alreadyAward = alreadyAward; }
 }

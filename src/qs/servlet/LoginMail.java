@@ -1,5 +1,7 @@
 package qs.servlet;
+import com.alibaba.fastjson.JSONObject;
 import qs.common.*;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,12 +16,21 @@ public class LoginMail extends HttpServlet
     {
 
         String email=request.getParameter("mail");
-        String psw = request.getParameter("password");
+        String password = request.getParameter("password");
+
 
         UserDao userdao = new UserDao();
         userdao.connect();
         try
         {
+            if (RSAUtil.generateKey()) {
+                System.out.println("-----成功生成公私钥-------");
+
+            }
+            RSAUtil.loadKey();
+            password = RSAUtil.decrypt(password);
+
+            String psw = MD5Util.encrypt(password);
             User user =  userdao.selectByMail(email);
             if (user != null && user.getPassword().equals(psw))
             {
@@ -28,33 +39,54 @@ public class LoginMail extends HttpServlet
             {
                 response.setContentType("text");
                 PrintWriter out = response.getWriter();
+                if(user.getRole()==0) {
 
-                
-               if(user.getRole()==0) {
-                   HttpSession UserSession = request.getSession();
-                   UserSession.setAttribute("user", user);//将登陆成功的用户保存于session
-                   out.println("user");
-               }
-               else
-               {
-                   HttpSession AdSession = request.getSession();
-                   AdSession.setAttribute("user", user);//将登陆成功的用户保存于session
-                   out.println("manager");
-               }
+                    String u="user";
+                    Long id=user.getId();
+                    JSONObject json = new JSONObject();
+                    json.put("role", u);
+                    json.put("userId", id);
+
+                    out.println(json.toJSONString());
+
+                    HttpSession Session = request.getSession();
+                    Session.setAttribute("user", user);//将登陆成功的用户保存于session
+                }
+                else if(user.getRole()==1)
+                {
+                    String u="manager";
+                    Long id=user.getId();
+                    JSONObject json = new JSONObject();
+                    json.put("role", u);
+                    json.put("userId", id);
+
+                    out.println(json.toJSONString());
+
+                    HttpSession Session = request.getSession();
+                    Session.setAttribute("user", user);//将登陆成功的用户保存于session
+                }
             }
 
             else
             {
+                String u="forbidden";
+                Long id=user.getId();
+                JSONObject json = new JSONObject();
+                json.put("role", u);
+                json.put("userId", id);
+
                 response.setContentType("text");
                 PrintWriter out = response.getWriter();
-                out.println("forbidden");
             }
             } else
             {
                 response.setContentType("text");
                 PrintWriter out = response.getWriter();
-                out.println("error");
-
+                String u="error";
+                Long id=user.getId();
+                JSONObject json = new JSONObject();
+                json.put("role", u);
+                json.put("userId", id);
             }
         } catch (Exception e)
         {
