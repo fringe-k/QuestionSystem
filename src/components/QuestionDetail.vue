@@ -53,15 +53,15 @@
       <div class="contentBox" id = "test-editormd-view">
         <textarea style="display:none;" name="test-editormd-markdown-doc">###Hello world!</textarea>
 
-        <!--         <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>-->
-         <div class="bottomLine">
-            <div style="color:rgba(145,139,139,1);font-size:20px;display:inline-block;vertical-align:top;">{{QuestionDetail[0].date}}</div>
-            <div style="font-size:20px;display:inline-block;width:150px;margin-left:50px;vertical-align:top;color:red;">
-              <i class='iconfont 'style="font-size:20px;">&#xe61a;</i>积分悬赏:{{QuestionDetail[0].reward}}
-            </div>
-            <div style="color:blue;font-size:20px;margin-left:300px;cursor:pointer;display:inline-block;vertical-align:top;" @click="dialogVisible = true">我要回答</div>
+                 <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>
+        <div class="bottomLine">
+          <div style="color:rgba(145,139,139,1);font-size:20px;display:inline-block;vertical-align:top;">{{QuestionDetail[0].date}}</div>
+          <div style="font-size:20px;display:inline-block;width:150px;margin-left:50px;vertical-align:top;color:red;">
+            <i class='iconfont 'style="font-size:20px;">&#xe61a;</i>积分悬赏:{{QuestionDetail[0].reward}}
+          </div>
+          <div style="color:blue;font-size:20px;margin-left:300px;cursor:pointer;display:inline-block;vertical-align:top;" @click="dialogVisible = true">我要回答</div>
 
-         </div>
+        </div>
       </div>
       <!--问题展示end-->
 
@@ -74,7 +74,7 @@
           <div style="display:inline-block;width:620px;">
             <div class="answerInfo">
               <el-tooltip content="点击查看用户信息" placement="bottom" effect="light">
-                   <p style="cursor: pointer;width:150px;" >{{answer.answerer}}</p>
+                <p style="cursor: pointer;width:150px;" >{{answer.answerer}}</p>
               </el-tooltip>
               <p style="color:gray;width:200px;">{{answer.dateTime}}</p>
               <p v-if="!answer.zan" style="margin-left:75px;cursor: pointer;width:100px;" :data-item="index" @click="toAward">我要赞赏</p>
@@ -90,17 +90,17 @@
               <span v-else style="cursor:pointer;color:#bd5151" @click="showCommentOf" :data-item="index">点击收起评论</span>
               <span v-if="!answer.inputShow" style="cursor:pointer;margin-left:50px;color:skyblue;" :data-item="index" @click="toComment" >我要评论</span>
               <div v-else style="cursor:pointer;margin-left:50px;color:orangered;"  >
-                  <span :data-item="index" @click="uploadComment">提交</span>
-                  <span :data-item="index" @click="cancelComment">取消</span>
+                <span :data-item="index" @click="uploadComment">提交</span>
+                <span :data-item="index" @click="cancelComment">取消</span>
               </div>
-              <span v-if="!answer.like"  style="cursor:pointer;margin-left:50px;color:skyblue;" :data-item="index" @click="giveLike" > <i class='iconfont 'style="font-size:18px;">&#xe65c;</i>点赞</span>
-              <span v-else  style="cursor:pointer;margin-left:50px;color:red;" :data-item="index" @click="giveLike" > <i class='iconfont 'style="font-size:18px;">&#xe65c;</i>已赞</span>
+              <span v-if="!answer.like"  style="cursor:pointer;margin-left:50px;color:skyblue;" :data-item="index" @click="giveLike" > <i class='iconfont 'style="font-size:18px;">&#xe65c;</i>点赞({{answer.numOfAgree}})</span>
+              <span v-else  style="cursor:pointer;margin-left:50px;color:red;" :data-item="index" @click="giveLike" > <i class='iconfont 'style="font-size:18px;">&#xe65c;</i>已赞({{answer.numOfAgree}})</span>
             </div>
             <el-input v-if="answer.inputShow"
-              type="textarea"
-              :autosize="{ minRows: 2, maxRows: 4}"
-              placeholder="请输入内容"
-              v-model="answer.commentContent" >
+                      type="textarea"
+                      :autosize="{ minRows: 2, maxRows: 4}"
+                      placeholder="请输入内容"
+                      v-model="answer.commentContent" >
             </el-input>
 
             <div class="showComments" v-if="answer.commentShow">
@@ -138,27 +138,6 @@
 </template>
 
 <script>
-
-  function  setPreview() {
-    var testEditormdView;
-    testEditormdView = editormd.markdownToHTML("test-editormd-view", {
-      markdown        : QuestionDetail[0].content ,//+ "\r\n" + $("#append-test").text(),
-      //htmlDecode      : true,       // 开启 HTML 标签解析，为con了安全性，默认不开启
-      htmlDecode      : "style,script,iframe",  // you can filter tags decode
-      //toc             : false,
-      tocm            : true,    // Using [TOCM]
-      //tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
-      //gfm             : false,
-      //tocDropdown     : true,
-      // markdownSourceCode : true, // 是否保留 Markdown 源码，即是否删除保存源码的 Textarea 标签
-      emoji           : true,
-      taskList        : true,
-      tex             : true,  // 默认不解析
-      flowChart       : true,  // 默认不解析
-      sequenceDiagram : true,  // 默认不解析
-    });
-  }
-
   import global from './global.vue'
   import util from '@/util.js'
   import Input from './InputField.vue'
@@ -169,7 +148,6 @@
       Questioner:"wlzdd",
       date:"2019-6-18",
       labels:["王者荣耀","游戏"]}
-
   var PeInfo={img:"../assets/image/test.jpg",Questioner:"wlzdd",numOfQuestion:5,numOfAnswer:5,points:5}
   var answerList=[{img:"../assets/image/test.jpg",answerer:"wlzdd",dateTime:"2019-6-18 7:54",content:"撒的都",answerId:5},
                   {img:"../assets/image/test.jpg",answerer:"wlzdd",dateTime:"2019-6-18 7:54",content:"撒的是大家把第三比第三季度那是你你删的暖单独insad那第四年迪士尼那第四那第四厺都",answerId:5},
@@ -191,246 +169,240 @@
   var userId=""
   var hasAwarded=0
   var hasNotLogin = [1]
-    export default {
-      name: "QuestionDetail",
-      components: {"inputfield": Input},
-      data() {
-        return {
-          QuestionDetail: QuestionDetail,
-          peInfo: PeInfo,
-          answerList: answerList,
-          commentList: commentList,
-          isAnswer: isAnswer,
-          textarea2:"",
-          dialogVisible:dialogVisible,
-          hasAwarded:hasAwarded,
-          circleUrl: global.photo,
-          hasNotLogin:hasNotLogin,
-          myId:global.userId,
-          myName:global.name,
-          preview:null
+  export default {
+    name: "QuestionDetail",
+    components: {"inputfield": Input},
+    data() {
+      return {
+        QuestionDetail: QuestionDetail,
+        peInfo: PeInfo,
+        answerList: answerList,
+        commentList: commentList,
+        isAnswer: isAnswer,
+        textarea2:"",
+        dialogVisible:dialogVisible,
+        hasAwarded:hasAwarded,
+        circleUrl: global.photo,
+        hasNotLogin:hasNotLogin,
+        myId:global.userId,
+        myName:global.name,
+        preview:null
+      }
+    },
+    created() {
+      // that = this
+      if(global.userId==-1){
+        console.log(hasNotLogin)
+      }
+      else{
+        hasNotLogin.splice(0,hasNotLogin.length)
+        hasNotLogin.push(0)
+      }
+      console.log("-----接受数据-------")
+      userId=this.$route.query.userId
+      this.$axios.get(global.host + '/detail',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            action: "select",
+            entity: "Question",
+            questionId: this.$route.query.questionId
+          }
+        })
+        .then(function (response) {
+          console.log(response)
+          var l = {
+            title: response.data.title,
+            content: response.data.content,
+            Questioner: response.data.user,
+            date: util.formatDate(response.data.date),
+            labels: JSON.parse(response.data.label),
+            reward:response.data.reward,
+            userId:userId
+          }
+          QuestionDetail.push(l)
+
+          console.log("-----以下是问题详细-----")
+          console.log(QuestionDetail)
+        });
+      this.$axios.get(global.host + '/detail',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          params: {
+            action: "select",
+            entity: "Answer",
+            questionId: this.$route.query.questionId,
+            userId:global.userId,
+            index: 0,
+            num: 50
+          }
+        })
+        .then(function (response) {
+          console.log("======answerList")
+          console.log(response)
+          for (var i = 0; i < response.data.length; i++) {
+            var l = {
+              img: response.data[i].photo,
+              answerer: response.data[i].name,
+              dateTime: util.formatTime(response.data[i].time),
+              content: response.data[i].content,
+              answerId: response.data[i].id,
+              commentShow: false,
+              inputShow:false,
+              commentContent:"",
+              hasBeenAwarded:0,
+              like:response.data[i].hasAgreed,
+              numOfAgree:response.data[i].numOfAgree
+
+            }
+            answerList.push(l)
+            commentList.push([])
+          }
+        })
+      this.$axios(
+        {
+          method: 'post',
+          url: global.host + '/G-A',
+          params: {
+            questionId: this.$route.query.questionId,
+            email:global.email,
+          }
+        }).then(res => {
+        console.log("----以下是是否悬赏信息--------")
+        console.log(res)
+        hasAwarded=res.data;
+      });
+    },
+    destroyed(){
+      QuestionDetail =[]
+      PeInfo=[]
+      answerList=[]
+      commentList=[]
+      isAnswer={key:false}
+      var hasNotLogin = [1]
+    },
+    methods: {
+      showCommentOf: function (e) {
+        var i = e.target.getAttribute('data-item')
+        console.log(e.target.getAttribute('data-item'))
+        if (answerList[i].commentShow) {
+          answerList[i].commentShow = false
+          commentList[i].splice(0, commentList[i].length)
+        } else {
+          commentList[i].splice(0, commentList[i].length)
+          answerList[i].commentShow = true
+          this.$axios.get(global.host + '/detail',
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              params: {
+                action: "select",
+                entity: "Comment",
+                answerId: answerList[i].answerId,
+                index: 0,
+                num: 20
+              }
+            })
+            .then(function (response) {
+              console.log(response)
+              for (var u = 0; u < response.data.length; u++) {
+                var l = {
+                  user: response.data[u].name,
+                  content: response.data[u].content
+                }
+                commentList[i].push(l)
+              }
+              console.log("----------" + i)
+              console.log(commentList[i])
+            });
         }
       },
-      created() {
-        // that = this
-        if(global.userId==-1){
-          console.log(hasNotLogin)
-        }
-        else{
-          hasNotLogin.splice(0,hasNotLogin.length)
-          hasNotLogin.push(0)
-        }
-        console.log("-----接受数据-------")
-
-        userId=this.$route.query.userId
-        this.$axios.get(global.host + '/detail',
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
+      toComment: function (e) {
+        var i = e.target.getAttribute('data-item')
+        answerList[i].inputShow = true
+      },
+      toAnswer: function (e) {
+        isAnswer.key = true
+        dialogVisible = true
+        console.log(isAnswer + dialogVisible)
+      },
+      upload: function (e) {
+        console.log(this.$refs.input)
+        var i = document.getElementById("content").value
+        console.log(document.getElementById("content").value)
+        this.$confirm('确认提交?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios({
+            method: 'post',
+            url: global.host + '/detail',
             params: {
-              action: "select",
-              entity: "Question",
-              questionId: this.$route.query.questionId
-            }
-          })
-          .then(function (response) {
-            console.log(response)
-            var l = {
-              title: response.data.title,
-              content: response.data.content,
-              Questioner: response.data.user,
-              date: util.formatDate(response.data.date),
-              labels: JSON.parse(response.data.label),
-              reward:response.data.reward,
-              userId:userId
-            }
-            QuestionDetail.push(l)
-            setPreview()
-            console.log("-----以下是问题详细-----")
-            console.log(QuestionDetail)
-          });
-        this.$axios.get(global.host + '/detail',
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            params: {
-              action: "select",
+              action: "insert",
               entity: "Answer",
               questionId: this.$route.query.questionId,
-              userId:global.userId,
-              index: 0,
-              num: 50
+              mail: global.email,
+              content: encodeURI(i)
             }
           })
-          .then(function (response) {
-            console.log("======answerList")
-            console.log(response)
-            for (var i = 0; i < response.data.length; i++) {
-              var l = {
-                img: response.data[i].photo,
-                answerer: response.data[i].name,
-                dateTime: util.formatTime(response.data[i].time),
-                content: response.data[i].content,
-                answerId: response.data[i].id,
-                commentShow: false,
-                inputShow:false,
-                commentContent:"",
-                hasBeenAwarded:0,
-                like:0
-              }
-              answerList.push(l)
-              commentList.push([])
-            }
-
-          })
-
-        this.$axios(
-          {
-            method: 'post',
-            url: global.host + '/G-A',
-            params: {
-              questionId: this.$route.query.questionId,
-              email:global.email,
-            }
-          }).then(res => {
-          console.log("----以下是是否悬赏信息--------")
-          console.log(res)
-          hasAwarded=res.data;
+            .then(function (response) {
+              console.log(response)
+            location.reload()
+            })
         });
-
-
-
       },
-      destroyed(){
-        QuestionDetail =[]
-        PeInfo=[]
-        answerList=[]
-        commentList=[]
-        isAnswer={key:false}
-        var hasNotLogin = [1]
-      },
-      methods: {
-        showCommentOf: function (e) {
-          var i = e.target.getAttribute('data-item')
-          console.log(e.target.getAttribute('data-item'))
-          if (answerList[i].commentShow) {
-            answerList[i].commentShow = false
-            commentList[i].splice(0, commentList[i].length)
-          } else {
-            commentList[i].splice(0, commentList[i].length)
-            answerList[i].commentShow = true
-            this.$axios.get(global.host + '/detail',
-              {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                params: {
-                  action: "select",
-                  entity: "Comment",
-                  answerId: answerList[i].answerId,
-                  index: 0,
-                  num: 20
-                }
-              })
-              .then(function (response) {
-                console.log(response)
-                for (var u = 0; u < response.data.length; u++) {
-                  var l = {
-                    user: response.data[u].name,
-                    content: response.data[u].content
-                  }
-                  commentList[i].push(l)
-                }
-                console.log("----------" + i)
-                console.log(commentList[i])
-              });
-
-
-          }
-
-        },
-        toComment: function (e) {
-          var i = e.target.getAttribute('data-item')
-          answerList[i].inputShow = true
-
-        },
-        toAnswer: function (e) {
-          isAnswer.key = true
-          dialogVisible = true
-          console.log(isAnswer + dialogVisible)
-
-        },
-        upload: function (e) {
-          console.log(this.$refs.input)
-          var i = document.getElementById("content").value
-          console.log(document.getElementById("content").value)
-          this.$confirm('确认提交?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$axios({
-              method: 'post',
-              url: global.host + '/detail',
-              params: {
-                action: "insert",
-                entity: "Answer",
-                questionId: this.$route.query.questionId,
-                mail: global.email,
-                content: encodeURI(i)
-              }
-            })
-              .then(function (response) {
-                location.reload()
-              })
-          });
-        },
-        uploadComment: function (e) {
-          var u = e.target.getAttribute('data-item')
-          console.log(answerList[u].commentContent)
-          this.$confirm('确认提交评论?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$axios({
-              method: 'post',
-              url: global.host + '/detail',
-              params: {
-                action: "insert",
-                entity: "Comment",
-                answerId: answerList[u].answerId,
-                mail: global.email,
-                content: encodeURI(answerList[u].commentContent)
-              }
-            })
-              .then(function (response) {
-                answerList[u].commentContent = ''
-                answerList[u].inputShow = false
-                location.reload()
-
-              });
-          });
-        },
-        cancelComment: function (e) {
-          var i = e.target.getAttribute('data-item')
-          answerList[i].inputShow = false
-          answerList[i].commentContent = ''
-        },
-        handleClose(done) {
-          this.$confirm('确认关闭？')
-            .then(_ => {
-              done();
-            })
-            .catch(_ => {
+      uploadComment: function (e) {
+        var u = e.target.getAttribute('data-item')
+        console.log(answerList[u].commentContent)
+        this.$confirm('确认提交评论?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios({
+            method: 'post',
+            url: global.host + '/detail',
+            params: {
+              action: "insert",
+              entity: "Comment",
+              answerId: answerList[u].answerId,
+              mail: global.email,
+              content: encodeURI(answerList[u].commentContent)
+            }
+          })
+            .then(function (response) {
+              answerList[u].commentContent = ''
+              answerList[u].inputShow = false
+              location.reload()
             });
-        },
-        giveLike: function (e) {
-          var u = e.target.getAttribute('data-item')
-          console.log(global.userId + "给" + answerList[u].answerId + "点了赞")
-          answerList[u].like=1
+        });
+      },
+      cancelComment: function (e) {
+        var i = e.target.getAttribute('data-item')
+        answerList[i].inputShow = false
+        answerList[i].commentContent = ''
+      },
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {
+          });
+      },
+      giveLike: function (e) {
+        var u = e.target.getAttribute('data-item')
+        console.log(global.userId + "给" + answerList[u].answerId + "点了赞")
+        if(answerList[u].like==1){}
+        else {
+          answerList[u].like = 1
+          answerList[u].numOfAgree += 1
           this.$axios({
             method: 'post',
             url: global.host + '/ScoreSystem',
@@ -440,98 +412,93 @@
             }
           })
             .then(function (response) {
+              console.log("------点赞反馈-------")
               console.log(response)
-
             });
-
-        },
-        toAward: function (e) {
-          var u = e.target.getAttribute('data-item')
-          console.log("用户ID："+global.userId )
-          console.log("提问者ID："+QuestionDetail[0].userId)
-          if (global.userId != QuestionDetail[0].userId)
-          {
-            this.$alert('只有提问者才可以赞赏', '提示', {
-              confirmButtonText: '确定',
-              callback: action => {
-
-              }
-            });
-          }
-          else if(hasBeenAwarded)
-          {
-            this.$alert('您的悬赏已经使用', '提示', {
-              confirmButtonText: '确定',
-              callback: action => {
-              }
-            });
-          }
-          else
-            {
-
-              this.$confirm("确认赞赏该回答？", '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-              }).then(() => {
-                this.$axios({
-                  method: 'get',
-                  url: global.host + '/ScoreSystem',
-                  params: {
-                    answerId: answerList[u].answerId,
-                    questionId: this.$route.query.questionId,
-                  }
-                })
-                  .then(function (response) {
-                    console.log(response)
-                  });
-              })
-
-          }
-
-          },
-        toLogin:function(){
-          this.$confirm('是否登陆?', '提示', {
-            confirmButtonText: '前往登陆',
-            cancelButtonText: '否',
+        }
+      },
+      toAward: function (e) {
+        var u = e.target.getAttribute('data-item')
+        console.log("用户ID："+global.userId )
+        console.log("提问者ID："+QuestionDetail[0].userId)
+        if (global.userId != QuestionDetail[0].userId)
+        {
+          this.$alert('只有提问者才可以赞赏', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+        }
+        else if(hasBeenAwarded)
+        {
+          this.$alert('您的悬赏已经使用', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
+        }
+        else
+        {
+          this.$confirm("确认赞赏该回答？", '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.$router.push({
-              path: '/Login',
-              query: {
+            this.$axios({
+              method: 'get',
+              url: global.host + '/ScoreSystem',
+              params: {
+                answerId: answerList[u].answerId,
+                questionId: this.$route.query.questionId,
               }
             })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消登陆'
-            });
+              .then(function (response) {
+                console.log(response)
+              });
+          })
+        }
+      },
+      toLogin:function(){
+        this.$confirm('是否登陆?', '提示', {
+          confirmButtonText: '前往登陆',
+          cancelButtonText: '否',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push({
+            path: '/Login',
+            query: {
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消登陆'
           });
-        },
-        toPsw:function () {
-          this.$router.push({
-            path: '/psw',
-            query: {
-            }
-          })
-        },
-        toHome:function(){
-          this.$router.push({
-            path: '/',
-            query: {
-            }
-          })
-        },
-        toQuestion:function () {
-          this.$router.push({
-            path: '/QuestionShow',
-            query: {
-            }
-          })
-        },
-
-      }
+        });
+      },
+      toPsw:function () {
+        this.$router.push({
+          path: '/psw',
+          query: {
+          }
+        })
+      },
+      toHome:function(){
+        this.$router.push({
+          path: '/',
+          query: {
+          }
+        })
+      },
+      toQuestion:function () {
+        this.$router.push({
+          path: '/QuestionShow',
+          query: {
+          }
+        })
+      },
     }
+  }
 </script>
 
 <style scoped>
@@ -549,12 +516,13 @@
     width:100%;
     height:150px;
     background-color: white;
-    margin-top:75px;
+    margin-top:70px;
     vertical-align: middle;
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);
   }
   .title{
     margin-left:250px;
-    font-size:36px;
+    font-size:30px;
     display:block;
     padding-top:30px;
   }
@@ -584,6 +552,7 @@
     padding:30px 30px 20px 30px;
     line-height:40px;
     vertical-align: top;
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);
   }
   .peInfo{
     display:inline-block;
@@ -660,7 +629,4 @@
     postition:fixed;
     top:200px;
   }
-
-
-
 </style>

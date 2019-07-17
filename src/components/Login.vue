@@ -30,9 +30,7 @@
     data() {
       return {
         bg: {
-          backgroundImage: "url(" + require("../assets/login_bg.png") + ")",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "100% 100%",
+
         },
         userName: '',
         password: '',

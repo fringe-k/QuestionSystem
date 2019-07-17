@@ -26,7 +26,7 @@
         this.$axios(
           {
             method:'get',
-            url:'http://query.liublack.cn/qs'+'/main',
+            url:global.host+'/main',
             params:{
               action:"select",
               entity:"Question",

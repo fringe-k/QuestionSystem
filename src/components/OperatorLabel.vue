@@ -4,13 +4,13 @@
       <ul class="nav" style="padding-left: 6%;">
         <li class="link01"> Q/A SYSTEM</li>
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
+          <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+          <a class="nav-link" @click="toQuestion"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
+          <a class="nav-link"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
         </li>
         <div class="search bar">
           <form>
@@ -20,10 +20,26 @@
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <button class="triggerBtn"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
-          <button class="triggerBtn"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="个人中心"><i class="iconfont">&#xe601;dsgrgrg</i></a></li></button>
+          <div v-if="hasNotLogin[0]">
+            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          </div>
+          <div v-else>
+            <button id="personBtn">
+              <div @click="toPersonalHome">
+                <ul>
+                  <li style="float:left;margin-top: -2px">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
+                  </li>
+                  <li style="float:left;">
+                    <a data-toggle="tooltip" data-placement="bottom" title="个人中心" style="text-align: end">{{myName}}</a>
+                  </li>
+                </ul>
+              </div>
+            </button>
+          </div>
         </div>
       </ul>
+      <!--      <hr color="#FFF" style="margin-bottom: 0;padding-bottom: 0">-->
     </div>
     <!--导航栏end-->
 
@@ -194,9 +210,9 @@
             });
           });
         },
-        toPsw:function () {
+        toPersonalHome:function () {
           this.$router.push({
-            path: '/psw',
+            path: '/PersonalHome',
             query: {
             }
           })
@@ -236,13 +252,12 @@
     margin-top:100px;
     margin-left:20px;
     width:200px;
-    height:500px;
+    height:400px;
     background-color:white;
     text-align: center;
     display:inline-block;
     line-height: 60px;
     font-weight:500;
-    box-shadow:#bd5151 0px 0px 10px;
     position:fixed;
   }
 
@@ -253,8 +268,11 @@
     margin-left:250px;
     background-color:white;
     display:inline-block;
-    line-height: 50px;
+    line-height: 80px;
     vertical-align:top;
+    padding-left:30px;
+    padding-top:30px;
+    padding-bottom:50px;
   }
 
 
@@ -274,11 +292,14 @@
   {
     background-color: #f1f1f1;
     z-index:100;
-    color:white;
+    color:#bd5151;
 
   }
   .el-tag + .el-tag {
     margin-left: 10px;
+    font-size:25px;
+    line-height: 50px;
+    height:60px;
   }
   .button-new-tag {
     margin-left: 10px;
@@ -286,11 +307,17 @@
     line-height: 30px;
     padding-top: 0;
     padding-bottom: 0;
+    font-size:25px;
+    line-height: 50px;
+    height:60px;
   }
   .input-new-tag {
     width: 90px;
     margin-left: 10px;
     vertical-align: bottom;
+    font-size:25px;
+    line-height: 50px;
+    height:60px;
   }
   .ui-link{
     margin: 0 auto;
@@ -307,7 +334,7 @@
 
   }
   .chosen{
-    color:red;
+    color:#bd5151;
   }
 
 </style>

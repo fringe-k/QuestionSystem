@@ -437,15 +437,15 @@
   {
     background-color: #f1f1f1;
     z-index:100;
-    color:white;
-    box-shadow:#bd5151 0px 0px 10px;
+    color:#bd5151;
+
   }
   .click:hover{
     cursor:pointer;
     text-decoration: underline;
   }
   .chosen{
-    color:red;
+    color:#bd5151;
   }
 
 

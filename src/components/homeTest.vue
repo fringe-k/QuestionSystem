@@ -27,7 +27,7 @@
           </div>
           <div v-else>
           <button id="personBtn">
-            <div @click="toPsw">
+            <div @click="toPersonalHome">
               <ul>
             <li style="float:left;margin-top: -4px">
               <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
@@ -62,7 +62,7 @@
           <h5 class="card-title">Q/A START</h5>
           <div class="btns" style="margin-top:0;">
           <button><i class="iconfont">&#xe628;</i>写回答</button>
-          <button><i class="iconfont">&#xe703;</i>写问题</button>
+          <button @click="toQuestionSubmit"><i class="iconfont">&#xe703;</i>写问题</button>
           </div>
       </div>
       <!--卡片2-->
@@ -157,9 +157,16 @@
             }
           })
         },
-        toPsw:function () {
+        toPersonalHome:function () {
           this.$router.push({
-            path: '/psw',
+            path: '/PersonalHome',
+            query: {
+            }
+          })
+        },
+        toQuestionSubmit(){
+          this.$router.push({
+            path: '/QuestionSubmit',
             query: {
             }
           })

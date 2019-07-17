@@ -8,7 +8,7 @@
           <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+          <a class="nav-link" @click="toQuestion"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
@@ -26,7 +26,7 @@
           </div>
           <div v-else>
             <button id="personBtn">
-              <div @click="toPsw">
+              <div>
                 <ul>
                   <li style="float:left;margin-top: -2px">
                     <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
@@ -184,15 +184,12 @@
           message: '',
           number:data,
           contents:content,
-          bg: {
-            backgroundImage: "url(" + require("../assets/login_bg.png") + ")",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "100% 100%",
-          },
+
           circleUrl: global.photo,
           hasNotLogin:hasNotLogin,
           myId:global.userId,
-          myName:global.name
+          myName:global.nametent,
+
         }
       },
       created(){
@@ -349,13 +346,6 @@
         toHome:function(){
           this.$router.push({
             path: '/',
-            query: {
-            }
-          })
-        },
-        toPsw:function () {
-          this.$router.push({
-            path: '/psw',
             query: {
             }
           })

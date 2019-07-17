@@ -18,6 +18,7 @@
     color: #2c3e50;
     width:100%;
     height: 100%;
+    background: url("assets/pic/bg/4.png");
   }
   html,body,#app{
     width:100%;

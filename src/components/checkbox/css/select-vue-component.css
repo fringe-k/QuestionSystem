@@ -4,6 +4,7 @@ input{
 	border: 1px solid #ccc;
 	outline:0;
 	transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+
 }
 
 input:focus,select:focus,textarea:focus{
@@ -13,7 +14,9 @@ input:focus,select:focus,textarea:focus{
 
 .clearfix:after {content: "."; height: 0px; display: block; clear: both; visibility: hidden;}
 
-
+.myDiv{
+  margin: 20px 0px 0px 20px;
+}
 
 .wrapper{
 	width: 80%;
@@ -22,7 +25,7 @@ input:focus,select:focus,textarea:focus{
 
 /*功能下拉框 整体壁纸*/
 .functional-select-wrapper{
-	width: 100%;
+	width: 50%;
 	position: relative;
 	font-size: 14px;
 }

@@ -48,7 +48,7 @@
        <input
         placeholder="请输入关键字"
         v-model="inputSearch"
-        style="width:60%;margin-left:50px;border:2px solid #c5464a;position:absolute" @keyup.enter="indexSearch">
+        style="width:60%;margin-left:45px;border:2px solid #c5464a;position:absolute;margin-top:11px;" @keyup.enter="indexSearch">
         <button @click="indexSearch">搜索</button>
       </div>
       <div class="classBlock">
@@ -537,7 +537,7 @@
     margin-left:50px;
     width:400px;
     height:auto;
-    padding-bottom: 100px;
+    padding-bottom: 0px;
     background-color:white;
     display:inline-block;
     line-height: 60px;
@@ -702,7 +702,7 @@
   }
   .classBlock{
     width:100%;
-    margin-top:80px;
+    margin-top:50px;
     padding-left:30px;
     padding-right:20px;
     position: relative;

@@ -264,7 +264,7 @@
     margin-left:250px;
     background-color:white;
     display:inline-block;
-    line-height: 50px;
+    line-height: 80px;
     vertical-align:top;
     padding-bottom: 50px;
     padding-top: 30px;
@@ -288,8 +288,8 @@
   {
     background-color: #f1f1f1;
     z-index:100;
-    color:white;
-    box-shadow:#bd5151 0px 0px 10px;
+    color:#bd5151;
+
   }
   .el-tag + .el-tag {
     margin-left: 10px;
@@ -298,16 +298,22 @@
     height:60px;
   }
   .button-new-tag {
-    margin-left: 10px;
+    margin-left: 20px;
     height: 32px;
     line-height: 30px;
     padding-top: 0;
     padding-bottom: 0;
+    font-size:25px;
+    line-height: 50px;
+    height:60px;
   }
   .input-new-tag {
     width: 90px;
     margin-left: 10px;
     vertical-align: bottom;
+    font-size:25px;
+    line-height: 50px;
+    height:60px;
   }
   .ui-link{
     margin: 0 auto;
@@ -324,7 +330,7 @@
 
   }
   .chosen{
-    color:red;
+    color:#bd5151;
   }
 
 </style>
