@@ -63,6 +63,8 @@
         handler: function(newv, oldv){
           if(this.editor !== null){
             this.editor.setMarkdown(newv.value)
+            this.editor.watch()
+            this.$emit('loaded',this.editor.getHTML())
           }
           // this.editor.setMarkdown(newv.value)
         }
@@ -120,11 +122,12 @@
           }else if(that.previewing === true){
             this.previewing()
           }
+          md.watch()
           that.$emit('loaded', this.getHTML())
           editormd.loadPlugin("../../static/editor.md-master/plugins/image-handle-paste/image-handle-paste", function(){
             md.imagePaste();
           });
-          this.editor = md
+          that.editor = md
         }
       });
     },

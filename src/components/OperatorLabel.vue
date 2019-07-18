@@ -62,7 +62,7 @@
         ref="saveTagInput"
         size="small"
         @keyup.enter.native="$event.target.blur"
-        @blur="handleInputConfirm"7
+        @blur="handleInputConfirm"
       >
       </el-input>
       <el-button v-else class="button-new-tag" size="small" @click="showInput">+添加新标签</el-button>

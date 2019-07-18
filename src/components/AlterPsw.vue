@@ -188,7 +188,7 @@
       this.$axios(
         {
           method:'get',
-          url:"http://localhost:8082/test/ReturnInformation",
+          url:global.host+"/ReturnInformation",
           params:{
             email:global.email
           }
@@ -246,7 +246,7 @@
 
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        var uri='http://query.liublack.cn/qs'+res[0].uri
+        var uri=global.host+res[0].uri
         console.log(uri)
         console.log(res[0].uri)
         this.$axios(
@@ -264,6 +264,7 @@
             this.$alert('上传头像成功', '提示', {
               confirmButtonText: '确定',
               callback: action => {
+                global.photo=uri
               }
             });
           }
@@ -490,13 +491,13 @@
   #disTop{
     width: 65%;
     height: 500px;
-    margin-left: 22%;
+    margin-left: 20%;
     margin-top:10px;
     display: inline-block;
     /*background: #FFFFFF;*/
   }
   #disLeft{
-    left:7%;
+    left:3%;
     top:8%;
     width: 280px;
     position: fixed;

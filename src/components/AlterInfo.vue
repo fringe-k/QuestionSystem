@@ -42,7 +42,7 @@
     </div>
     <br> <br> <br> <br>
     <div id="disTop">
-      <div style="margin-top: 50px">
+      <div style="margin-top: 0">
         <div class="reg_form" >
           <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 30px">
           <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
@@ -172,7 +172,7 @@
       this.$axios(
         {
           method:'get',
-          url:"http://localhost:8082/test/ReturnInformation",
+          url:global.host+"/ReturnInformation",
           params:{
             email:global.email
           }
@@ -231,7 +231,7 @@
       },
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        var uri='http://query.liublack.cn/qs'+res[0].uri
+        var uri=global.host+res[0].uri
         console.log(uri)
         console.log(res[0].uri)
         this.$axios(
@@ -284,7 +284,7 @@
 
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
-        var uri='http://query.liublack.cn/qs'+res[0].uri
+        var uri=global.host+res[0].uri
         console.log(uri)
         console.log(res[0].uri)
         this.$axios(
@@ -301,6 +301,7 @@
             this.$alert('上传头像成功', '提示', {
               confirmButtonText: '确定',
               callback: action => {
+                global.photo=uri
               }
             });
           }
@@ -418,36 +419,25 @@
             }
           }).then(res =>{
           console.log(res)
-          if(res.data.trim()=="error") {
-            this.$alert('服务器繁忙！请稍后重试！', '提示', {
-              confirmButtonText: '确定',
-              callback: action => {
-              }
-            });
-          }
-          else if(res.data.trim()== "repeat")
-          {
-            this.$alert('邮箱已经注册', '提示', {
-              confirmButtonText: '确定',
-              callback: action => {
-              }
-            });
-            this.error.null=''
-          }
-          else{
+            console.log("in")
             this.userName = res.data.username
             this.email = res.data.mail
             this.age = res.data.age
             this.phone = res.data.phone
             global.email=this.email
-            this.$alert('修改成功', '提示', {
-              confirmButtonText: '确定',
-              callback: action => {
-              }
-            });
-          }
+            global.name=this.userName
+          this.$alert('修改成功！', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
         }).catch(e =>{
-
+         console.log("catch")
+          this.$alert('服务器繁忙！请稍后重试！', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+            }
+          });
         })
       }
 
@@ -463,13 +453,13 @@
   #disTop{
     width: 65%;
     height: 500px;
-    margin-left: 22%;
+    margin-left: 20%;
     margin-top:10px;
     display: inline-block;
     /*background: #FFFFFF;*/
   }
   #disLeft{
-    left:7%;
+    left:3%;
     top:8%;
     width: 280px;
     position: fixed;
