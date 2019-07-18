@@ -1,6 +1,6 @@
 <template>
   <div class="InputField">
-    <div id="editor">
+    <div id="editor2">
 
       <textarea id="content" style="display:none;">
         {{ content }}
@@ -10,7 +10,7 @@
 </template>
 
 <script>
-
+  import global from './global.vue'
 
 export default {
   name: 'InputField',
@@ -37,8 +37,9 @@ export default {
   },
 
   mounted :function () {
+    var that = this
     console.log('-----------------');
-    this.editor = editormd("editor", {
+    this.editor = editormd("editor2", {
       width: "100%",
       height: "100%",
       // width: "90%",
@@ -69,9 +70,12 @@ export default {
       //dialogMaskBgColor : "#000", // 设置透明遮罩层的背景颜色，全局通用，默认为#fff
       imageUpload : true,
       imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-      imageUploadURL : "http://localhost:8080/upload",
+      imageUploadURL : global.host + "/uploadInEditor",
       onload : function() {
         console.log('onload', this);
+        editormd.loadPlugin("../../static/editor.md-master/plugins/image-handle-paste/image-handle-paste", function(){
+          that.editor.imagePaste();
+        });
         //this.fullscreen();
         //this.unwatch();
         //this.watch().fullscreen();

@@ -20,12 +20,9 @@
         </div>
         <div class="buBox">
           <!-- 触发按钮 -->
-          <div v-if="hasNotLogin[0]">
-            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
-          </div>
-          <div v-else>
+          <div>
             <button id="personBtn">
-              <div @click="toPsw">
+              <div @click="toMyHome">
                 <ul>
                   <li style="float:left;margin-top: -2px">
                     <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
@@ -330,9 +327,9 @@
           });
         });
       },
-      toPsw:function () {
+      toMyHome:function () {
         this.$router.push({
-          path: '/psw',
+          path: '/MyHome',
           query: {
           }
         })
@@ -356,12 +353,11 @@
 </script>
 
 <style scoped>
-
-  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
-  @import "../components/css/buttonBox.css";
   @import "../assets/icon/iconfont.css";
-  @import "css/searchBar.css";
   @import "../components/css/guide.css";
+  @import "css/searchBar.css";
+  @import "../components/css/buttonBox.css";
+  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
 
   #body{
     width: 100%;
@@ -370,22 +366,23 @@
   }
   .listContainer{
     margin-top:100px;
-    margin-left:20px;
+    margin-left:150px;
     width:200px;
-    height:500px;
+    height:400px;
     background-color:white;
     text-align: center;
     display:inline-block;
     line-height: 60px;
     font-weight:500;
     position:fixed;
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);
   }
 
   .contentBox{
-    width:80%;
+    width:70%;
     height:auto;
     margin-top:100px;
-    margin-left:250px;
+    margin-left:380px;
     background-color:white;
     display:inline-block;
     line-height: 50px;
@@ -408,7 +405,7 @@
 
 
   table tr td{
-    padding:10px;
+    padding:20px;
     border-left: none;
     border-right: none;
     border-bottom:1px solid rgba(187,187,187,1)

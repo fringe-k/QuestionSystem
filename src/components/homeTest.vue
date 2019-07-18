@@ -1,6 +1,18 @@
 <template>
 
   <div>
+    <!--弹出框-->
+    <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose">
+      <span>即将登录，是否前往登录</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="danger" @click="toLogin">确 定</el-button>
+  </span>
+    </el-dialog>
     <!--导航栏-->
     <div class="top">
       <ul class="nav" style="padding-left: 6%;">
@@ -23,7 +35,7 @@
         <div class="buBox">
           <!-- 触发按钮 -->
           <div v-if="hasNotLogin[0]">
-          <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+          <button id="triggerBtn" @click="dialogVisible = true"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
           </div>
           <div v-else>
           <button id="personBtn">
@@ -61,14 +73,15 @@
       <div class="cright">
           <h5 class="card-title">Q/A START</h5>
           <div class="btns" style="margin-top:0;">
-          <button><i class="iconfont">&#xe628;</i>写回答</button>
+          <button @click="dialogVisible=true"><i class="iconfont">&#xe628;</i>写回答</button>
           <button @click="toQuestionSubmit"><i class="iconfont">&#xe703;</i>写问题</button>
           </div>
       </div>
       <!--卡片2-->
-      <div class="cright">
+      <div class="cright" v-show="!hasNotLogin[0]">
             <button class="rightBtn"><a><i class="font2 iconfont">&#xe613;</i>&nbsp&nbsp我的收藏</a></button><br><br>
-            <button class="rightBtn"><a><i class="font3 iconfont">&#xe60c;</i>&nbsp&nbsp我的打赏</a></button>
+            <button class="rightBtn"><a><i class="font3 iconfont">&#xe60c;</i>&nbsp&nbsp我的打赏</a></button><br><br>
+            <button class="rightBtn"><a><i class="font4 iconfont">&#xe60d;</i>&nbsp&nbsp我的关注</a></button>
       </div>
       <!--轮播-->
       <div class="cright">
@@ -106,7 +119,8 @@
             circleUrl: global.photo,
             hasNotLogin:hasNotLogin,
             myId:global.userId,
-            myName:global.name
+            myName:global.name,
+            dialogVisible:false
           }
     },
       components:{
@@ -115,7 +129,7 @@
       },
       created(){
         console.log("create"+global.userId)
-          if(global.userId==-1){
+          if(global.userId===-1){
             console.log(hasNotLogin)
           }
           else{
@@ -133,22 +147,12 @@
           this.currentTab = tab;
         },
         toLogin:function(){
-          this.$confirm('是否登陆?', '提示', {
-            confirmButtonText: '前往登陆',
-            cancelButtonText: '否',
-            type: 'warning'
-          }).then(() => {
-            this.$router.push({
-              path: '/Login',
-              query: {
-              }
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消登陆'
-            });
-          });
+          console.log("login")
+          this.$router.push({
+            path: '/Login',
+            query: {
+            }
+          })
         },
         toQuestion:function () {
           this.$router.push({
@@ -159,17 +163,34 @@
         },
         toPersonalHome:function () {
           this.$router.push({
-            path: '/PersonalHome',
+            path: '/MyHome',
             query: {
             }
           })
         },
         toQuestionSubmit(){
+          if(global.userId===-1)
+          {
+            this.dialogVisible=true;
+          }
+          else{
           this.$router.push({
             path: '/QuestionSubmit',
             query: {
             }
           })
+        }
+        },
+        handleClose(done) {
+/*          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+            })
+            .catch(_ => {});
+          this.$message({
+            type: 'info',
+            message: '已取消登陆'
+          });*/
         }
       },
   }
@@ -217,7 +238,7 @@
     color: #bd5151;
   }
   a{
-    display: block;
+    display: inline-block;
     padding: .5rem 1rem;
     color: #bd5151;
     border: 1px solid transparent;
@@ -228,8 +249,9 @@
     color: #FFFFFF;
     background: #bd5151;
   }
-  a:hover.nav-link{
+  a:hover{
     /*color: #b35151;*/
+    cursor: pointer;
   }
   .nav-tabs{
     border-bottom: 2px solid #bd5151/*dee2e6*/;

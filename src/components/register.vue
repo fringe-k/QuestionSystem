@@ -244,9 +244,14 @@
 
                       params:{
                         email:this.email,
-                        type:'register'
+                        //type:'register'
                       }
                     }).then(res=>{
+                    this.$alert('邮件已经发送！', '提示', {
+                      confirmButtonText: '确定',
+                      callback: action => {
+                      }
+                    });
                       console.log(res)
                   })
 

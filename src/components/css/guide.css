@@ -8,6 +8,7 @@
   top: 0px;/*离顶部的距离为0*/
   margin-bottom: 2%;
   border-bottom: 1px solid #dee2e6;
+  z-index:5000;
 }
 .top ul{
   /* 清除ul标签的默认样式 */
@@ -69,6 +70,10 @@ i.font2{
 i.font3{
   font-size:20px;
   color: #ffc941;
+}
+i.font4{
+  font-size:20px;
+  color: #67bfc9;
 }
 body{
   background:#eff3f5;}

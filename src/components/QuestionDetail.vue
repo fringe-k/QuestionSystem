@@ -51,9 +51,9 @@
     </div>
     <div class="content">
       <div class="contentBox" id = "test-editormd-view">
-        <textarea style="display:none;" name="test-editormd-markdown-doc">###Hello world!</textarea>
-
-                 <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>
+        <div  v-html="questionContent" id="question-content"></div>
+        <input-fielda :content="{value:QuestionDetail[0].content}" :previewing="true" :hide="true" @loaded="setHtml"></input-fielda>
+        <!--                 <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>-->
         <div class="bottomLine">
           <div style="color:rgba(145,139,139,1);font-size:20px;display:inline-block;vertical-align:top;">{{QuestionDetail[0].date}}</div>
           <div style="font-size:20px;display:inline-block;width:150px;margin-left:50px;vertical-align:top;color:red;">
@@ -113,8 +113,38 @@
       </div>
       <!--回复展示end-->
     </div>
-    <div class="peInfo">
+    <div id="disRight">
+      <!--卡片1-->
+      <div class="cright">
+        <h5 class="card-title">Q/A START</h5>
+        <div class="btns" style="margin-top:0;">
+          <button @click="dialogVisible=true"><i class="iconfont">&#xe628;</i>写回答</button>
+          <button @click="toQuestionSubmit"><i class="iconfont">&#xe703;</i>写问题</button>
+        </div>
+      </div>
+      <!--卡片2-->
+      <div class="cright" v-show="!hasNotLogin[0]">
+        <button class="rightBtn"><a><i class="font2 iconfont">&#xe613;</i>&nbsp&nbsp我的收藏</a></button><br><br>
+        <button class="rightBtn"><a><i class="font3 iconfont">&#xe60c;</i>&nbsp&nbsp我的打赏</a></button><br><br>
+        <button class="rightBtn"><a><i class="font4 iconfont">&#xe60d;</i>&nbsp&nbsp我的关注</a></button>
+      </div>
+      <!--轮播-->
+      <div class="cright">
+        <div class="block">
 
+          <el-carousel height="300px">
+            <el-carousel-item>
+              <img src="../assets/pic/a.jpg">
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../assets/pic/b.jpg">
+            </el-carousel-item>
+            <el-carousel-item>
+              <img src="../assets/pic/c.jpg">
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
     </div>
 
     <el-dialog
@@ -124,6 +154,7 @@
       :before-close="handleClose" >
       <span>请写下评论(右侧为效果预览)</span>
       <div  style="margin-top:20px;">
+<!--        <input-fielda :content="newAnswer" :hide="false" :previewing="false"></input-fielda>-->
         <inputfield ref="input" class="inputfield"></inputfield>
         <span slot="footer" class="dialog-footer">
            <el-button @click="dialogVisible = false">取 消</el-button>
@@ -186,7 +217,9 @@
         hasNotLogin:hasNotLogin,
         myId:global.userId,
         myName:global.name,
-        preview:null
+        preview:null,
+        questionContent:'',
+        newAnswer: {value:null}
       }
     },
     created() {
@@ -331,6 +364,13 @@
         dialogVisible = true
         console.log(isAnswer + dialogVisible)
       },
+      toQuestionSubmit(){
+          this.$router.push({
+            path: '/QuestionSubmit',
+            query: {
+            }
+          })
+      },
       upload: function (e) {
         console.log(this.$refs.input)
         var i = document.getElementById("content").value
@@ -353,7 +393,7 @@
           })
             .then(function (response) {
               console.log(response)
-            location.reload()
+              location.reload()
             })
         });
       },
@@ -429,7 +469,7 @@
             }
           });
         }
-        else if(hasBeenAwarded)
+        else if(hasAwarded)
         {
           this.$alert('您的悬赏已经使用', '提示', {
             confirmButtonText: '确定',
@@ -497,17 +537,24 @@
           }
         })
       },
+      setHtml:function (html) {
+        this.questionContent = html
+      }
+
     }
   }
 </script>
 
 <style scoped>
-  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
-  @import "../components/css/buttonBox.css";
-  @import "../assets/icon/iconfont.css";
   @import "../assets/style/icon/iconfont.css";
-  @import "css/searchBar.css";
+  @import "../assets/icon/iconfont.css";
   @import "../components/css/guide.css";
+  @import "css/searchBar.css";
+  @import "../components/css/buttonBox.css";
+  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
+  #question-content >>> img{
+    max-width: 100%;
+  }
   .top{
     position:fixed;
     border-bottom: 1px solid #bd5151;
@@ -521,13 +568,36 @@
     box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);
   }
   .title{
-    margin-left:250px;
-    font-size:30px;
+    margin-left:380px;
+    font-size:28px;
     display:block;
     padding-top:30px;
   }
+  #disRight{
+    left:62%;
+    top:25%;
+    width: 300px;
+    position: fixed;
+  }
+
+  .cright{
+    border:1px solid #dee2e6;
+    padding:3%;
+    margin: 8px;
+    background: #FFFFFF;
+    outline-color: #bd5151;
+    /* border-color: rgba(189,81,81,.8);
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);*/
+  }
+  .rightBtn{
+    background:none;
+    border: none;
+  }
+  .rightBtn a:hover{
+    color: #bd5151;
+  }
   .labelBox{
-    margin-left:250px;
+    margin-left:380px;
     display:inline-block;
     font-size:20px;
     margin-top:20px;
@@ -535,7 +605,7 @@
   }
   .content{
     display:inline-block;
-    margin-left: 250px;
+    margin-left: 350px;
     width:750px;
     height:auto;
     font-size:25px;
@@ -622,6 +692,7 @@
     width:600px;
     padding-bottom:30px;
   }
+
   .inputfield{
     width:800px;
     height:500px;

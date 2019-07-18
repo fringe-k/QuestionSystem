@@ -1,5 +1,17 @@
 <template>
   <div id="body">
+    <!--弹出框-->
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>即将登录，是否前往登录</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="toLogin">确 定</el-button>
+  </span>
+    </el-dialog>
     <div class="top">
       <ul class="nav" style="padding-left: 6%;">
         <li class="link01"> Q/A SYSTEM</li>
@@ -21,11 +33,11 @@
         <div class="buBox">
           <!-- 触发按钮 -->
           <div v-if="hasNotLogin[0]">
-            <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+            <button id="triggerBtn" @click="dialogVisible = true"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
           </div>
           <div v-else>
             <button id="personBtn">
-              <div @click="toPsw">
+              <div @click="toMyHome">
                 <ul>
                   <li style="float:left;margin-top: -2px">
                     <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
@@ -119,7 +131,8 @@
         circleUrl: global.photo,
         hasNotLogin:hasNotLogin,
         myId:global.userId,
-        myName:global.name
+        myName:global.name,
+        dialogVisible:false
       }
     },
     watch:{
@@ -510,13 +523,20 @@
           }
         })
       },
-      toPsw:function () {
+      toMyHome:function () {
     this.$router.push({
-      path: '/psw',
+      path: '/MyHome',
       query: {
       }
     })
-  }
+  },
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      }
     }
   }
 </script>

@@ -13,7 +13,7 @@
         <span v-if="error.password" class="err-msg">{{error.password}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
         <br>
-        <button class="login_btn" @click="login" style="font-size: 20px">登录</button>
+        <el-button type="danger" class="login_btn" @click="login" style="font-size: 20px">登录</el-button>
         <div style="margin-top: 30px;padding-bottom: 10%">
           <span style="color: #000099;margin-left: 20%;font-size: 20px;cursor: pointer" @click="to_reg">注册</span><span style="margin-left: 40%;color: #A9A9AB;font-size: 20px;cursor: pointer" @click="to_reset">忘记密码？</span>
         </div>
@@ -78,11 +78,10 @@
               this.$axios(
                 {
                   method:'post',
-                  url:global.host+"/SendEmail",
+                  url:global.host+"/SendEmailtwo",
 
                   params:{
                     email:this.userName,
-                    type:'ForgetPassword'
                   }
                 }).then(res=>{
                   global.email=this.userName
@@ -214,12 +213,12 @@
 
   .login_form {
     position: absolute;
-    top:30%;
+    top:20%;
     width: 520px;
     margin-left: 37%;
     background-color: white;
     padding-top: 30px;
-    box-shadow:5px 5px 5px grey;
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
@@ -261,15 +260,14 @@
   }
 
   .login_btn {
-    width: 100px;
-    height: 50px;
+/*    width: 100px;
+    height: 50px;*/
     margin-top: 30px;
-    margin-left: 37%;
-    font-size: 16px;
-    background-color: white;
+    margin-left: 40%;
+   /* font-size: 16px;
     filter: brightness(1.4);
     border-radius: 15%;
-    outline:none;
+    outline:none;*/
   }
 
   body {

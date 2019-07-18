@@ -3,7 +3,19 @@
   <div class="cque" v-for="item,index in queHot" tabindex="0">
     <h4 class="card-title">{{item.title}}</h4>
     <p ></p>
-    <a href="#" class="card-link" :data-itemId="index" @click="toQuestionDetail" >详情</a>
+    <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose">
+      <span>查看问题需要登录，是否前往登录</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="toLogin">确 定</el-button>
+  </span>
+    </el-dialog>
+
+    <a href="#" class="card-link" :data-itemId="index" @click="toQuestionDetail">详情</a>
     <a href="#" class="card-link" :data-itemId="index" @click="toQuestionDetail">回答</a>
     <p class="card-text"><small class="text-muted">{{item.author}} 发表于 {{item.time}}</small></p>
   </div>
@@ -19,6 +31,7 @@
       data(){
         return{
           queHot:queHot,
+          dialogVisible:false
         }
       },
       created() {
@@ -61,23 +74,8 @@
       },
       methods:{
         toQuestionDetail:function (e){
-          if(global.userId==-1){
-            this.$confirm('查看问题详情需要您登陆, 是否继续?', '提示', {
-              confirmButtonText: '前往登陆',
-              cancelButtonText: '否',
-              type: 'warning'
-            }).then(() => {
-              this.$router.push({
-                path: '/Login',
-                query: {
-                }
-              })
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消登陆'
-              });
-            });
+          if(global.userId===-1){
+            this.dialogVisible=true;
           }
           else {
             var i = e.target.getAttribute('data-itemId')
@@ -91,6 +89,20 @@
             })
           }
         },
+        toLogin:function(){
+          this.$router.push({
+            path: '/Login',
+            query: {
+            }
+          })
+        },
+        handleClose(done) {
+          this.$confirm('确认关闭？')
+                  .then(_ => {
+                    done();
+                  })
+                  .catch(_ => {});
+        }
       }
     }
 </script>
@@ -108,10 +120,11 @@
   .card-link{
     color: #bd5151;
     border: none;
+    display: inline-block;
+    padding: 0;
   }
   .card-title {
     margin-bottom: .75rem;
-
   }
   h4{
     font-size: 1.5rem;
@@ -126,4 +139,5 @@
     -webkit-margin-start: 0px;
     -webkit-margin-end: 0px;
   }
+
 </style>

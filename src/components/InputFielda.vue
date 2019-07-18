@@ -4,15 +4,14 @@
   <div class="InputFielda">
     <div id="editor">
 
-      <textarea  id="content"   style="display:none;" >
-
+      <textarea     style="display:none;" >
       </textarea>
-
     </div>
   </div>
 </template>
 
 <script>
+  import global from './global.vue'
 
 
   export default {
@@ -72,7 +71,7 @@
     },
     mounted() {
       console.log(this.content)
-      var that = this
+      let that = this
       var md
       this.value = this.content
       md = editormd("editor", {
@@ -122,6 +121,10 @@
             this.previewing()
           }
           that.$emit('loaded', this.getHTML())
+          editormd.loadPlugin("../../static/editor.md-master/plugins/image-handle-paste/image-handle-paste", function(){
+            md.imagePaste();
+          });
+          this.editor = md
         }
       });
     },

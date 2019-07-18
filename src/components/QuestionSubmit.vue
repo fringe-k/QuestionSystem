@@ -84,6 +84,7 @@
   // let originOptions = []
   // let selected=[]
   // let selectedList=[]
+  import global from './global.vue'
   var hasNotLogin = [1]
   export default {
     name:"test",
@@ -139,7 +140,7 @@
        this.$axios(
          {
            method:'get',
-           url:'/admin',
+           url:global.host+'/admin',
            params:{
              action:"select",
              entity:"QuestionType",
@@ -155,7 +156,7 @@
            this.$axios(
              {
                method:'post',
-               url:'/submitQuestion',
+               url:global.host+'/submitQuestion',
                params:{
                  action:"select",
                  entity:"Question",
@@ -228,7 +229,7 @@
         this.$axios(
           {
             method: 'post',
-            url: '/submitQuestion',
+            url: global.host+'/submitQuestion',
             params: {
               action: "update",
               entity: "Question",
@@ -247,14 +248,18 @@
               score: this.scores.selected.name
             }
           }).then(response => {
-          window.alert(response.data);
+          this.$router.push({
+            path: '/',
+            query: {
+            }
+          });
         })
       },
       btnSub: function () {
         this.$axios(
           {
             method: 'post',
-            url: '/submitQuestion',
+            url: global.host+'/submitQuestion',
             params: {
               action: "update",
               entity: "Question",
@@ -273,7 +278,11 @@
               score: this.scores.selected.name
             }
           }).then(response => {
-          window.alert(response.data);
+          this.$router.push({
+            path: '/',
+            query: {
+            }
+          });
         })
       },
       toLogin:function(){
@@ -394,6 +403,7 @@
   .input-group .form-control{
     height: 100px;
     width:100px;
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6)
   }
   .form-control:focus{
     /*box-shadow: none;*/
@@ -432,9 +442,11 @@
   }
   .options{
     position: absolute;
-    top: 10%;
-    left: 78%;
-    width: 30%;
+    left: 76%;
+    width: 401px;
+    color: black;
+    background-color: rgba(246,246,246,1);
+    padding-left: 50px;
   }
   #title{
     font-size: 25px;
