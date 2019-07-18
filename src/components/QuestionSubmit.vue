@@ -1,9 +1,8 @@
 <template>
-  <div id="submit">
-    <header>
+  <div>
       <div class="top">
-        <ul class="nav" style="padding-left: 6%;">
-          <li class="link01"> Q/A SYSTEM</li>
+        <ul class="nav" style="padding-left: 9%;">
+          <li class="link01">:D&nbsp&nbsp答</li>
           <li class="nav-item">
             <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
           </li>
@@ -22,11 +21,11 @@
           <div class="buBox">
             <!-- 触发按钮 -->
             <div v-if="hasNotLogin[0]">
-              <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
+              <button id="triggerBtn" @click="dialogVisible = true"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
             </div>
             <div v-else>
               <button id="personBtn">
-                <div @click="toPersonalHome">
+                <div @click="toMyHome">
                   <ul>
                     <li style="float:left;margin-top: -4px">
                       <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
@@ -42,7 +41,6 @@
         </ul>
         <!--      <hr color="#FFF" style="margin-bottom: 0;padding-bottom: 0">-->
       </div>
-    </header>
 
     <div>
       <div class="QuestionContent" >
@@ -74,7 +72,6 @@
       </div>
   </div>
     </div>
-
 
   </div>
 
@@ -303,9 +300,9 @@
           });
         });
       },
-      toPersonalHome:function () {
+      toMyHome:function () {
         this.$router.push({
-          path: '/PersonalHome',
+          path: '/MyHome',
           query: {
           }
         })
@@ -332,17 +329,17 @@
 
 <style scoped>
   @import "../assets/icon/iconfont.css";
-  @import "./css/guide.css";
-  @import "./css/buttonBox.css";
+  @import "../components/css/guide.css";
   @import "css/searchBar.css";
+  @import "../components/css/buttonBox.css";
   @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
 
  h4{margin: 10px;padding: 0px;font-family: "Microsoft Yahei";}
-  *, *:before, *:after {
+/*  *, *:before, *:after {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-  }
+  }*/
 
   #layout {
     text-align: left;
@@ -357,10 +354,6 @@
     width: 90%;
     margin: 0 auto;
   }
-  .myDiv{
-
-  }
-
   .wrapper{
     width: 20%;
     /*display: inline;*/
@@ -370,11 +363,9 @@
     padding-top: 0;
     margin: 0 0px;
   }
-
   .btns button {
     padding: 2px 0px;
   }
-
   .btns button, .btn {
     padding: 8px 10px;
     background: #fff;
@@ -385,10 +376,13 @@
     -webkit-transition: background 300ms ease-out;
     transition: background 300ms ease-out;
   }
-
   .btns button:hover, .btn:hover {
     background: #f6f6f6;
     border-color: rgba(189,81,81,.8);
+  }
+  .mb-3{
+    margin-bottom: 1rem!important;
+    width: 100%;
   }
   .btns button:focus{
     outline: none;
@@ -399,27 +393,17 @@
     float: right;
 
   }
-
   .input-group .form-control{
     height: 100px;
-    width:100px;
-    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6)
+    width:100%;
+    box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);
+    padding-right:20%;
   }
   .form-control:focus{
     /*box-shadow: none;*/
     /*border: 2px solid salmon;*/
     border-color: rgba(189,81,81,.8);
     box-shadow: 0 0 8px rgba(189,81,81,.6);
-  }
-
-
-
-
-
-
-  .top{
-    position: relative;
-    left: 3%;
   }
 
   .photo{
@@ -429,12 +413,12 @@
 
     /*right: ;*/
   }
-
   .QuestionContent{
     position: absolute;
-    width: 70%;
-    margin-left: 5%;
+    width: 64%;
+    margin-left: 11%;
     display: inline;
+    top:12%
   }
   .input{
     width: 100%;
@@ -447,10 +431,11 @@
     color: black;
     background-color: rgba(246,246,246,1);
     padding-left: 50px;
+    top:10%;
   }
   #title{
     font-size: 25px;
-    width: 20%;
+    width: 79%;
     height: 50px;
   }
 

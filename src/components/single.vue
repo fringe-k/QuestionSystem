@@ -168,8 +168,8 @@ export default{
 
 <style scoped>
   @import "checkbox/css/select-vue-component.css";
-  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
-  @import "https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css";
+/*  @import "http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css";
+  @import "https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css";*/
   * {
     padding: 0;
     margin: 0;

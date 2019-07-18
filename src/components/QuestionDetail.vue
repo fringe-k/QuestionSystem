@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="top">
-      <ul class="nav" style="padding-left: 6%;">
-        <li class="link01"> Q/A SYSTEM</li>
+      <ul class="nav" style="padding-left: 9%;">
+        <li class="link01">:D&nbsp&nbsp答</li>
         <li class="nav-item">
           <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
@@ -25,7 +25,7 @@
           </div>
           <div v-else>
             <button id="personBtn">
-              <div @click="toPsw">
+              <div @click="toMyHome">
                 <ul>
                   <li style="float:left;margin-top: -2px">
                     <a data-toggle="tooltip" data-placement="bottom" title="个人中心"><el-avatar :size="35" :src="circleUrl"></el-avatar></a>
@@ -56,7 +56,7 @@
         <!--                 <span style="white-space: pre-line">{{QuestionDetail[0].content}}</span><br>-->
         <div class="bottomLine">
           <div style="color:rgba(145,139,139,1);font-size:20px;display:inline-block;vertical-align:top;">{{QuestionDetail[0].date}}</div>
-          <div style="font-size:20px;display:inline-block;width:150px;margin-left:50px;vertical-align:top;color:red;">
+          <div style="font-size:20px;display:inline-block;width:150px;margin-left:50px;vertical-align:top;color:gold;">
             <i class='iconfont 'style="font-size:20px;">&#xe61a;</i>积分悬赏:{{QuestionDetail[0].reward}}
           </div>
           <div style="color:blue;font-size:20px;margin-left:300px;cursor:pointer;display:inline-block;vertical-align:top;" @click="dialogVisible = true">我要回答</div>
@@ -124,7 +124,7 @@
       </div>
       <!--卡片2-->
       <div class="cright" v-show="!hasNotLogin[0]">
-        <button class="rightBtn"><a><i class="font2 iconfont">&#xe613;</i>&nbsp&nbsp我的收藏</a></button><br><br>
+        <button class="rightBtn"><a ><i class="font2 iconfont">&#xe613;</i>&nbsp&nbsp我的收藏</a></button><br><br>
         <button class="rightBtn"><a><i class="font3 iconfont">&#xe60c;</i>&nbsp&nbsp我的打赏</a></button><br><br>
         <button class="rightBtn"><a><i class="font4 iconfont">&#xe60d;</i>&nbsp&nbsp我的关注</a></button>
       </div>
@@ -289,8 +289,8 @@
               commentContent:"",
               hasBeenAwarded:0,
               like:response.data[i].hasAgreed,
-              numOfAgree:response.data[i].numOfAgree
-
+              numOfAgree:response.data[i].numOfAgree,
+              zan:response.data[i].givenScore
             }
             answerList.push(l)
             commentList.push([])
@@ -461,6 +461,7 @@
         var u = e.target.getAttribute('data-item')
         console.log("用户ID："+global.userId )
         console.log("提问者ID："+QuestionDetail[0].userId)
+        console.log("回答ID："+answerList[u].answerId)
         if (global.userId != QuestionDetail[0].userId)
         {
           this.$alert('只有提问者才可以赞赏', '提示', {
@@ -479,22 +480,24 @@
         }
         else
         {
+          this.$axios({
+            method: 'get',
+            url: global.host + '/ScoreSystem',
+            params: {
+              answerId: answerList[u].answerId,
+              questionId: this.$route.query.questionId,
+            }
+          })
+            .then(function (response) {
+              answerList[u].zan=1
+              hasAwarded=1
+            });
           this.$confirm("确认赞赏该回答？", '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.$axios({
-              method: 'get',
-              url: global.host + '/ScoreSystem',
-              params: {
-                answerId: answerList[u].answerId,
-                questionId: this.$route.query.questionId,
-              }
-            })
-              .then(function (response) {
-                console.log(response)
-              });
+
           })
         }
       },
@@ -516,9 +519,9 @@
           });
         });
       },
-      toPsw:function () {
+      toMyHome:function () {
         this.$router.push({
-          path: '/psw',
+          path: '/MyHome',
           query: {
           }
         })
@@ -595,6 +598,17 @@
   }
   .rightBtn a:hover{
     color: #bd5151;
+  }
+  a{
+    display: inline-block;
+    padding: .5rem 1rem;
+    color: #bd5151;
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+  }
+  a:hover{
+    cursor: pointer;
   }
   .labelBox{
     margin-left:380px;

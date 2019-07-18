@@ -2,7 +2,7 @@
   <div  :style="bg" style="height: 100%">
 
       <div class="login_form">
-        <a class="link01" style="margin-left: 30%"> Q/A SYSTEM</a>
+        <a class="link01" style="margin-left: 32%;font-size:55px;">:D&nbsp;&nbsp;答</a>
         <br>
         <input type="text"  class="qxs-ic_email qxs-icon"  placeholder="邮箱" v-model="userName" style="font-size: 20px;padding-top: 30px">
         <span v-if="error.userName" class="err-msg">{{error.userName}}</span>

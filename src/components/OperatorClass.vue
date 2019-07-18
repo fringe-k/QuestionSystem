@@ -1,8 +1,8 @@
 <template>
   <div id="body">
     <div class="top">
-      <ul class="nav" style="padding-left: 6%;">
-        <li class="link01"> Q/A SYSTEM</li>
+      <ul class="nav" style="padding-left: 9%;">
+        <li class="link01">:D&nbsp&nbsp答</li>
         <li class="nav-item">
           <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>

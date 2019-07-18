@@ -1,8 +1,8 @@
 <template>
   <div>
   <div class="top">
-    <ul class="nav" style="padding-left: 6%;">
-      <li class="link01"> Q/A SYSTEM</li>
+    <ul class="nav" style="padding-left: 9%;">
+      <li class="link01">:D&nbsp&nbsp答</li>
       <li class="nav-item">
         <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
       </li>
@@ -53,7 +53,7 @@
                 </div>
 
                 <div class="name" style="padding-top: 10px">
-                  <h5>&nbsp;&nbsp;&nbsp;{{content.name}}</h5>
+                  <h5>{{content.name}}</h5>
                 </div>
 
                 <div style="margin-top: 0px">
@@ -61,28 +61,19 @@
                 </div>
 
                 <div class="content">
-                  <p>&nbsp;&nbsp;{{content.con}}</p>
+                  <p style="line-height: 50px;">{{content.con}}</p>
                 </div>
-
-                <div>
-                  <img src="../assets/2.png" style="width: 50%;height: 30%;margin-left: 180px"/>
-                </div>
-
-
               </div>
             </div>
             <!--动态 end-->
           </div>
         </el-tab-pane>
-        <el-tab-pane label="我的回答" name="second">用户管理</el-tab-pane>
-        <el-tab-pane label="我的收藏" name="third">角色管理</el-tab-pane>
-        <el-tab-pane label="我的赞赏" name="fourth">定时任务补偿</el-tab-pane>
+        <el-tab-pane label="我的回答" name="second">我的回答</el-tab-pane>
+        <el-tab-pane label="我的收藏" name="third">我的收藏</el-tab-pane>
+        <el-tab-pane label="我的赞赏" name="fourth">我的赞赏</el-tab-pane>
       </el-tabs>
 
     </div>
-
-
-
     <div id="disLeft">
       <!--卡片1-->
       <div class="cright">
@@ -97,20 +88,23 @@
         </el-upload>
         <h4>&nbsp;&nbsp;{{myName}}</h4>
       <el-collapse v-model="activeNames" @change="handleChange">
-        <el-collapse-item title="个人简介" name="1">
+        <el-collapse-item title="我的积分" name="1">
+          <div>积分:{{this.score}}</div>
+        </el-collapse-item>
+        <el-collapse-item title="个人简介" name="2">
           <div>这个同学很懒，什么也木有写。
             <el-button type="text"><i class="iconfont">&#xe628;</i></el-button>
           </div>
         </el-collapse-item>
-        <el-collapse-item title="个性签名" name="2">
+        <el-collapse-item title="个性签名" name="3">
           <div>这个同学很懒，什么也木有写。<el-button type="text"><i class="iconfont">&#xe628;</i></el-button></div>
         </el-collapse-item>
-        <el-collapse-item title="兴趣爱好" name="3">
+        <el-collapse-item title="兴趣爱好" name="4">
           <div>爱好学习<el-button type="text"><i class="iconfont">&#xe628;</i></el-button></div>
         </el-collapse-item>
       </el-collapse>
-        <a class="card-link" @click="toAlterPsw">点击修改密码>></a>
-        <a class="card-link" @click="toAlterInfo">点击修改个人资料>></a>
+        <a class="card-link" @click="toAlterPsw" style="cursor: pointer">点击修改密码>></a>
+        <a class="card-link" @click="toAlterInfo" style="cursor: pointer">点击修改个人资料>></a>
 <!--        <el-link :underline="false" type="primary" @click="toAlterPsw">点击修改密码>></el-link>-->
 <!--        <el-link :underline="false" type="primary" @click="toAlterInfo">点击修改个人资料>></el-link>-->
       </div>
@@ -128,6 +122,7 @@
         name: "MyHome",
       data(){
         return{
+          score:'',
           imageUrl:'',
           circleUrl: global.photo,
           hasNotLogin:hasNotLogin,
@@ -156,12 +151,13 @@
               email:global.email,
             }
           }).then(res =>{
+            console.log(res)
           this.imageUrl=res.data.trim()
+         console.log("-------touxiang------")
           console.log(this.imageUrl)
 
         }).catch(e =>{
-          console.log(1111)
-          console.info(e)
+
         })
 
         this.$axios(
@@ -189,6 +185,21 @@
         }).catch(e =>{
           console.info(e)
         })
+
+        this.$axios(
+          {
+            method:'get',
+            url:global.host+"/ReturnInformation",
+            params:{
+              email:global.email
+            }
+          }).then(res =>{
+          console.log(res)
+          this.score=res.data.score
+        }).catch(e =>{
+          console.info(e)
+        })
+
 
       },
 
@@ -253,6 +264,7 @@
               this.$alert('上传头像成功', '提示', {
                 confirmButtonText: '确定',
                 callback: action => {
+                  global.photo=uri
                 }
               });
             }
@@ -296,13 +308,13 @@
   #disTop{
     width: 65%;
     height: 500px;
-    margin-left: 22%;
+    margin-left: 20%;
     margin-top:10px;
     display: inline-block;
     /*background: #FFFFFF;*/
   }
   #disLeft{
-    left:7%;
+    left:3%;
     top:8%;
     width: 280px;
     position: fixed;
@@ -313,6 +325,8 @@
     margin: 8px;
     background: #FFFFFF;
     outline-color: #bd5151;
+    height: auto;
+    padding-bottom: 5%;
     /* height: 400px;
     border-color: rgba(189,81,81,.8);
     box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);*/
@@ -349,10 +363,8 @@
     margin-top: -1px;
     color: #909399;
   }
-  .el-tabs__item.is-active {
-    color: #bd5151;
-  }
-  .el-tabs__item.is-active {
+
+  el-tabs__item:active {
     color: #bd5151;
   }
   .el-tabs__item {
@@ -393,7 +405,7 @@
     margin-top: 10px;
   }
   .avatar-uploader{
-    border-color: #409EFF;
+    border-color: #bd5151;
   }
   .avatar-uploader-icon {
     font-size: 20px;
@@ -413,6 +425,7 @@
     margin-left: 5%;
     width: 60%;
     height: auto;
+    border-bottom: 2px solid #888888;
 
   }
   .cycle{
@@ -429,7 +442,7 @@
     padding-top: 10px;
   }
   .content{
-    width: 80%;
+    width: 60%;
     height: auto;
     margin-left: 180px;
   }

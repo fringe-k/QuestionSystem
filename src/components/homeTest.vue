@@ -15,8 +15,8 @@
     </el-dialog>
     <!--导航栏-->
     <div class="top">
-      <ul class="nav" style="padding-left: 6%;">
-        <li class="link01"> Q/A SYSTEM</li>
+      <ul class="nav" style="padding-left: 9%;">
+        <li class="link01">:D&nbsp&nbsp答</li>
         <li class="nav-item">
           <a class="nav-link" href="#" id="link03"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
@@ -73,7 +73,7 @@
       <div class="cright">
           <h5 class="card-title">Q/A START</h5>
           <div class="btns" style="margin-top:0;">
-          <button @click="dialogVisible=true"><i class="iconfont">&#xe628;</i>写回答</button>
+          <button @click="toQuestion"><i class="iconfont">&#xe628;</i>写回答</button>
           <button @click="toQuestionSubmit"><i class="iconfont">&#xe703;</i>写问题</button>
           </div>
       </div>

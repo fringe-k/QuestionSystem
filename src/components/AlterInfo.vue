@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="top">
-      <ul class="nav" style="padding-left: 6%;">
-        <li class="link01"> Q/A SYSTEM</li>
+      <ul class="nav" style="padding-left: 9%;">
+        <li class="link01">:D&nbsp&nbsp答</li>
         <li class="nav-item">
           <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
+          <a class="nav-link" @click="toQuestion"><i class="iconfont">&#xe7bf;</i>&nbsp&nbsp问题</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#"><i class="iconfont">&#xe627;</i>&nbsp&nbsp社区</a>
@@ -24,7 +24,7 @@
             <button id="triggerBtn" @click="toLogin"><li><a href="#" data-toggle="tooltip" data-placement="bottom" title="登录"><i class="iconfont">&#xe601;</i></a></li></button>
           </div>
           <div v-else>
-            <button id="personBtn">
+            <button id="personBtn" @click="toMyHome">
               <div>
                 <ul>
                   <li style="float:left;margin-top: -2px">
@@ -76,20 +76,23 @@
         </el-upload>
         <h4>{{myName}}</h4>
         <el-collapse v-model="activeNames" @change="handleChange">
-          <el-collapse-item title="个人简介" name="1">
+          <el-collapse-item title="我的积分" name="1">
+            <div>积分:{{this.score}}</div>
+          </el-collapse-item>
+          <el-collapse-item title="个人简介" name="2">
             <div>这个同学很懒，什么也木有写。
               <el-button type="text"><i class="iconfont">&#xe628;</i></el-button>
             </div>
           </el-collapse-item>
-          <el-collapse-item title="个性签名" name="2">
+          <el-collapse-item title="个性签名" name="3">
             <div>这个同学很懒，什么也木有写。<el-button type="text"><i class="iconfont">&#xe628;</i></el-button></div>
           </el-collapse-item>
-          <el-collapse-item title="兴趣爱好" name="3">
+          <el-collapse-item title="兴趣爱好" name="4">
             <div>爱好学习<el-button type="text"><i class="iconfont">&#xe628;</i></el-button></div>
           </el-collapse-item>
         </el-collapse>
-        <a class="card-link" @click="toAlterPsw">点击修改密码>></a>
-        <a class="card-link" @click="toAlterInfo">点击修改个人资料>></a>
+        <a class="card-link" @click="toAlterPsw" style="cursor: pointer">点击修改密码>></a>
+        <a class="card-link" @click="toAlterInfo" style="cursor: pointer">点击修改个人资料>></a>
       </div>
     </div>
   </div>
@@ -103,6 +106,7 @@
     data(){
       return{
         imageUrl:'',
+        score:'',
         circleUrl: global.photo,
         hasNotLogin:hasNotLogin,
         myId:global.userId,
@@ -165,6 +169,21 @@
         console.info(e)
       })
 
+      this.$axios(
+        {
+          method:'get',
+          url:"http://localhost:8082/test/ReturnInformation",
+          params:{
+            email:global.email
+          }
+        }).then(res =>{
+        console.log(res)
+        this.score=res.data.score
+      }).catch(e =>{
+        console.info(e)
+      })
+
+
     },
     destroyed(){
       var hasNotLogin = [1]
@@ -173,6 +192,18 @@
       toLogin:function(){
       },
       toQuestion:function () {
+        this.$router.push({
+          path: '/QuestionShow',
+          query: {
+          }
+        })
+      },
+      toMyHome:function(){
+        this.$router.push({
+          path: '/MyHome',
+          query: {
+          }
+        })
       },
       toHome:function () {
         this.$router.push({
@@ -449,7 +480,8 @@
     margin: 8px;
     background: #FFFFFF;
     outline-color: #bd5151;
-    height: 600px;
+    height: auto;
+    padding-bottom: 5%;
     /* border-color: rgba(189,81,81,.8);
     box-shadow: 0 0 8px rgba(181, 185, 189, 0.6);*/
   }
@@ -529,7 +561,7 @@
     margin-top: 10px;
   }
   .avatar-uploader{
-    border-color: #409EFF;
+    border-color: #bd5151;
   }
   .avatar-uploader-icon {
     font-size: 20px;

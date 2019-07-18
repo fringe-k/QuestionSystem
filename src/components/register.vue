@@ -1,8 +1,8 @@
 <template>
-  <div :style="bg" style="height: 100%">
+  <div :style="" style="height: 100%">
     <div style="width: 100%"></div>
     <div class="reg_form" >
-      <a class="link01" style="margin-left: 30%"> Q/A SYSTEM</a>
+      <a class="link01" style="margin-left: 30%;font-size:55px;"> :D&nbsp;&nbsp;答</a>
       <br>
       <input type="text"  class="qxs-ic_user qxs-icon"  placeholder="用户名" v-model="userName" style="font-size: 20px;padding-top: 30px">
       <span v-if="error.userName" class="err-msg">{{error.userName}}</span>
@@ -25,7 +25,7 @@
       <span v-if="error.phone" class="err-msg">{{error.phone}}</span>
       <!--<button class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round>登录</button>-->
       <br>
-      <button class="login_btn" @click="login" style="font-size: 20px" >注册</button>
+      <el-button class="login_btn" type="danger" @click="login" style="font-size: 20px" >注册</el-button>
       <div style="margin-top: 30px;padding-bottom: 5%">
         <span style="color: #000099;margin-left: 18%;font-size: 20px;cursor: pointer" @click="to_login">登录</span><span style="margin-left: 45%;color:  #000099;font-size: 20px;cursor: pointer;" @click="to_home">主界面</span>
       </div>
@@ -86,7 +86,7 @@
         },
 
        to_home(){
-         this.$router.push({path:'/home'})
+         this.$router.push({path:'/'})
        },
         to_login()
         {
@@ -324,13 +324,6 @@
   .res_logo {
     height: 100%;
   }
-
-  .bg{
-    background:url("../assets/login_bg.png") center center;
-    backgroundSize:"100% 100%";
-  }
-
-
   .reg_form {
     position: absolute;
     top:10%;
@@ -338,7 +331,7 @@
     margin-left: 37%;
     background-color: white;
     padding-top: 25px;
-    box-shadow:5px 5px 5px grey;
+
   }
   .qxs-ic_user {
     background: url("../assets/user.png") no-repeat;
@@ -370,15 +363,14 @@
   }
 
   .login_btn {
-    width: 100px;
-    height: 50px;
+    /*    width: 100px;
+        height: 50px;*/
     margin-top: 30px;
-    margin-left: 37%;
-    font-size: 16px;
-    background-color: white;
-    filter: brightness(1.4);
-    border-radius: 15%;
-    outline:none;
+    margin-left: 40%;
+    /* font-size: 16px;
+     filter: brightness(1.4);
+     border-radius: 15%;
+     outline:none;*/
   }
 
   .qxs-icon {

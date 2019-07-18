@@ -9,12 +9,12 @@
       <span>即将登录，是否前往登录</span>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="toLogin">确 定</el-button>
+    <el-button type="danger" @click="toLogin">确 定</el-button>
   </span>
     </el-dialog>
     <div class="top">
-      <ul class="nav" style="padding-left: 6%;">
-        <li class="link01"> Q/A SYSTEM</li>
+      <ul class="nav" style="padding-left: 9%;">
+        <li class="link01">:D&nbsp&nbsp答</li>
         <li class="nav-item">
           <a class="nav-link" @click="toHome"><i class="iconfont">&#xe625;</i>&nbsp&nbsp主页</a>
         </li>
